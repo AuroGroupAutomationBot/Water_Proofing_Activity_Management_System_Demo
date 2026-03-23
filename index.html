@@ -2311,16 +2311,16 @@
         <div class="qc-pending-head-title">Stages Pending Your QC Review</div>
         <div class="qc-pending-head-sub">Click any row to jump directly to that stage checklist for review</div>
       </div>
-      <div class="qc-pending-count">2</div>
+      <div class="qc-pending-count" id="qc-panel-count">1</div>
     </div>
     <div class="qc-pending-body">
-    <div class="qc-pending-row" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})">
-      <div class="qc-pend-num" style="background:var(--s1);">1</div>
+    <div class="qc-pending-row" id="qc-panel-demo-row" style="display:none;" onclick="jumpToCurrentStage()">
+      <div class="qc-pend-num" id="qc-panel-stage-num" style="background:var(--s1);">1</div>
       <div>
-        <div class="qc-pend-title">Stage 1 — RCC Structural Readiness</div>
+        <div class="qc-pend-title" id="qc-panel-stage-title">Stage 1 — RCC Structural Readiness</div>
         <div class="qc-pend-loc">Prestige Skyline Towers · Tower A · 3rd Floor · Flat 301-A</div>
       </div>
-      <div class="qc-pend-submitted">Submitted by<br><span>Civil Finish Team · 6 hours ago</span></div>
+      <div class="qc-pend-submitted">Submitted by<br><span id="qc-panel-submitted-by">Civil Finish Team · just now</span></div>
       <div class="qc-pend-action"><button class="qc-pend-btn">Review Now →</button></div>
     </div>
     <div class="qc-pending-row" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})">
@@ -2490,19 +2490,19 @@
       <!-- KPIs -->
       <div class="dir-kpi-grid">
         <div class="dir-kpi kpi-total">
-          <div class="dir-kpi-num">18</div>
+          <div class="dir-kpi-num" id="dir-kpi-total">18</div>
           <div class="dir-kpi-label">Total Active Activities</div>
         </div>
         <div class="dir-kpi kpi-progress">
-          <div class="dir-kpi-num">11</div>
+          <div class="dir-kpi-num" id="dir-kpi-progress">11</div>
           <div class="dir-kpi-label">In Progress</div>
         </div>
         <div class="dir-kpi kpi-qc">
-          <div class="dir-kpi-num">4</div>
+          <div class="dir-kpi-num" id="dir-kpi-qc">4</div>
           <div class="dir-kpi-label">Awaiting QC Decision</div>
         </div>
         <div class="dir-kpi kpi-overdue">
-          <div class="dir-kpi-num">2</div>
+          <div class="dir-kpi-num" id="dir-kpi-overdue">2</div>
           <div class="dir-kpi-label">Overdue — Action Required</div>
         </div>
       </div>
@@ -2515,7 +2515,7 @@
             <div class="dir-pipe-num" style="background:var(--s1);">1</div>
             <div class="dir-pipe-name">RCC Readiness</div>
           </div>
-          <div class="dir-pipe-count">5</div>
+          <div class="dir-pipe-count" id="dir-pipe-count-1">5</div>
           <div class="dir-pipe-label">activities at this stage</div>
         </div>
         <div class="dir-pipe-step">
@@ -2523,7 +2523,7 @@
             <div class="dir-pipe-num" style="background:var(--s2);">2</div>
             <div class="dir-pipe-name">MEP Core Cut</div>
           </div>
-          <div class="dir-pipe-count">3</div>
+          <div class="dir-pipe-count" id="dir-pipe-count-2">3</div>
           <div class="dir-pipe-label">activities at this stage</div>
         </div>
         <div class="dir-pipe-step">
@@ -2531,7 +2531,7 @@
             <div class="dir-pipe-num" style="background:var(--s3);">3</div>
             <div class="dir-pipe-name">Surface Prep</div>
           </div>
-          <div class="dir-pipe-count">4</div>
+          <div class="dir-pipe-count" id="dir-pipe-count-3">4</div>
           <div class="dir-pipe-label">activities at this stage</div>
         </div>
         <div class="dir-pipe-step">
@@ -2539,7 +2539,7 @@
             <div class="dir-pipe-num" style="background:var(--s4);">4</div>
             <div class="dir-pipe-name">WP Coating</div>
           </div>
-          <div class="dir-pipe-count">2</div>
+          <div class="dir-pipe-count" id="dir-pipe-count-4">2</div>
           <div class="dir-pipe-label">activities at this stage</div>
         </div>
         <div class="dir-pipe-step">
@@ -2547,7 +2547,7 @@
             <div class="dir-pipe-num" style="background:var(--s5);">5</div>
             <div class="dir-pipe-name">Screed &amp; Final</div>
           </div>
-          <div class="dir-pipe-count">4</div>
+          <div class="dir-pipe-count" id="dir-pipe-count-5">4</div>
           <div class="dir-pipe-label">activities at this stage</div>
         </div>
       </div>
@@ -2569,12 +2569,12 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--ink2);">WP-2026-0041</span></td>
+                <tr id="dir-row-demo" style="background:linear-gradient(90deg,rgba(252,211,77,0.04) 0%,transparent 100%);">
+                  <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--ink2);">WP-2026-0041</span> <span id="dir-demo-live-badge" style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:1px;background:#fef3c7;color:#b45309;border:1px solid #fcd34d;border-radius:3px;padding:1px 5px;vertical-align:middle;margin-left:3px;">LIVE</span></td>
                   <td style="font-size:12px;">Prestige Skyline Towers<br><span style="color:var(--muted);">Tower A · 3F · Flat 301-A</span></td>
-                  <td><span class="dir-stage-pill d-s3">● Stage 3</span></td>
-                  <td style="font-size:12px;">WP Team</td>
-                  <td><span class="dir-badge b-qc">QC Pending</span></td>
+                  <td id="dir-demo-stage-cell"><span class="dir-stage-pill d-s1" id="dir-demo-stage-pill">● Stage 1</span></td>
+                  <td style="font-size:12px;" id="dir-demo-team">Civil Finish Team</td>
+                  <td><span class="dir-badge b-prog" id="dir-demo-status-badge">In Progress</span></td>
                 </tr>
                 <tr>
                   <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--ink2);">WP-2026-0039</span></td>
@@ -2620,29 +2620,29 @@
         <div>
           <div class="dir-section-title">Pending Actions</div>
           <div class="dir-card">
-            <div class="dir-pad">
-              <div class="dir-pending-item">
+            <div class="dir-pad" id="dir-pending-pad">
+              <div class="dir-pending-item dir-pending-static">
                 <div class="dir-pend-dot qc-dot"></div>
                 <div>
                   <div class="dir-pend-text"><strong>QC Review Required — Stage 3</strong><br>WP-2026-0041 · Prestige Skyline Towers Tower A · 3F · Flat 301-A</div>
                   <div class="dir-pend-meta">Submitted by WP Team · 6 hours ago</div>
                 </div>
               </div>
-              <div class="dir-pending-item">
+              <div class="dir-pending-item dir-pending-static">
                 <div class="dir-pend-dot qc-dot"></div>
                 <div>
                   <div class="dir-pend-text"><strong>QC Review Required — Stage 1</strong><br>WP-2026-0044 · Grand City Residences Tower 1 · 7F · Flat 701</div>
                   <div class="dir-pend-meta">Submitted by Civil Finish Team · 2 hours ago</div>
                 </div>
               </div>
-              <div class="dir-pending-item">
+              <div class="dir-pending-item dir-pending-static">
                 <div class="dir-pend-dot ov-dot"></div>
                 <div>
                   <div class="dir-pend-text"><strong>Stage 2 Overdue — MEP Action Required</strong><br>WP-2026-0046 · Silver Oaks Enclave Jubilee Block · 9F · Flat 903</div>
                   <div class="dir-pend-meta">Assigned 3 days ago · No submission yet</div>
                 </div>
               </div>
-              <div class="dir-pending-item">
+              <div class="dir-pending-item dir-pending-static">
                 <div class="dir-pend-dot qc-dot"></div>
                 <div>
                   <div class="dir-pend-text"><strong>QC Review Required — Stage 2</strong><br>WP-2026-0043 · Grand City Residences Tower 1 · 5F · Flat 501</div>
@@ -2654,7 +2654,7 @@
 
           <div class="dir-section-title">Recent Approvals</div>
           <div class="dir-card">
-            <div class="dir-pad">
+            <div class="dir-pad" id="dir-approvals-pad">
               <div class="dir-recent-item">
                 <span class="dir-check">✓</span>
                 <div><div style="font-size:12.5px;color:var(--ink2);">WP-2026-0037 · Stage 5 — Activity Closed</div><div style="font-size:11px;color:var(--muted);">Approved by Rajesh Varma QC · Today 09:14</div></div>
@@ -6092,6 +6092,338 @@
       });
       initSidebar();
     });
+
+    /* ═══════════════════════════════════════════════════
+       LIVE DIRECTOR DASHBOARD — DEMO ACTIVITY STATE ENGINE
+       ───────────────────────────────────────────────────
+       LOGIC:
+         • 18 activities are ALWAYS static in the dashboard
+           (KPIs start at 18 / 11 / 4 / 2, pipeline sums to 18)
+         • WP-2026-0041 is the NEW 19th activity added by the demo
+         • Demo starts as NOT counted (null) — appears only once
+           the engineer role is applied and work begins
+         • On page refresh → everything resets to the static 18
+       ═══════════════════════════════════════════════════ */
+
+    /* ── Static baseline: exactly 18 activities ── */
+    const STATIC = {
+      total:      18,
+      inProgress: 11,
+      qcPending:  4,
+      overdue:    2,
+      pipeline:   { 1: 5, 2: 3, 3: 4, 4: 2, 5: 4 }   // sums to 18
+    };
+
+    /* ── Demo activity — starts null (not yet in the system) ── */
+    const demo = {
+      active:    false,   // true once engineer role is applied
+      stage:     1,       // which stage is currently open
+      // per-stage lifecycle: null | 'in-progress' | 'submitted' | 'approved' | 'rejected'
+      status:    { 1: null, 2: null, 3: null, 4: null, 5: null },
+      approvals: {}       // stage → { inspector, time }
+    };
+
+    const STAGE_TEAMS_MAP = {
+      1: 'Civil Finish Team', 2: 'MEP Team', 3: 'WP Team',
+      4: 'WP Applicator',    5: 'Civil Finish Team'
+    };
+    const STAGE_NAMES_MAP = {
+      1: 'Stage 1 — RCC Structural Readiness',
+      2: 'Stage 2 — MEP Core Cut & Installation',
+      3: 'Stage 3 — Surface Prep & Pre-Ponding',
+      4: 'Stage 4 — WP Coating Application',
+      5: 'Stage 5 — Screed & Final Sign-Off'
+    };
+    const STAGE_PILL_MAP = { 1:'d-s1', 2:'d-s2', 3:'d-s3', 4:'d-s4', 5:'d-s5' };
+    const STAGE_COLOR_MAP = {
+      1:'var(--s1)', 2:'var(--s2)', 3:'var(--s3)', 4:'var(--s4)', 5:'var(--s5)'
+    };
+
+    /* ── Compute live numbers on top of static baseline ── */
+    function computeLiveKPIs() {
+      if (!demo.active) return { ...STATIC };
+
+      const s      = demo.stage;
+      const status = demo.status[s];
+      const closed = (s === 5 && status === 'approved');
+
+      let addTotal = 1;                                     // demo always adds 1 to total once active
+      let addIP    = (!closed && status === 'in-progress' ) ? 1 : 0;
+      let addQC    = (!closed && status === 'submitted'   ) ? 1 : 0;
+      let addOD    = 0;
+
+      return {
+        total:      STATIC.total      + addTotal,
+        inProgress: STATIC.inProgress + addIP,
+        qcPending:  STATIC.qcPending  + addQC,
+        overdue:    STATIC.overdue    + addOD
+      };
+    }
+
+    function computeLivePipeline() {
+      const p = { ...STATIC.pipeline };
+      if (!demo.active) return p;
+
+      const s      = demo.stage;
+      const status = demo.status[s];
+      const closed = (s === 5 && status === 'approved');
+
+      if (!closed) p[s] = (p[s] || 0) + 1;
+      return p;
+    }
+
+    /* ── Master update — call after every state change ── */
+    function updateDirectorDashboard() {
+      const kpi  = computeLiveKPIs();
+      const pipe = computeLivePipeline();
+
+      /* KPI tiles */
+      _setText('dir-kpi-total',    kpi.total);
+      _setText('dir-kpi-progress', kpi.inProgress);
+      _setText('dir-kpi-qc',       kpi.qcPending);
+      _setText('dir-kpi-overdue',  kpi.overdue);
+
+      /* Pipeline */
+      for (let i = 1; i <= 5; i++) _setText('dir-pipe-count-' + i, pipe[i] || 0);
+
+      /* Activity register row — hide until demo is active */
+      const demoRow = document.getElementById('dir-row-demo');
+      if (demoRow) demoRow.style.display = demo.active ? '' : 'none';
+
+      if (demo.active) {
+        _updateDemoRow();
+        _updatePendingActions();
+        _updateQcPanel();
+      } else {
+        /* Remove any live items added in this session */
+        _removeById('dir-pending-demo-item');
+        const qcRow = document.getElementById('qc-panel-demo-row');
+        if (qcRow) qcRow.style.display = 'none';
+        _setText('qc-panel-count', 1);
+      }
+    }
+
+    function _setText(id, val) {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = val; }
+    }
+    function _removeById(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    /* ── Activity register row ── */
+    function _updateDemoRow() {
+      const s      = demo.stage;
+      const status = demo.status[s];
+
+      const pill = document.getElementById('dir-demo-stage-pill');
+      if (pill) {
+        pill.className  = 'dir-stage-pill ' + STAGE_PILL_MAP[s];
+        pill.textContent = '● Stage ' + s;
+      }
+      const team = document.getElementById('dir-demo-team');
+      if (team) team.textContent = STAGE_TEAMS_MAP[s];
+
+      const badge = document.getElementById('dir-demo-status-badge');
+      if (!badge) return;
+
+      if (s === 5 && status === 'approved') {
+        badge.className  = 'dir-badge b-closed';
+        badge.textContent = '✓ Closed';
+      } else if (status === 'submitted') {
+        badge.className  = 'dir-badge b-qc';
+        badge.textContent = 'QC Pending';
+      } else if (status === 'rejected') {
+        badge.className  = 'dir-badge b-over';
+        badge.textContent = 'Rejected — Rectify';
+      } else {
+        badge.className  = 'dir-badge b-prog';
+        badge.textContent = 'In Progress';
+      }
+      /* Pulse the row to draw attention */
+      _pulseRow('dir-row-demo');
+    }
+
+    /* ── Pending Actions ── */
+    function _updatePendingActions() {
+      _removeById('dir-pending-demo-item');
+
+      const s      = demo.stage;
+      const status = demo.status[s];
+      if (status !== 'submitted' && status !== 'rejected') return;
+
+      const ts = _nowTime();
+      let dotClass, title, meta;
+
+      if (status === 'submitted') {
+        dotClass = 'qc-dot';
+        title    = `<strong>QC Review Required — Stage ${s}</strong><br>WP-2026-0041 · Prestige Skyline Towers Tower A · 3F · 301-A`;
+        meta     = `Submitted by ${STAGE_TEAMS_MAP[s]} · Today ${ts}`;
+      } else {
+        dotClass = 'ov-dot';
+        title    = `<strong>Stage ${s} Rejected — Rectification Required</strong><br>WP-2026-0041 · Prestige Skyline Towers Tower A · 3F · 301-A`;
+        meta     = `Returned to ${STAGE_TEAMS_MAP[s]} for rectification · Today ${ts}`;
+      }
+
+      const div = document.createElement('div');
+      div.id = 'dir-pending-demo-item';
+      div.className = 'dir-pending-item';
+      div.style.cssText = 'background:rgba(252,211,77,0.07);border-left:3px solid var(--gold);border-radius:4px;padding-left:8px;';
+      div.innerHTML = `
+        <div class="dir-pend-dot ${dotClass}"></div>
+        <div>
+          <div class="dir-pend-text">${title}&nbsp;<span style="font-size:9px;font-weight:700;letter-spacing:1px;background:#fef3c7;color:#b45309;border:1px solid #fcd34d;border-radius:3px;padding:1px 5px;">LIVE</span></div>
+          <div class="dir-pend-meta">${meta}</div>
+        </div>`;
+
+      const pad = document.getElementById('dir-pending-pad');
+      if (pad) pad.insertBefore(div, pad.firstChild);
+    }
+
+    /* ── QC Pending Panel ── */
+    function _updateQcPanel() {
+      const row  = document.getElementById('qc-panel-demo-row');
+      const cnt  = document.getElementById('qc-panel-count');
+      if (!row || !cnt) return;
+
+      const s      = demo.stage;
+      const status = demo.status[s];
+
+      if (status === 'submitted') {
+        row.style.display = '';
+        const numEl   = document.getElementById('qc-panel-stage-num');
+        const titleEl = document.getElementById('qc-panel-stage-title');
+        const subEl   = document.getElementById('qc-panel-submitted-by');
+        if (numEl)   { numEl.textContent = s; numEl.style.background = STAGE_COLOR_MAP[s]; }
+        if (titleEl) titleEl.textContent = STAGE_NAMES_MAP[s];
+        if (subEl)   subEl.textContent   = STAGE_TEAMS_MAP[s] + ' · Today ' + _nowTime();
+        cnt.textContent = 2;   // 1 static (Grand City) + 1 live demo
+      } else {
+        row.style.display = 'none';
+        cnt.textContent   = 1;
+      }
+    }
+
+    /* ── Recent Approvals ── */
+    function _addApproval(stageNum, inspectorShort, ts) {
+      const pad = document.getElementById('dir-approvals-pad');
+      if (!pad) return;
+      const label = stageNum < 5
+        ? `WP-2026-0041 · Stage ${stageNum} Approved`
+        : `WP-2026-0041 · Stage 5 — Activity Closed ✅`;
+      const div = document.createElement('div');
+      div.className = 'dir-recent-item';
+      div.style.cssText = 'background:rgba(22,163,74,0.05);border-left:3px solid #86efac;border-radius:4px;padding-left:8px;';
+      div.innerHTML = `
+        <span class="dir-check">✓</span>
+        <div>
+          <div style="font-size:12.5px;color:var(--ink2);">${label}&nbsp;<span style="font-size:9px;font-weight:700;letter-spacing:1px;background:#fef3c7;color:#b45309;border:1px solid #fcd34d;border-radius:3px;padding:1px 5px;">LIVE</span></div>
+          <div style="font-size:11px;color:var(--muted);">Approved by ${inspectorShort} · Today ${ts}</div>
+        </div>`;
+      pad.insertBefore(div, pad.firstChild);
+    }
+
+    /* ── Jump to current stage (for QC panel click) ── */
+    function jumpToCurrentStage() {
+      const ids = { 1:'s4', 2:'s5', 3:'s6', 4:'s7', 5:'s8' };
+      const el  = document.getElementById(ids[demo.stage]);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* ── Row pulse ── */
+    function _pulseRow(id) {
+      const row = document.getElementById(id);
+      if (!row) return;
+      row.style.transition = 'background 0.2s';
+      row.style.background = 'rgba(252,211,77,0.22)';
+      setTimeout(() => {
+        row.style.background = 'linear-gradient(90deg,rgba(252,211,77,0.04) 0%,transparent 100%)';
+      }, 700);
+    }
+
+    function _nowTime() {
+      return new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    /* ══════════════════════════════════════════════════
+       MONKEY-PATCH existing functions to drive demo state
+    ══════════════════════════════════════════════════ */
+
+    /* ── applyRole: drives demo state + always refreshes director dashboard ── */
+    const _orig_applyRole = applyRole;
+    applyRole = function() {
+      _orig_applyRole();
+      if (selectedRole === 'engineer') {
+        /* First time entering engineer role: activate demo */
+        if (!demo.active) {
+          demo.active  = true;
+          demo.stage   = selectedEngineerStage;
+          demo.status[selectedEngineerStage] = 'in-progress';
+        }
+        updateDirectorDashboard();
+      } else if (selectedRole === 'director') {
+        /* Director view just opened — refresh numbers from current demo state */
+        updateDirectorDashboard();
+      }
+    };
+
+    /* ── switchRole: just goes back to cover, preserves demo state ──
+       Demo state only resets on page refresh (JS variable re-init).   */
+    const _orig_switchRole = switchRole;
+    switchRole = function() {
+      _orig_switchRole();
+      /* Do NOT reset demo — director needs to see engineer/QC work */
+    };
+
+    /* ── openQcModal: stage transitions to "submitted" ── */
+    const _orig_openQcModal = openQcModal;
+    openQcModal = function(stageNum) {
+      _orig_openQcModal(stageNum);
+      if (demo.stage === stageNum) {
+        demo.active = true;
+        demo.status[stageNum] = 'submitted';
+        updateDirectorDashboard();
+      }
+    };
+
+    /* ── handleQcDecision: approve/reject drives full chain ── */
+    const _orig_handleQcDecision = handleQcDecision;
+    handleQcDecision = function(decision) {
+      const stageNum   = activeModalStage;
+      const inspector  = document.getElementById('qcInspector').value.trim();
+      const comments   = document.getElementById('qcComments').value.trim();
+      if (!inspector || !comments) { _orig_handleQcDecision(decision); return; }
+
+      _orig_handleQcDecision(decision);   // runs original logic first
+
+      if (!demo.active) demo.active = true;
+
+      const ts = _nowTime();
+      const inspShort = inspector.split('—')[0].trim();
+
+      if (decision === 'approve') {
+        demo.status[stageNum]  = 'approved';
+        demo.approvals[stageNum] = { inspector: inspShort, time: ts };
+        _addApproval(stageNum, inspShort, ts);
+        if (stageNum < 5) {
+          demo.stage  = stageNum + 1;
+          demo.status[stageNum + 1] = 'in-progress';
+        }
+      } else {
+        /* Rejected: stage stays the same, team re-fills */
+        demo.status[stageNum] = 'rejected';
+      }
+      updateDirectorDashboard();
+    };
+
+    /* ── Init: hide demo row, reset dashboard to static 18 ── */
+    document.addEventListener('DOMContentLoaded', function() {
+      const demoRow = document.getElementById('dir-row-demo');
+      if (demoRow) demoRow.style.display = 'none';
+      setTimeout(updateDirectorDashboard, 80);
+    });
+
   </script>
 </body>
 
