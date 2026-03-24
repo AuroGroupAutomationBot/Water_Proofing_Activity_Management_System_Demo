@@ -67,6 +67,7 @@
 
     html {
       scroll-behavior: smooth;
+      overflow-x: hidden;
     }
 
     body {
@@ -500,6 +501,8 @@
 
     .data-card-body {
       padding: 24px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* ═══════════════════════════════════════════════════
@@ -1847,6 +1850,11 @@
       padding: 14px 0 10px;
     }
     .sidebar-toc.toc-visible { transform: translateY(-50%) translateX(0); }
+    .sidebar-toc.toc-hidden { 
+      transform: translateY(-50%) translateX(-100%) !important; 
+      opacity: 0 !important; 
+      pointer-events: none !important; 
+    }
     .sidebar-toc-title {
       font-family: 'JetBrains Mono', monospace;
       font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
@@ -1872,7 +1880,17 @@
     .sidebar-toc li a.toc-active .stoc-num { color: var(--gold); }
     .stoc-label { line-height: 1.35; }
     .sidebar-toc .toc-divider-thin { height: 1px; background: var(--border); margin: 5px 14px; }
-    @media (max-width: 1200px) { .sidebar-toc { display: none; } }
+    @media (max-width: 1200px) { 
+      .sidebar-toc { display: none !important; } 
+    }
+    @media (min-width: 1201px) {
+      .doc-wrap {
+        margin-left: 230px;
+        margin-right: 180px;
+        width: calc(100% - 410px);
+        box-sizing: border-box;
+      }
+    }
 
     /* ═══════════════════════════════════════════════════
    SUBMIT FOOTER
@@ -1929,6 +1947,173 @@
     .assign-select.field-invalid { border-color: var(--gold) !important; box-shadow: 0 0 0 3px rgba(180,83,9,0.15) !important; }
     .comment-input.field-invalid { border-color: var(--gold) !important; background: #fffbeb !important; }
     tr.row-invalid > td { background: #fffbeb !important; }
+
+    /* ═══════════════════════════════════════════════════
+   SUBMITTED BANNER (between submit + QC panel)
+═══════════════════════════════════════════════════ */
+    .stage-submitted-banner {
+      display: none; align-items: center; gap: 12px;
+      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px;
+      padding: 14px 18px; margin-top: 16px; font-size: 13px; color: #1e40af;
+    }
+    .stage-submitted-banner.show { display: flex; }
+    .stage-submitted-banner .ban-icon { font-size: 22px; animation: pulse-icon 2s infinite; }
+    @keyframes pulse-icon { 0%,100%{opacity:1;} 50%{opacity:.5;} }
+
+    /* ═══════════════════════════════════════════════════
+   INLINE QC REVIEW PANEL
+═══════════════════════════════════════════════════ */
+    .qc-inline-panel {
+      display: none;
+      margin-top: 20px;
+      border: 2px dashed var(--border2);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .qc-inline-panel.show { display: block; }
+    .qc-inline-panel.unlocked { border-color: #3b82f6; border-style: solid; }
+    .qc-inline-panel.decided { opacity: 0.6; pointer-events: none; }
+    .qc-inline-head {
+      background: var(--ink); color: #fff; padding: 14px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .qc-inline-head-title {
+      font-family: 'Spectral', serif; font-size: 15px; font-weight: 600;
+    }
+    .qc-inline-head-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 4px;
+    }
+    .qc-inline-head-badge.badge-locked { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
+    .qc-inline-head-badge.badge-ready { background: #3b82f6; color: #fff; animation: pulse-icon 2s infinite; }
+    .qc-inline-body {
+      padding: 20px; background: #fafbfc;
+    }
+    .qc-inline-body.locked { pointer-events: none; opacity: 0.4; }
+    .qc-inline-summary {
+      font-size: 12.5px; color: var(--muted); line-height: 1.7;
+      padding: 12px 16px; background: #fff; border: 1px solid var(--border);
+      border-radius: 6px; margin-bottom: 16px;
+    }
+    .qc-inline-field { margin-bottom: 14px; }
+    .qc-inline-label {
+      font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 600;
+      color: var(--ink2); margin-bottom: 5px; display: block;
+    }
+    .qc-inline-label .qc-req { color: #ef4444; font-weight: 700; }
+    .qc-inline-select {
+      width: 100%; padding: 10px 14px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 13px; font-family: 'Barlow', sans-serif;
+      background: #fff; color: var(--ink);
+    }
+    .qc-inline-textarea {
+      width: 100%; min-height: 80px; padding: 10px 14px;
+      border: 1px solid var(--border); border-radius: 6px;
+      font-size: 13px; font-family: 'Barlow', sans-serif;
+      color: var(--ink); resize: vertical; box-sizing: border-box;
+    }
+    .qc-inline-actions {
+      display: flex; gap: 12px; padding-top: 8px;
+    }
+    .qc-inline-approve {
+      flex: 1; padding: 12px 0; border: none; border-radius: 7px;
+      background: #16a34a; color: #fff; font-family: 'Barlow', sans-serif;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .qc-inline-approve:hover { background: #15803d; transform: translateY(-1px); }
+    .qc-inline-reject {
+      flex: 1; padding: 12px 0; border: 2px solid #ef4444; border-radius: 7px;
+      background: transparent; color: #ef4444; font-family: 'Barlow', sans-serif;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .qc-inline-reject:hover { background: #fef2f2; }
+    .qc-inline-error {
+      display: none; font-size: 12px; color: #ef4444; font-weight: 600;
+      margin-top: 8px; padding: 8px 12px; background: #fef2f2;
+      border: 1px solid #fecaca; border-radius: 5px;
+    }
+    .qc-inline-error.show { display: block; }
+
+    /* ═══════════════════════════════════════════════════
+   QC HISTORY LOG (AUDIT TRAIL)
+═══════════════════════════════════════════════════ */
+    .qc-history-log {
+      display: none;
+      margin-top: 16px;
+      padding: 16px 20px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+    .qc-history-log.show { display: block; }
+    .qc-history-title {
+      font-family: 'Barlow', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .qc-history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+    .qc-history-list::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 10px;
+      bottom: 10px;
+      width: 2px;
+      background: #e2e8f0;
+      z-index: 1;
+    }
+    .qc-history-item {
+      display: flex;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+    }
+    .qc-history-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+    .qc-history-item.submitted .qc-history-icon { border-color: #3b82f6; color: #3b82f6; }
+    .qc-history-item.approved .qc-history-icon { border-color: #10b981; background: #10b981; color: #fff; }
+    .qc-history-item.rejected .qc-history-icon { border-color: #ef4444; background: #ef4444; color: #fff; }
+    
+    .qc-history-content {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      flex: 1;
+      font-size: 13px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .qc-history-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .qc-history-action { font-weight: 600; color: var(--ink); }
+    .qc-history-time { font-size: 11px; color: var(--muted); }
+    .qc-history-comment { font-size: 12px; color: var(--ink2); margin-top: 4px; font-style: italic; }
 
     /* ═══════════════════════════════════════════════════
    QC MODAL
@@ -2148,6 +2333,10 @@
     body.role-engineer-3 #s4,body.role-engineer-3 #s5,body.role-engineer-3 #s7,body.role-engineer-3 #s8 { display: none !important; }
     body.role-engineer-4 #s4,body.role-engineer-4 #s5,body.role-engineer-4 #s6,body.role-engineer-4 #s8 { display: none !important; }
     body.role-engineer-5 #s4,body.role-engineer-5 #s5,body.role-engineer-5 #s6,body.role-engineer-5 #s7 { display: none !important; }
+    
+    body.role-rcc .toc-section,body.role-rcc #s1,body.role-rcc #s2,body.role-rcc #s4,body.role-rcc #s5,body.role-rcc #s6,body.role-rcc #s7,body.role-rcc #s8,body.role-rcc #s9,body.role-rcc #s10,body.role-rcc #s11,body.role-rcc #app-a,body.role-rcc #app-b { display: none !important; }
+    body.role-rcc .sidebar-toc { display: none !important; }
+    body.role-rcc #s3 { display: block !important; }
 
     /* ═══ PERSISTENT TOP NAV (post-role-select) ═══ */
     .app-topnav {
@@ -2286,6 +2475,46 @@
       .dir-appbar-sub { display: none !important; }
     }
 
+
+
+
+    /* ═══════════════════════════════════════════════════
+   TOAST NOTIFICATIONS
+═══════════════════════════════════════════════════ */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      pointer-events: none;
+    }
+    .toast {
+      background: #fff;
+      border-left: 4px solid #10b981;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      padding: 14px 20px;
+      border-radius: 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      min-width: 300px;
+      max-width: 400px;
+      transform: translateX(120%);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .toast.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    .toast.error { border-left-color: #ef4444; }
+    .toast-icon { font-size: 18px; margin-top: 2px; }
+    .toast-content { flex: 1; }
+    .toast-title { font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+    .toast-msg { font-size: 13px; color: var(--ink2); line-height: 1.4; }
   </style>
 </head>
 
@@ -2417,6 +2646,12 @@
         <div class="role-pick-label">Select your role to begin</div>
 
         <div class="role-selector-grid">
+          <div class="role-card" id="rc-rcc" onclick="pickRole('rcc')">
+            <div class="role-icon">🏗️</div>
+            <div class="role-title">Civil RCC (Master Creation)</div>
+            <div class="role-desc">Setup new activity — project, tower, floor, flat, engineers, and drawing references.</div>
+            <span class="role-tag" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;">Phase 0</span>
+          </div>
           <div class="role-card" id="rc-director" onclick="pickRole('director')">
             <div class="role-icon">📊</div>
             <div class="role-title">Project Director / Management</div>
@@ -3209,6 +3444,13 @@
 
             </div><!-- /form-grid -->
 
+            <!-- STAGE 0 ASSIGN BUTTON -->
+            <div class="submit-actions" style="margin-top:24px;border-top:1px solid var(--border2);padding-top:20px;display:flex;justify-content:flex-end;">
+              <button class="qc-approve-btn" id="stage0-assign-btn" disabled onclick="handleStage0Assign()" style="background:#059669;opacity:0.6;cursor:not-allowed;">
+                🔒 Complete Master Data First
+              </button>
+            </div>
+
             <div class="callout success mt-16 mb-0">
               <div class="callout-label">▶ Try It — Select a Project Above</div>
               Select any project from the dropdown to see all dependent fields populate dynamically. This demonstrates
@@ -3362,6 +3604,14 @@
           </div>
         </div>
         <div class="data-card-body">
+          <!-- STAGE LOCK PANEL -->
+          <div class="stage-lock-panel" id="stage-lock-1">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-title">This Stage is Locked</div>
+            <div class="lock-msg">This stage is locked until the Master Data checklist is filled and the Activity is created and assigned to the Civil Finish Team.</div>
+            <div class="lock-badge">Awaiting: Activity Creation (Assign)</div>
+          </div>
+          <div class="stage-form-body locked" id="stage-form-1">
 
           <!-- MASTER DATA HEADER (read-only inherited) -->
           <div class="master-header">
@@ -3380,6 +3630,10 @@
             <div class="mh-item">
               <div class="mh-label">DRG Ref</div>
               <div class="mh-val inherited" id="s1-drg">—</div>
+            </div>
+            <div class="mh-item">
+              <div class="mh-label">Engineer (Structural)</div>
+              <div class="mh-val inherited" id="s1-eng">—</div>
             </div>
             <div class="master-note">🔒 Read-only — inherited from Master Creation Form. Cannot be edited at this stage.
             </div>
@@ -3505,6 +3759,44 @@
             <span class="ban-icon">❌</span>
             <div class="ban-body"><strong>Stage 1 — Rejected for Rectification</strong><span id="rejected-detail-1"></span></div>
           </div>
+          <div class="stage-submitted-banner" id="submitted-banner-1">
+            <span class="ban-icon">⏳</span>
+            <div class="ban-body"><strong>Stage 1 — Submitted for QC Review</strong><br><span style="font-size:12px;">Checklist submitted. Awaiting QC Inspector review and decision.</span></div>
+          </div>
+          <div class="qc-inline-panel" id="qc-inline-1">
+            <div class="qc-inline-head">
+              <div class="qc-inline-head-title">QC Review — Stage 1</div>
+              <span class="qc-inline-head-badge badge-locked" id="qc-badge-1">Awaiting Submission</span>
+            </div>
+            <div class="qc-inline-body locked" id="qc-body-1">
+              <div class="qc-inline-summary">Stage 1 — RCC Structural Readiness. 13 checklist items covering structural completeness, rectification, MEP coordination, safety, and leak test. Review all items before issuing your decision.</div>
+              <div class="qc-inline-field">
+                <label class="qc-inline-label">QC Inspector <span class="qc-req">*</span></label>
+                <select class="qc-inline-select" id="qc-inspector-1">
+                  <option value="">— Select QC Inspector —</option>
+                  <option>Rajesh Varma — Senior QC Inspector</option>
+                  <option>Meenakshi S. — QC Lead (Structural)</option>
+                  <option>Bhaskar Rao — QC Inspector (MEP &amp; WP)</option>
+                  <option>Anita Krishnamurthy — QC Manager</option>
+                  <option>Subramaniam P. — Chief Quality Officer</option>
+                </select>
+              </div>
+              <div class="qc-inline-field">
+                <label class="qc-inline-label">Decision Comments <span class="qc-req">*</span></label>
+                <textarea class="qc-inline-textarea" id="qc-comments-1" placeholder="Enter findings, observations, and decision rationale…"></textarea>
+              </div>
+              <div class="qc-inline-error" id="qc-error-1">Please select a QC Inspector and enter comments.</div>
+              <div class="qc-inline-actions">
+                <button class="qc-inline-approve" onclick="handleInlineQcDecision(1,'approve')">✓ Approve Stage 1</button>
+                <button class="qc-inline-reject" onclick="handleInlineQcDecision(1,'reject')">✕ Reject — Return for Rectification</button>
+              </div>
+            </div>
+          </div>
+          <div class="qc-history-log" id="qc-history-1">
+            <div class="qc-history-title">QC History Log</div>
+            <div class="qc-history-list" id="qc-history-list-1"></div>
+          </div>
+          </div><!-- /stage-form-body -->
         </div>
       </div>
     </div>
@@ -3579,6 +3871,18 @@
             <div class="mh-item">
               <div class="mh-label">Tower / Floor / Flat</div>
               <div class="mh-val inherited" id="s2-flat">—</div>
+            </div>
+            <div class="mh-item">
+              <div class="mh-label">Tower In-Charge</div>
+              <div class="mh-val inherited" id="s2-tic">—</div>
+            </div>
+            <div class="mh-item">
+              <div class="mh-label">DRG Ref No.</div>
+              <div class="mh-val inherited" id="s2-drg">—</div>
+            </div>
+            <div class="mh-item">
+              <div class="mh-label">Engineer (Structural)</div>
+              <div class="mh-val inherited" id="s2-eng">—</div>
             </div>
             <div class="mh-item">
               <div class="mh-label">QC1 Approval</div>
@@ -3691,6 +3995,43 @@
           <div class="stage-rejected-banner" id="rejected-banner-2">
             <span class="ban-icon">❌</span>
             <div class="ban-body"><strong>Stage 2 — Rejected for Rectification</strong><span id="rejected-detail-2"></span></div>
+          </div>
+          <div class="stage-submitted-banner" id="submitted-banner-2">
+            <span class="ban-icon">⏳</span>
+            <div class="ban-body"><strong>Stage 2 — Submitted for QC Review</strong><br><span style="font-size:12px;">Checklist submitted. Awaiting QC Inspector review and decision.</span></div>
+          </div>
+          <div class="qc-inline-panel" id="qc-inline-2">
+            <div class="qc-inline-head">
+              <div class="qc-inline-head-title">QC Review — Stage 2</div>
+              <span class="qc-inline-head-badge badge-locked" id="qc-badge-2">Awaiting Submission</span>
+            </div>
+            <div class="qc-inline-body locked" id="qc-body-2">
+              <div class="qc-inline-summary">Stage 2 — MEP Core Cut & Installation. 6 checklist items covering core cutting, pipe routing, drain outlet levels, and water test.</div>
+              <div class="qc-inline-field">
+                <label class="qc-inline-label">QC Inspector <span class="qc-req">*</span></label>
+                <select class="qc-inline-select" id="qc-inspector-2">
+                  <option value="">— Select QC Inspector —</option>
+                  <option>Rajesh Varma — Senior QC Inspector</option>
+                  <option>Meenakshi S. — QC Lead (Structural)</option>
+                  <option>Bhaskar Rao — QC Inspector (MEP &amp; WP)</option>
+                  <option>Anita Krishnamurthy — QC Manager</option>
+                  <option>Subramaniam P. — Chief Quality Officer</option>
+                </select>
+              </div>
+              <div class="qc-inline-field">
+                <label class="qc-inline-label">Decision Comments <span class="qc-req">*</span></label>
+                <textarea class="qc-inline-textarea" id="qc-comments-2" placeholder="Enter findings, observations, and decision rationale…"></textarea>
+              </div>
+              <div class="qc-inline-error" id="qc-error-2">Please select a QC Inspector and enter comments.</div>
+              <div class="qc-inline-actions">
+                <button class="qc-inline-approve" onclick="handleInlineQcDecision(2,'approve')">✓ Approve Stage 2</button>
+                <button class="qc-inline-reject" onclick="handleInlineQcDecision(2,'reject')">✕ Reject — Return for Rectification</button>
+              </div>
+            </div>
+          </div>
+          <div class="qc-history-log" id="qc-history-2">
+            <div class="qc-history-title">QC History Log</div>
+            <div class="qc-history-list" id="qc-history-list-2"></div>
           </div><!-- /stage-form-body -->
           </div>
         </div>
@@ -3769,12 +4110,20 @@
               <div class="mh-val inherited" id="s3-flat">—</div>
             </div>
             <div class="mh-item">
+              <div class="mh-label">Tower In-Charge</div>
+              <div class="mh-val inherited" id="s3-tic">—</div>
+            </div>
+            <div class="mh-item">
               <div class="mh-label">QC1 &amp; QC2</div>
               <div class="mh-val" style="color:#6ee7b7;">✓ Both Approved</div>
             </div>
             <div class="mh-item">
               <div class="mh-label">DRG Ref</div>
               <div class="mh-val inherited" id="s3-drg">—</div>
+            </div>
+            <div class="mh-item">
+              <div class="mh-label">Engineer (Structural)</div>
+              <div class="mh-val inherited" id="s3-eng">—</div>
             </div>
             <div class="master-note">🔒 Master Data + Stage 1 &amp; 2 QC records — inherited, read-only.</div>
           </div>
@@ -3881,6 +4230,43 @@
           <div class="stage-rejected-banner" id="rejected-banner-3">
             <span class="ban-icon">❌</span>
             <div class="ban-body"><strong>Stage 3 — Rejected for Rectification</strong><span id="rejected-detail-3"></span></div>
+          </div>
+          <div class="stage-submitted-banner" id="submitted-banner-3">
+            <span class="ban-icon">⏳</span>
+            <div class="ban-body"><strong>Stage 3 — Submitted for QC Review</strong><br><span style="font-size:12px;">Checklist submitted. Awaiting QC Inspector review and decision.</span></div>
+          </div>
+          <div class="qc-inline-panel" id="qc-inline-3">
+            <div class="qc-inline-head">
+              <div class="qc-inline-head-title">QC Review — Stage 3</div>
+              <span class="qc-inline-head-badge badge-locked" id="qc-badge-3">Awaiting Submission</span>
+            </div>
+            <div class="qc-inline-body locked" id="qc-body-3">
+              <div class="qc-inline-summary">Stage 3 — Surface Preparation & Pre-Ponding. 7 checklist items covering laitance removal, bore packing, coving, joint treatment, and 48-hour ponding test.</div>
+              <div class="qc-inline-field">
+                <label class="qc-inline-label">QC Inspector <span class="qc-req">*</span></label>
+                <select class="qc-inline-select" id="qc-inspector-3">
+                  <option value="">— Select QC Inspector —</option>
+                  <option>Rajesh Varma — Senior QC Inspector</option>
+                  <option>Meenakshi S. — QC Lead (Structural)</option>
+                  <option>Bhaskar Rao — QC Inspector (MEP &amp; WP)</option>
+                  <option>Anita Krishnamurthy — QC Manager</option>
+                  <option>Subramaniam P. — Chief Quality Officer</option>
+                </select>
+              </div>
+              <div class="qc-inline-field">
+                <label class="qc-inline-label">Decision Comments <span class="qc-req">*</span></label>
+                <textarea class="qc-inline-textarea" id="qc-comments-3" placeholder="Enter findings, observations, and decision rationale…"></textarea>
+              </div>
+              <div class="qc-inline-error" id="qc-error-3">Please select a QC Inspector and enter comments.</div>
+              <div class="qc-inline-actions">
+                <button class="qc-inline-approve" onclick="handleInlineQcDecision(3,'approve')">✓ Approve Stage 3</button>
+                <button class="qc-inline-reject" onclick="handleInlineQcDecision(3,'reject')">✕ Reject — Return for Rectification</button>
+              </div>
+            </div>
+          </div>
+          <div class="qc-history-log" id="qc-history-3">
+            <div class="qc-history-title">QC History Log</div>
+            <div class="qc-history-list" id="qc-history-list-3"></div>
           </div><!-- /stage-form-body -->
           </div>
         </div>
@@ -3959,12 +4345,20 @@
               <div class="mh-val inherited" id="s4-flat">—</div>
             </div>
             <div class="mh-item">
+              <div class="mh-label">Tower In-Charge</div>
+              <div class="mh-val inherited" id="s4-tic">—</div>
+            </div>
+            <div class="mh-item">
+              <div class="mh-label">DRG Ref No.</div>
+              <div class="mh-val inherited" id="s4-drg">—</div>
+            </div>
+            <div class="mh-item">
               <div class="mh-label">QC1, 2 &amp; 3</div>
               <div class="mh-val" style="color:#6ee7b7;">✓ All Approved</div>
             </div>
             <div class="mh-item">
               <div class="mh-label">Engineer (Finishing)</div>
-              <div class="mh-val" style="color:rgba(255,255,255,0.6);font-size:12px;" id="s4-eng">—</div>
+              <div class="mh-val inherited" id="s4-eng">—</div>
             </div>
             <div class="master-note">🔒 Master Data + Stages 1, 2 &amp; 3 QC records — inherited, read-only.</div>
           </div>
@@ -4072,6 +4466,43 @@
           <div class="stage-rejected-banner" id="rejected-banner-4">
             <span class="ban-icon">❌</span>
             <div class="ban-body"><strong>Stage 4 — Rejected for Rectification</strong><span id="rejected-detail-4"></span></div>
+          </div>
+          <div class="stage-submitted-banner" id="submitted-banner-4">
+            <span class="ban-icon">⏳</span>
+            <div class="ban-body"><strong>Stage 4 — Submitted for QC Review</strong><br><span style="font-size:12px;">Checklist submitted. Awaiting QC Inspector review and decision.</span></div>
+          </div>
+          <div class="qc-inline-panel" id="qc-inline-4">
+            <div class="qc-inline-head">
+              <div class="qc-inline-head-title">QC Review — Stage 4</div>
+              <span class="qc-inline-head-badge badge-locked" id="qc-badge-4">Awaiting Submission</span>
+            </div>
+            <div class="qc-inline-body locked" id="qc-body-4">
+              <div class="qc-inline-summary">Stage 4 — Waterproofing Coating Application. 8 checklist items covering SSD condition, mixing, two-coat application, DFT measurement, upturn, and curing.</div>
+              <div class="qc-inline-field">
+                <label class="qc-inline-label">QC Inspector <span class="qc-req">*</span></label>
+                <select class="qc-inline-select" id="qc-inspector-4">
+                  <option value="">— Select QC Inspector —</option>
+                  <option>Rajesh Varma — Senior QC Inspector</option>
+                  <option>Meenakshi S. — QC Lead (Structural)</option>
+                  <option>Bhaskar Rao — QC Inspector (MEP &amp; WP)</option>
+                  <option>Anita Krishnamurthy — QC Manager</option>
+                  <option>Subramaniam P. — Chief Quality Officer</option>
+                </select>
+              </div>
+              <div class="qc-inline-field">
+                <label class="qc-inline-label">Decision Comments <span class="qc-req">*</span></label>
+                <textarea class="qc-inline-textarea" id="qc-comments-4" placeholder="Enter findings, observations, and decision rationale…"></textarea>
+              </div>
+              <div class="qc-inline-error" id="qc-error-4">Please select a QC Inspector and enter comments.</div>
+              <div class="qc-inline-actions">
+                <button class="qc-inline-approve" onclick="handleInlineQcDecision(4,'approve')">✓ Approve Stage 4</button>
+                <button class="qc-inline-reject" onclick="handleInlineQcDecision(4,'reject')">✕ Reject — Return for Rectification</button>
+              </div>
+            </div>
+          </div>
+          <div class="qc-history-log" id="qc-history-4">
+            <div class="qc-history-title">QC History Log</div>
+            <div class="qc-history-list" id="qc-history-list-4"></div>
           </div><!-- /stage-form-body -->
           </div>
         </div>
@@ -4149,6 +4580,18 @@
             <div class="mh-item">
               <div class="mh-label">Tower / Floor / Flat</div>
               <div class="mh-val inherited" id="s5-flat">—</div>
+            </div>
+            <div class="mh-item">
+              <div class="mh-label">Tower In-Charge</div>
+              <div class="mh-val inherited" id="s5-tic">—</div>
+            </div>
+            <div class="mh-item">
+              <div class="mh-label">DRG Ref No.</div>
+              <div class="mh-val inherited" id="s5-drg">—</div>
+            </div>
+            <div class="mh-item">
+              <div class="mh-label">Engineer (Finishing)</div>
+              <div class="mh-val inherited" id="s5-eng">—</div>
             </div>
             <div class="mh-item">
               <div class="mh-label">QC Reviews 1–4</div>
@@ -4265,11 +4708,48 @@
           <div class="stage-rejected-banner" id="rejected-banner-5">
             <span class="ban-icon">❌</span>
             <div class="ban-body"><strong>Stage 5 — Rejected for Rectification</strong><span id="rejected-detail-5"></span></div>
+          </div>
+          <div class="stage-submitted-banner" id="submitted-banner-5">
+            <span class="ban-icon">⏳</span>
+            <div class="ban-body"><strong>Stage 5 — Submitted for Final QC Review</strong><br><span style="font-size:12px;">Final checklist submitted. Awaiting QC Inspector review — this is the terminal stage.</span></div>
+          </div>
+          <div class="qc-inline-panel" id="qc-inline-5">
+            <div class="qc-inline-head">
+              <div class="qc-inline-head-title">Final QC Review — Stage 5</div>
+              <span class="qc-inline-head-badge badge-locked" id="qc-badge-5">Awaiting Submission</span>
+            </div>
+            <div class="qc-inline-body locked" id="qc-body-5">
+              <div class="qc-inline-summary">Stage 5 — Protection Screed &amp; Final Sign-Off. 3 checklist items covering screed application, slope, and final ponding test. Approval closes the activity permanently.</div>
+              <div class="qc-inline-field">
+                <label class="qc-inline-label">QC Inspector <span class="qc-req">*</span></label>
+                <select class="qc-inline-select" id="qc-inspector-5">
+                  <option value="">— Select QC Inspector —</option>
+                  <option>Rajesh Varma — Senior QC Inspector</option>
+                  <option>Meenakshi S. — QC Lead (Structural)</option>
+                  <option>Bhaskar Rao — QC Inspector (MEP &amp; WP)</option>
+                  <option>Anita Krishnamurthy — QC Manager</option>
+                  <option>Subramaniam P. — Chief Quality Officer</option>
+                </select>
+              </div>
+              <div class="qc-inline-field">
+                <label class="qc-inline-label">Decision Comments <span class="qc-req">*</span></label>
+                <textarea class="qc-inline-textarea" id="qc-comments-5" placeholder="Enter findings, observations, and decision rationale…"></textarea>
+              </div>
+              <div class="qc-inline-error" id="qc-error-5">Please select a QC Inspector and enter comments.</div>
+              <div class="qc-inline-actions">
+                <button class="qc-inline-approve" onclick="handleInlineQcDecision(5,'approve')">✓ Approve Stage 5 — Close Activity</button>
+                <button class="qc-inline-reject" onclick="handleInlineQcDecision(5,'reject')">✕ Reject — Return for Rectification</button>
+              </div>
+            </div>
+          </div>
+          <div class="qc-history-log" id="qc-history-5">
+            <div class="qc-history-title">QC History Log</div>
+            <div class="qc-history-list" id="qc-history-list-5"></div>
+          </div>
           </div><!-- /stage-form-body -->
           </div>
         </div>
       </div>
-    </div>
 
     <hr class="section-rule">
 
@@ -4393,6 +4873,18 @@
           <div class="cpr-item">
             <div class="cpr-lbl">Tower / Floor / Flat</div>
             <div class="cpr-val" id="cons-flat">—</div>
+          </div>
+          <div class="cpr-item">
+            <div class="cpr-lbl">Tower In-Charge</div>
+            <div class="cpr-val" id="cons-tic">—</div>
+          </div>
+          <div class="cpr-item">
+            <div class="cpr-lbl">Engineer (Structural)</div>
+            <div class="cpr-val" id="cons-s-eng">—</div>
+          </div>
+          <div class="cpr-item">
+            <div class="cpr-lbl">Engineer (Finishing)</div>
+            <div class="cpr-val" id="cons-f-eng">—</div>
           </div>
           <div class="cpr-item">
             <div class="cpr-lbl">DRG Ref</div>
@@ -4959,6 +5451,14 @@
 
   </div><!-- /doc-wrap -->
 
+
+  <!-- Doc-level footer strip -->
+  <div class="doc-footer">
+    <span>QualityTrack WP · Construction Technology Platform</span>
+    <span>Waterproofing Quality Control System · Hyderabad, India</span>
+  </div>
+
+
   <!-- ══════════════════════════════════════════════════════════
      JAVASCRIPT — DYNAMIC DROPDOWNS + INTERACTIVE CHECKBOXES
 ══════════════════════════════════════════════════════════ -->
@@ -5346,7 +5846,7 @@
 
       document.getElementById('depTower').style.display = 'flex';
       document.getElementById('depFloor').style.display = 'none';
-      updateInheritedHeaders(proj.label, '—', '—', '—');
+      updateInheritedHeaders(proj.label, '—', '—', '—', '—', '—');
     }
 
     /* ─── CASCADE: TOWER → Tower In-Charge + Floor ─── */
@@ -5391,7 +5891,7 @@
       const code = document.getElementById('projectSelect').value;
       const projLabel = PROJECTS[code]?.label || '—';
       const ticLabel = td.towerInCharge.split('—')[0].trim();
-      updateInheritedHeaders(projLabel, '—', ticLabel, '—');
+      updateInheritedHeaders(projLabel, '—', ticLabel, '—', '—', '—');
     }
 
     /* ─── CASCADE: FLOOR → Flat No + Engineers ─── */
@@ -5446,12 +5946,14 @@
       drg.disabled = false;
     }
 
-    function updateInheritedHeaders(proj, flat, tic, drg) {
+    function updateInheritedHeaders(proj, flat, tic, drg, sEng, fEng) {
       const fields = {
         's1-proj': proj, 's2-proj': proj, 's3-proj': proj, 's4-proj': proj, 's5-proj': proj, 'cons-proj': proj,
         's1-flat': flat, 's2-flat': flat, 's3-flat': flat, 's4-flat': flat, 's5-flat': flat, 'cons-flat': flat,
-        's1-tic': tic,
-        's1-drg': drg, 's3-drg': drg, 'cons-drg': drg
+        's1-tic': tic, 's2-tic': tic, 's3-tic': tic, 's4-tic': tic, 's5-tic': tic, 'cons-tic': tic,
+        's1-drg': drg, 's2-drg': drg, 's3-drg': drg, 's4-drg': drg, 's5-drg': drg, 'cons-drg': drg,
+        's1-eng': sEng, 's2-eng': sEng, 's3-eng': sEng, 'cons-s-eng': sEng,
+        's4-eng': fEng, 's5-eng': fEng, 'cons-f-eng': fEng
       };
       Object.keys(fields).forEach(id => {
         const el = document.getElementById(id);
@@ -5642,11 +6144,118 @@
       });
     }
 
+    function showToast(type, title, msg) {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      const icon = type === 'success' ? '✅' : '❌';
+      toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-msg">${msg}</div>
+        </div>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 100);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    function checkMasterDataComplete() {
+      const p = document.getElementById('projectSelect').value;
+      const t = document.getElementById('towerDrop').value;
+      const f = document.getElementById('floorSelect').value;
+      const fl = document.getElementById('flatSelect').value;
+      const ts = document.getElementById('towerSelect').value;
+      const se = document.getElementById('structEngSelect').value;
+      const fe = document.getElementById('finEngSelect').value;
+      const drg = document.getElementById('drgSelect').value;
+      return p && t && f && fl && ts && se && fe && drg;
+    }
+
+    function handleStage0Assign() {
+      const btn = document.getElementById('stage0-assign-btn');
+      if (!btn || !checkMasterDataComplete()) return;
+      
+      btn.textContent = '⏳ Creating Activity...';
+      btn.style.opacity = '1';
+      btn.disabled = true;
+      btn.style.cursor = 'wait';
+      
+      setTimeout(() => {
+        stageSubmitted[0] = true;
+        btn.textContent = '✅ Activity Created & Assigned to Civil Finish Team';
+        btn.classList.add('btn-locked');
+        btn.style.background = '#10b981';
+        btn.style.opacity = '1';
+        btn.style.cursor = 'default';
+        
+        // Lock master dropdowns
+        ['projectSelect', 'towerDrop', 'floorSelect', 'flatSelect', 'towerSelect', 'structEngSelect', 'finEngSelect', 'drgSelect'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.disabled = true;
+            el.style.background = '#f1f5f9';
+            el.style.color = '#64748b';
+            el.style.cursor = 'not-allowed';
+            el.style.border = '1px solid transparent';
+          }
+        });
+        
+        showToast('success', 'Master Data Saved', 'Activity successfully created and assigned to Civil Finish Team for Stage 1 (RCC Readiness).');
+        
+        // Unlock downstream buttons
+        [1, 2, 3, 4, 5].forEach(updateSubmitBtn);
+        unlockStageCard(1);
+        
+        setTimeout(() => document.getElementById('s4')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 800);
+      }, 1000);
+    }
+
     function updateSubmitBtn(stageNum) {
       const btn = document.getElementById(`submit-btn-${stageNum}`);
       if (!btn || stageSubmitted[stageNum]) return;
+
+      const s0Btn = document.getElementById('stage0-assign-btn');
+      if (s0Btn && !stageSubmitted[0]) {
+        if (checkMasterDataComplete()) {
+          s0Btn.disabled = false;
+          s0Btn.textContent = 'Create Activity & Assign to Stage 1 →';
+          s0Btn.style.opacity = '1';
+          s0Btn.style.cursor = 'pointer';
+        } else {
+          s0Btn.disabled = true;
+          s0Btn.textContent = '🔒 Complete Master Data First';
+          s0Btn.style.opacity = '0.6';
+          s0Btn.style.cursor = 'not-allowed';
+        }
+      }
+
+      if (!checkMasterDataComplete()) {
+        btn.disabled = true;
+        btn.textContent = '🔒 Complete Master Data First';
+        btn.classList.remove('btn-submitted');
+        return;
+      }
+      
+      if (!stageSubmitted[0]) {
+        btn.disabled = true;
+        btn.textContent = '🔒 Awaiting Activity Creation';
+        btn.classList.remove('btn-submitted');
+        return;
+      }
+
       const errors = validateStage(stageNum);
       btn.disabled = errors.length > 0;
+      
+      if (btn.textContent.includes('🔒')) {
+         btn.textContent = stageNum === 5 ? `Submit Stage ${stageNum} for QC Review →` : `Submit Stage ${stageNum} for QC Review →`;
+         if (stageNum === 5) btn.textContent = 'Submit Stage 5 for Final QC Review →';
+      }
     }
 
     function handleSubmit(stageNum) {
@@ -5664,11 +6273,189 @@
       errTitle.style.display = 'none';
       errList.innerHTML = '';
       clearValidationHighlights(stageNum);
-      // Open QC modal
-      openQcModal(stageNum);
+
+      // Update submit button to loading state
+      const btn = document.getElementById(`submit-btn-${stageNum}`);
+      btn.textContent = '⏳ Submitting...';
+      btn.classList.add('btn-submitted');
+      btn.disabled = true;
+      btn.style.cursor = 'wait';
+
+      // ── SIMULATED API DELAY ──
+      setTimeout(() => {
+        stageSubmitted[stageNum] = 'submitted';
+        btn.textContent = '⏳ Submitted — Awaiting QC Review';
+        btn.style.cursor = 'default';
+
+        // Lock the checklist
+        lockStageCard(stageNum);
+
+        // Show submitted banner
+        const subBanner = document.getElementById(`submitted-banner-${stageNum}`);
+        if (subBanner) subBanner.classList.add('show');
+
+        // Reveal inline QC panel
+        const qcPanel = document.getElementById(`qc-inline-${stageNum}`);
+        const qcBody = document.getElementById(`qc-body-${stageNum}`);
+        const qcBadge = document.getElementById(`qc-badge-${stageNum}`);
+        if (qcPanel) {
+          qcPanel.classList.add('show', 'unlocked');
+          qcPanel.classList.remove('decided');
+        }
+        if (qcBody) qcBody.classList.remove('locked');
+        if (qcBadge) {
+          qcBadge.textContent = 'Ready for Review';
+          qcBadge.className = 'qc-inline-head-badge badge-ready';
+        }
+
+        const qcInsp = document.getElementById(`qc-inspector-${stageNum}`);
+        const qcComm = document.getElementById(`qc-comments-${stageNum}`);
+        const qcErr = document.getElementById(`qc-error-${stageNum}`);
+        if (qcInsp) qcInsp.value = '';
+        if (qcComm) qcComm.value = '';
+        if (qcErr) qcErr.classList.remove('show');
+
+        const ts = new Date().toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+        const rejBannerCheck = document.getElementById(`rejected-banner-${stageNum}`);
+        const isResubmit = rejBannerCheck && rejBannerCheck.classList.contains('show');
+        const actionText = isResubmit ? 'Resubmitted for QC Review' : 'Submitted for QC Review';
+        appendHistoryLog(stageNum, 'submitted', actionText, ts, 'Checklist completed and signed off by Team.');
+
+        showToast('success', `Stage ${stageNum} Submitted`, 'Forwarded to QC Inspector for review.');
+        
+        if (qcPanel) setTimeout(() => qcPanel.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+      }, 800);
     }
 
-    /* ─── QC MODAL ─── */
+    /* ─── APPEND HISTORY LOG HELPER ─── */
+    function appendHistoryLog(stageNum, type, actionText, timeStr, commentText) {
+      const logContainer = document.getElementById(`qc-history-${stageNum}`);
+      const listContainer = document.getElementById(`qc-history-list-${stageNum}`);
+      if (!logContainer || !listContainer) return;
+
+      logContainer.classList.add('show');
+
+      let icon = '⏳';
+      if (type === 'approved') icon = '✓';
+      if (type === 'rejected') icon = '✕';
+
+      const entry = document.createElement('div');
+      entry.className = `qc-history-item ${type}`;
+      entry.innerHTML = `
+        <div class="qc-history-icon">${icon}</div>
+        <div class="qc-history-content">
+          <div class="qc-history-header">
+            <span class="qc-history-action">${actionText}</span>
+            <span class="qc-history-time">${timeStr}</span>
+          </div>
+          ${commentText ? `<div class="qc-history-comment">"${commentText}"</div>` : ''}
+        </div>
+      `;
+      listContainer.appendChild(entry);
+    }
+
+    /* ─── INLINE QC DECISION ─── */
+    function handleInlineQcDecision(stageNum, decision) {
+      const inspector = document.getElementById(`qc-inspector-${stageNum}`).value.trim();
+      const comments = document.getElementById(`qc-comments-${stageNum}`).value.trim();
+      const errEl = document.getElementById(`qc-error-${stageNum}`);
+
+      if (!inspector || !comments) {
+        errEl.classList.add('show');
+        return;
+      }
+      errEl.classList.remove('show');
+
+      const ts = new Date().toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      const inspShort = inspector.split('—')[0].trim();
+      const btn = document.getElementById(`submit-btn-${stageNum}`);
+
+      const decisionBtn = decision === 'approve' ? document.querySelector(`#qc-inline-${stageNum} .qc-inline-approve`) : document.querySelector(`#qc-inline-${stageNum} .qc-inline-reject`);
+      const ogHtml = decisionBtn ? decisionBtn.innerHTML : '';
+      if (decisionBtn) {
+        decisionBtn.textContent = '⏳ Processing...';
+        decisionBtn.style.cursor = 'wait';
+      }
+
+      setTimeout(() => {
+        if (decisionBtn) {
+          decisionBtn.innerHTML = ogHtml;
+          decisionBtn.style.cursor = 'pointer';
+        }
+
+        // Hide submitted banner
+        const subBanner = document.getElementById(`submitted-banner-${stageNum}`);
+        if (subBanner) subBanner.classList.remove('show');
+
+        const qcPanel = document.getElementById(`qc-inline-${stageNum}`);
+        const qcBadge = document.getElementById(`qc-badge-${stageNum}`);
+
+        if (decision === 'approve') {
+          stageSubmitted[stageNum] = 'approved';
+          btn.textContent = `✓ Stage ${stageNum} Approved`;
+          btn.classList.remove('btn-submitted');
+          btn.classList.add('btn-locked');
+
+          const banner = document.getElementById(`approved-banner-${stageNum}`);
+          document.getElementById(`approved-detail-${stageNum}`).textContent =
+            ` · Approved by ${inspShort} · ${ts} · "${comments.substring(0,80)}${comments.length > 80 ? '…' : ''}"`;
+          banner.classList.add('show');
+
+          appendHistoryLog(stageNum, 'approved', `Approved by ${inspShort}`, ts, comments);
+
+          if (qcPanel) qcPanel.classList.add('decided');
+          if (qcBadge) { qcBadge.textContent = '✓ Approved'; qcBadge.className = 'qc-inline-head-badge badge-locked'; }
+
+          showToast('success', `Stage ${stageNum} Approved`, 'The stage is cleared. Next stage is unlocked.');
+
+          if (stageNum < 5) {
+            unlockStageCard(stageNum + 1);
+            setTimeout(() => document.getElementById(`stage-card-${stageNum + 1}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 800);
+          } else {
+            showToast('success', 'Activity Closed', 'All stages complete. Final QC approved.');
+          }
+
+          updateProgressDotToDone(stageNum);
+
+        } else {
+          stageSubmitted[stageNum] = false;
+          btn.textContent = `Re-submit Stage ${stageNum} for QC Review →`;
+          btn.classList.remove('btn-submitted');
+          btn.disabled = false;
+
+          const rejBanner = document.getElementById(`rejected-banner-${stageNum}`);
+          document.getElementById(`rejected-detail-${stageNum}`).textContent =
+            ` · Rejected by ${inspShort} · ${ts} · Reason: "${comments.substring(0,100)}${comments.length > 100 ? '…' : ''}"`;
+          rejBanner.classList.add('show');
+
+          appendHistoryLog(stageNum, 'rejected', `Rejected by ${inspShort}`, ts, comments);
+
+          if (qcPanel) { qcPanel.classList.add('decided'); qcPanel.classList.remove('unlocked'); }
+          if (qcBadge) { qcBadge.textContent = '✕ Rejected'; qcBadge.className = 'qc-inline-head-badge badge-locked'; }
+
+          showToast('error', `Stage ${stageNum} Rejected`, 'Returned to the execution team for rectification.');
+
+          unlockStageForReEdit(stageNum);
+          setTimeout(() => document.getElementById(`stage-card-${stageNum}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 800);
+        }
+      }, 800); // end of setTimeout
+    }
+
+    /* ─── Unlock stage form after QC rejection ─── */
+    function unlockStageForReEdit(stageNum) {
+      const card = document.getElementById(`stage-card-${stageNum}`);
+      if (!card) return;
+      card.querySelectorAll('.tri-cb').forEach(cb => {
+        cb.style.pointerEvents = '';
+        cb.style.opacity = '';
+      });
+      card.querySelectorAll('.comment-input, .assign-select').forEach(el => {
+        el.disabled = false;
+      });
+      card.querySelectorAll('.photo-btn').forEach(el => el.style.pointerEvents = '');
+    }
+
+    /* ─── QC MODAL (legacy — kept for compatibility) ─── */
     const STAGE_LABELS = {
       1: { title:'QC Review — Stage 1', sub:'RCC Structural Readiness · 13 items' },
       2: { title:'QC Review — Stage 2', sub:'MEP Core Cut & Installation · 6 items' },
@@ -5677,87 +6464,20 @@
       5: { title:'Final QC Review — Stage 5', sub:'Protection Screed, Post-Ponding & Sign-Off · 3 items' }
     };
     const SUMMARY_TEXT = {
-      1:'Stage 1 — RCC Structural Readiness. Checklist covers structural completeness, rectification, MEP sleeve coordination, safety, and leak test. All 13 items have been submitted by the Civil Finish Team.',
-      2:'Stage 2 — MEP Core Cut & Installation. Checklist covers core cutting, pipe routing, drain outlet levels, and water test. All 6 items submitted by the MEP Team.',
-      3:'Stage 3 — Surface Preparation & Pre-Ponding. Checklist covers laitance removal, bore packing, coving, joint treatment, and 48-hour ponding test. All 7 items submitted by the WP Team.',
-      4:'Stage 4 — WP Coating Application. Checklist covers SSD condition, mixing, two-coat perpendicular application, critical zone treatment, inter-coat interval, DFT, upturn, and curing. All 8 items submitted by the WP Applicator.',
-      5:'Stage 5 — Protection Screed, Post-Ponding & Final Sign-Off. Checklist covers screed application, slope, 7-day curing, and final ponding test. All 3 items submitted by the Civil Finish Team. This is the terminal stage — approval closes the activity.'
+      1:'Stage 1 — RCC Structural Readiness.',
+      2:'Stage 2 — MEP Core Cut & Installation.',
+      3:'Stage 3 — Surface Preparation & Pre-Ponding.',
+      4:'Stage 4 — WP Coating Application.',
+      5:'Stage 5 — Protection Screed & Final Sign-Off.'
     };
     let activeModalStage = null;
-
-    function openQcModal(stageNum) {
-      activeModalStage = stageNum;
-      document.getElementById('qcModalTitle').textContent = STAGE_LABELS[stageNum].title;
-      document.getElementById('qcModalSub').textContent = STAGE_LABELS[stageNum].sub;
-      document.getElementById('qcSummaryBox').textContent = SUMMARY_TEXT[stageNum];
-      document.getElementById('qcInspector').value = '';
-      document.getElementById('qcComments').value = '';
-      document.getElementById('qcModalError').classList.remove('show');
-      // Mark button as submitted-pending
-      const btn = document.getElementById(`submit-btn-${stageNum}`);
-      btn.textContent = '⏳ Awaiting QC Decision…';
-      btn.classList.add('btn-submitted');
-      btn.disabled = true;
-      document.getElementById('qcOverlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
+    function openQcModal(stageNum) { /* disabled — using inline panels */ }
     function closeQcModal() {
       document.getElementById('qcOverlay').classList.remove('open');
       document.body.style.overflow = '';
-      // Reset button back to submittable state if no decision taken
-      if (activeModalStage && !stageSubmitted[activeModalStage]) {
-        const btn = document.getElementById(`submit-btn-${activeModalStage}`);
-        btn.textContent = `Submit Stage ${activeModalStage} for QC Review →`;
-        btn.classList.remove('btn-submitted');
-        btn.disabled = false;
-      }
       activeModalStage = null;
     }
-
-    function handleQcDecision(decision) {
-      const inspector = document.getElementById('qcInspector').value.trim();
-      const comments = document.getElementById('qcComments').value.trim();
-      const errEl = document.getElementById('qcModalError');
-      if (!inspector || !comments) {
-        errEl.classList.add('show');
-        return;
-      }
-      errEl.classList.remove('show');
-      const stageNum = activeModalStage;
-      const ts = new Date().toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-      document.getElementById('qcOverlay').classList.remove('open');
-      document.body.style.overflow = '';
-      const btn = document.getElementById(`submit-btn-${stageNum}`);
-      if (decision === 'approve') {
-        stageSubmitted[stageNum] = 'approved';
-        btn.textContent = `✓ Stage ${stageNum} Approved`;
-        btn.classList.remove('btn-submitted');
-        btn.classList.add('btn-locked');
-        // Show approved banner
-        const banner = document.getElementById(`approved-banner-${stageNum}`);
-        document.getElementById(`approved-detail-${stageNum}`).textContent =
-          ` · Approved by ${inspector.split('—')[0].trim()} · ${ts} · "${comments.substring(0,80)}${comments.length > 80 ? '…' : ''}"`;
-        banner.classList.add('show');
-        // Lock the card visually
-        lockStageCard(stageNum);
-        // Unlock the next stage if there is one
-        if (stageNum < 5) unlockStageCard(stageNum + 1);
-        // Update progress bar dot to done
-        updateProgressDotToDone(stageNum);
-      } else {
-        stageSubmitted[stageNum] = false;
-        btn.textContent = `Re-submit Stage ${stageNum} for QC Review →`;
-        btn.classList.remove('btn-submitted');
-        btn.disabled = false;
-        // Show rejected banner
-        const banner = document.getElementById(`rejected-banner-${stageNum}`);
-        document.getElementById(`rejected-detail-${stageNum}`).textContent =
-          ` · Rejected by ${inspector.split('—')[0].trim()} · ${ts} · Reason: "${comments.substring(0,100)}${comments.length > 100 ? '…' : ''}"`;
-        banner.classList.add('show');
-      }
-      activeModalStage = null;
-    }
+    function handleQcDecision(decision) { /* disabled — using inline panels */ }
 
     function lockStageCard(stageNum) {
       const card = document.getElementById(`stage-card-${stageNum}`);
@@ -5837,7 +6557,8 @@
       // Show after scrolling past cover
       const cover = document.querySelector('.cover');
       const coverObs = new IntersectionObserver(entries => {
-        sidebar.classList.toggle('toc-visible', !entries[0].isIntersecting);
+        const isVisible = !entries[0].isIntersecting;
+        sidebar.classList.toggle('toc-visible', isVisible);
       }, { threshold: 0 });
       if (cover) coverObs.observe(cover);
 
@@ -5886,8 +6607,10 @@
       const floor = document.getElementById('floorSelect');
       const flat = document.getElementById('flatSelect');
       const tower = document.getElementById('towerSelect');
+      const sEng = document.getElementById('structEngSelect');
       const fEng = document.getElementById('finEngSelect');
       const drg = document.getElementById('drgSelect');
+
       if (!proj || !proj.value) return;
       const projLabel = PROJECTS[proj.value]?.label || '—';
       const towerName = towerDrop.value || '';
@@ -5898,10 +6621,10 @@
       const flatLabel = flatParts.length > 0 ? flatParts.join(' / ') : '—';
       const drgLabel = drg.value || '—';
       const ticLabel = tower.value ? tower.value.split('—')[0].trim() : '—';
-      const engLabel = fEng.value ? fEng.value.split('(')[0].trim() : '—';
-      updateInheritedHeaders(projLabel, flatLabel, ticLabel, drgLabel);
-      const s4eng = document.getElementById('s4-eng');
-      if (s4eng) s4eng.textContent = engLabel;
+      const sEngLabel = sEng.value ? sEng.value.split('(')[0].trim() : '—';
+      const fEngLabel = fEng.value ? fEng.value.split('(')[0].trim() : '—';
+
+      updateInheritedHeaders(projLabel, flatLabel, ticLabel, drgLabel, sEngLabel, fEngLabel);
     });
 
     /* ─── CLOSE MODAL ON OVERLAY CLICK ─── */
@@ -5954,7 +6677,7 @@
     }
 
     function getRoleLabel(role) {
-      return {director:'Project Director / Management',qc:'QC Inspector',full:'Full Specification (Developer)'}[role] || role;
+      return {director:'Project Director / Management',qc:'QC Inspector',full:'Full Specification (Developer)',rcc:'Civil RCC (Master Creation)'}[role] || role;
     }
 
     function applyRole() {
@@ -5962,9 +6685,13 @@
       if (selectedRole === 'engineer' && !selectedEngineerStage) { alert('Please select your stage / team first.'); return; }
       const body = document.body;
       body.className = body.className.replace(/role-\S+/g, '').trim();
+      
       if (selectedRole === 'engineer') {
         body.classList.add('role-engineer', 'role-engineer-' + selectedEngineerStage);
         setupEngineerView(selectedEngineerStage);
+      } else if (selectedRole === 'rcc') {
+        body.classList.add('role-rcc');
+        setupEngineerView(0);
       } else {
         body.classList.add('role-' + selectedRole);
         if (selectedRole === 'qc') {
@@ -5987,54 +6714,70 @@
         director: 'Project Director',
         qc: 'QC Inspector',
         full: 'Full Specification',
+        rcc: 'Civil RCC (Creation)',
         engineer: { 1:'Civil Finish · Stage 1', 2:'MEP Team · Stage 2', 3:'WP Team · Stage 3', 4:'WP Applicator · Stage 4', 5:'Civil Finish · Stage 5' }
       };
       if (role === 'engineer') { chip.textContent = labels.engineer[engStage] || 'Engineer'; }
+      else if (role === 'rcc') { chip.textContent = labels.rcc; }
       else { chip.textContent = labels[role] || role; }
       nav.classList.add('nav-show');
     }
 
     function setupEngineerView(stageNum) {
-      // Auto-populate master data headers with sample data
-      const sampleProject = 'Prestige Skyline Towers';
-      const sampleFlat = 'Tower A / 3rd Floor / Flat 301-A';
-      const sampleTIC = 'Mr. Rajesh Kumar';
-      const sampleDRG = 'PST-WP-STR-001 Rev.B';
+      // Pull live data from Master Creation dropdowns
+      const projSel = document.getElementById('projectSelect');
+      const liveProject = (projSel && projSel.value) ? PROJECTS[projSel.value].label : '—';
+      
+      const towDep = document.getElementById('towerDrop');
+      const liveTower = towDep ? (towDep.value || '—') : '—';
+      
+      const flSel = document.getElementById('floorSelect');
+      const liveFloor = flSel ? (flSel.value || '—') : '—';
+      
+      const flatSel = document.getElementById('flatSelect');
+      const liveFlat = flatSel ? (flatSel.value || '—') : '—';
+      
+      const ticSel = document.getElementById('towerSelect');
+      const liveTIC = ticSel ? (ticSel.value.split('—')[0].trim() || '—') : '—';
+      
+      const drgSel = document.getElementById('drgSelect');
+      const liveDRG = drgSel ? (drgSel.value || '—') : '—';
+
+      const sEngSel = document.getElementById('structEngSelect');
+      const liveSEng = sEngSel ? (sEngSel.value.split('(')[0].trim() || '—') : '—';
+
+      const fEngSel = document.getElementById('finEngSelect');
+      const liveFEng = fEngSel ? (fEngSel.value.split('(')[0].trim() || '—') : '—';
+
       const sampleDate = new Date().toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
 
-      // Populate all inherited header fields
-      ['s1','s2','s3','s4','s5','cons'].forEach(prefix => {
-        const proj = document.getElementById(prefix + '-proj');
-        const flat = document.getElementById(prefix + '-flat');
-        if (proj) proj.textContent = sampleProject;
-        if (flat) flat.textContent = sampleFlat;
-      });
-      const tic = document.getElementById('s1-tic');
-      if (tic) tic.textContent = sampleTIC;
-      const drg = document.getElementById('s1-drg');
-      if (drg) drg.textContent = sampleDRG;
-      const drg3 = document.getElementById('s3-drg');
-      if (drg3) drg3.textContent = sampleDRG;
-      const drg4 = document.getElementById('s4-eng');
-      if (drg4) drg4.textContent = 'Er. Priya Chandran (FE-001)';
+      // Formatted label for Flat header
+      const liveFlatHeader = (liveTower !== '—' || liveFloor !== '—' || liveFlat !== '—') 
+        ? `${liveTower} / ${liveFloor} / ${liveFlat}` 
+        : '—';
 
-      // Update welcome strip
+      // Update all Master Headers with current live data
+      updateInheritedHeaders(liveProject, liveFlatHeader, liveTIC, liveDRG, liveSEng, liveFEng);
+
+      if (stageNum === 0) {
+        // RCC Role — Jump to Master Creation
+        const s3 = document.getElementById('s3');
+        if (s3) s3.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+
+      // Stage-specific headers/welcome
       const engTitles = {
         1:'Stage 1 — RCC Structural Readiness', 2:'Stage 2 — MEP Core Cut & Installation',
         3:'Stage 3 — Surface Preparation & Pre-Ponding', 4:'Stage 4 — Waterproofing Coating Application',
         5:'Stage 5 — Protection Screed & Final Sign-Off'
       };
-      const engSubs = {
-        1:'CIVIL FINISH TEAM', 2:'MEP TEAM', 3:'WP TEAM', 4:'WP APPLICATOR', 5:'CIVIL FINISH TEAM'
-      };
       const titleEl = document.getElementById('engWelcomeTitle');
       const subEl = document.getElementById('engWelcomeSub');
-      const dateEl = document.getElementById('engWelcomeDate');
       if (titleEl) titleEl.textContent = engTitles[stageNum] || '';
-      if (subEl) subEl.textContent = (engSubs[stageNum]||'') + '  ·  PST · Tower A · 3F · 301-A  ·  WP-2026-0041';
-      if (dateEl) dateEl.textContent = sampleDate;
+      if (subEl) subEl.textContent = `${liveProject} · ${liveTower} · ${liveFloor} · ${liveFlat}`;
 
-      // Update nav chip
+      // Auto-assign sample person if nothing is selected yet
       const assignEl = document.getElementById('assign' + stageNum);
       if (assignEl && !assignEl.value) {
         const defaults = {1:'Rajan Pillai — Civil Finish Supervisor',2:'Abdul Rehman — MEP Supervisor',3:'Venkatesh Rao — WP Team Supervisor',4:'Biju Menon — Certified WP Applicator (Sika)',5:'Rajan Pillai — Civil Finish Supervisor'};
@@ -6376,26 +7119,26 @@
       /* Do NOT reset demo — director needs to see engineer/QC work */
     };
 
-    /* ── openQcModal: stage transitions to "submitted" ── */
-    const _orig_openQcModal = openQcModal;
-    openQcModal = function(stageNum) {
-      _orig_openQcModal(stageNum);
-      if (demo.stage === stageNum) {
+    /* ── handleSubmit: stage transitions to "submitted" ── */
+    const _orig_handleSubmit = handleSubmit;
+    handleSubmit = function(stageNum) {
+      _orig_handleSubmit(stageNum);
+      // Only update demo if the stage was actually submitted (not just validation errors)
+      if (stageSubmitted[stageNum] === 'submitted' && demo.stage === stageNum) {
         demo.active = true;
         demo.status[stageNum] = 'submitted';
         updateDirectorDashboard();
       }
     };
 
-    /* ── handleQcDecision: approve/reject drives full chain ── */
-    const _orig_handleQcDecision = handleQcDecision;
-    handleQcDecision = function(decision) {
-      const stageNum   = activeModalStage;
-      const inspector  = document.getElementById('qcInspector').value.trim();
-      const comments   = document.getElementById('qcComments').value.trim();
-      if (!inspector || !comments) { _orig_handleQcDecision(decision); return; }
+    /* ── handleInlineQcDecision: approve/reject drives full chain ── */
+    const _orig_handleInlineQcDecision = handleInlineQcDecision;
+    handleInlineQcDecision = function(stageNum, decision) {
+      const inspector = document.getElementById(`qc-inspector-${stageNum}`).value.trim();
+      const comments = document.getElementById(`qc-comments-${stageNum}`).value.trim();
+      if (!inspector || !comments) { _orig_handleInlineQcDecision(stageNum, decision); return; }
 
-      _orig_handleQcDecision(decision);   // runs original logic first
+      _orig_handleInlineQcDecision(stageNum, decision);
 
       if (!demo.active) demo.active = true;
 
@@ -6403,15 +7146,14 @@
       const inspShort = inspector.split('—')[0].trim();
 
       if (decision === 'approve') {
-        demo.status[stageNum]  = 'approved';
+        demo.status[stageNum] = 'approved';
         demo.approvals[stageNum] = { inspector: inspShort, time: ts };
         _addApproval(stageNum, inspShort, ts);
         if (stageNum < 5) {
-          demo.stage  = stageNum + 1;
+          demo.stage = stageNum + 1;
           demo.status[stageNum + 1] = 'in-progress';
         }
       } else {
-        /* Rejected: stage stays the same, team re-fills */
         demo.status[stageNum] = 'rejected';
       }
       updateDirectorDashboard();
@@ -6422,9 +7164,26 @@
       const demoRow = document.getElementById('dir-row-demo');
       if (demoRow) demoRow.style.display = 'none';
       setTimeout(updateDirectorDashboard, 80);
+
+      // Trigger updateSubmitBtn when any master data field changes
+      const masterIds = ['projectSelect', 'towerDrop', 'floorSelect', 'flatSelect', 'towerSelect', 'structEngSelect', 'finEngSelect', 'drgSelect'];
+      masterIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('change', () => {
+            [1, 2, 3, 4, 5].forEach(updateSubmitBtn);
+          });
+        }
+      });
+      
+      // Initial trigger to lock them on load
+      [1, 2, 3, 4, 5].forEach(updateSubmitBtn);
     });
 
+
+
   </script>
+  <div id="toast-container"></div>
 </body>
 
 </html>
