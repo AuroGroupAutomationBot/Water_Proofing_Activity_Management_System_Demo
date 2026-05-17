@@ -208,8 +208,6 @@ xdg-open index.html    # Linux
 Waterproofing-Activity-Management-System-Demo/
 ├── index.html           ← Complete self-contained application (~2000 lines)
 ├── README.md            ← This file
-├── CODE_OF_CONDUCT.md   ← Community standards
-├── CONTRIBUTING.md      ← How to contribute
 └── LICENSE              ← MIT License
 ```
 
