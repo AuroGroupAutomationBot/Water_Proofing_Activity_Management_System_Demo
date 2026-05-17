@@ -47,16 +47,6 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 /* MAIN APP */
 #MA{display:none;flex-direction:column;min-height:100vh}
 
-/* MOBILE HAMBURGER */
-.mobBtn{display:none;background:none;border:none;color:var(--acc);font-size:22px;padding:4px 8px;cursor:pointer;line-height:1}
-.sbOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}
-.sbOverlay.show{display:block}
-@media(max-width:768px){
-  .mobBtn{display:inline-flex}
-  .SB{position:fixed;left:-260px;top:54px;z-index:200;height:calc(100vh - 54px);transition:left .25s ease;width:240px}
-  .SB.open{left:0;box-shadow:4px 0 20px rgba(0,0,0,.3)}
-}
-
 /* TOPBAR */
 .TB{height:54px;background:var(--surf);border-bottom:1px solid var(--b);display:flex;align-items:center;
     justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:100;flex-shrink:0}
@@ -80,7 +70,7 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 .SB{width:218px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--b);
     padding:14px 8px;overflow-y:auto;height:calc(100vh - 54px);position:sticky;top:54px}
 .MN{flex:1;padding:22px;overflow-x:hidden;min-width:0}
-@media(max-width:768px){.MN{padding:14px}.TB{padding:0 12px}}
+@media(max-width:768px){.SB{display:none}.MN{padding:14px}.TB{padding:0 12px}}
 
 .sbS{margin-bottom:16px}
 .sbL{font-size:10px;color:var(--dim);letter-spacing:1.2px;text-transform:uppercase;padding:0 8px;margin-bottom:5px;font-family:var(--fm)}
@@ -357,6 +347,12 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 /* BETTER LANDING PAGE */
 .rHero h1{background:linear-gradient(135deg,#fff,var(--acc));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .rHero h1 span{-webkit-text-fill-color:var(--acc)}
+.platHighlights{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:20px auto 0;max-width:880px}
+.platH{background:var(--card);border:1px solid var(--b);border-radius:var(--r);padding:14px;text-align:center;transition:.15s}
+.platH:hover{border-color:var(--acc);transform:translateY(-2px)}
+.platHI{font-size:28px;margin-bottom:6px}
+.platHT{font-size:12px;font-weight:700;margin-bottom:2px}
+.platHD{font-size:10px;color:var(--mut);line-height:1.5}
 
 /* PRINT STYLES */
 @media print{
@@ -390,12 +386,12 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
   </div>
   <div class="dBanner">&#9889; DEMO ENVIRONMENT &mdash; No data persisted &middot; No real emails &middot; Auto-escalation timer: 10 minutes &middot; Select a role to begin</div>
   <div class="rGrid" id="RG"></div>
+  <p style="margin-top:18px;font-size:11px;color:var(--dim);text-align:center">Activity: WP-2026-0041 &middot; Skyline Residency Phase II &middot; Tower A &middot; 7th Floor &middot; Flat 702</p>
 </div>
 
 <div id="MA">
   <div class="TB">
     <div class="TBL">
-      <button class="mobBtn" onclick="toggleSB()" aria-label="Menu">&#9776;</button>
       <div class="TBLI">QC</div>
       <div><div class="TBN">QC Workflow System</div><div class="TBS">Waterproofing Activity Lifecycle</div></div>
     </div>
@@ -406,7 +402,6 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
       <button class="rSw" onclick="switchRole()"><span class="rDot"></span><span id="xRN">&mdash;</span><span style="font-size:9px;opacity:.5">&#9660;</span></button>
     </div>
   </div>
-  <div class="sbOverlay" id="sbOvl" onclick="toggleSB()"></div>
   <div class="LY">
     <div class="SB" id="SB"></div>
     <div class="MN" id="MN"></div>
@@ -590,7 +585,14 @@ var V = {
   }
   g.innerHTML = h;
 
-  // Platform highlights removed per user request
+  // Platform highlights
+  var ph = document.createElement('div');
+  ph.className = 'platHighlights';
+  ph.innerHTML = '<div class="platH"><div class="platHI">&#128203;</div><div class="platHT">5-Stage Gate Process</div><div class="platHD">Structured quality checkpoints from RCC readiness through final sign-off</div></div>'
+    + '<div class="platH"><div class="platHI">&#128274;</div><div class="platHT">NCR & Freeze System</div><div class="platHD">Non-conformance tracking with automatic workflow freeze & escalation</div></div>'
+    + '<div class="platH"><div class="platHI">&#128247;</div><div class="platHT">Photo Evidence Trail</div><div class="platHD">Mandatory photographic proof at every location for audit compliance</div></div>'
+    + '<div class="platH"><div class="platHI">&#128202;</div><div class="platHT">Executive Dashboard</div><div class="platHD">Real-time portfolio visibility across all projects, towers & activities</div></div>';
+  document.getElementById('RS').insertBefore(ph, document.querySelector('#RS > p:last-of-type'));
 }());
 
 function selRole(id) {
@@ -610,15 +612,7 @@ function getRole(id) {
   for (var i = 0; i < ROLES.length; i++) if (ROLES[i].id === id) return ROLES[i];
   return ROLES[0];
 }
-function go(v, p) { V.view = v; V.params = p || {}; paint(); window.scrollTo(0, 0); closeSB(); }
-function toggleSB() {
-  var sb = document.getElementById('SB'), ov = document.getElementById('sbOvl');
-  if (sb) { sb.classList.toggle('open'); ov.classList.toggle('show'); }
-}
-function closeSB() {
-  var sb = document.getElementById('SB'), ov = document.getElementById('sbOvl');
-  if (sb) { sb.classList.remove('open'); if (ov) ov.classList.remove('show'); }
-}
+function go(v, p) { V.view = v; V.params = p || {}; paint(); window.scrollTo(0, 0); }
 
 // ================================================================
 //  PAINT
@@ -632,49 +626,6 @@ function paint() {
                ncrForm:pgNCRForm, ncrQH:pgNCRQH, ncrComply:pgNCRComply, ncrCR:pgNCRCR,
                detail:pgDetail, consolidated:pgConsolidated};
   document.getElementById("MN").innerHTML = '<div class="fadeIn">' + ((views[V.view] || pgDash)()) + '</div>';
-  syncPortfolio();
-}
-
-// Sync live activity state back into PORTFOLIO for executive dashboard
-function syncPortfolio() {
-  var a = V.act;
-  if (!a.created) return;
-  // Find matching entry in PORTFOLIO by id
-  var found = false;
-  for (var i = 0; i < PORTFOLIO.length; i++) {
-    if (PORTFOLIO[i].id === a.id) {
-      PORTFOLIO[i].status = a.status;
-      PORTFOLIO[i].curStage = a.curStage;
-      PORTFOLIO[i].ncrs = a.ncrs.length;
-      PORTFOLIO[i].proj = a.md.proj;
-      PORTFOLIO[i].tower = a.md.tower;
-      PORTFOLIO[i].floor = a.md.floor;
-      PORTFOLIO[i].flat = a.md.flat;
-      for (var s = 1; s <= 5; s++) {
-        var st = a.stages[s].st;
-        PORTFOLIO[i].stages[s-1] = st === "locked" ? "locked" : st === "approved" ? "approved" : st === "rejected" || st === "cf_rejected" ? "rejected" : "pending";
-      }
-      found = true; break;
-    }
-  }
-  // If not found (new activity), add it
-  if (!found) {
-    PORTFOLIO.unshift({id:a.id, proj:a.md.proj, tower:a.md.tower, floor:a.md.floor, flat:a.md.flat,
-      status:a.status, curStage:a.curStage, stages:["pending","locked","locked","locked","locked"],
-      ncrs:a.ncrs.length, created:a.md.date, days:0});
-  }
-  // Also update TIMELINE_EVENTS with latest NCR events
-  if (a.ncrs.length > 0) {
-    var lastNcr = a.ncrs[a.ncrs.length - 1];
-    var hasEvent = false;
-    for (var t = 0; t < TIMELINE_EVENTS.length; t++) {
-      if (TIMELINE_EVENTS[t].msg.indexOf(lastNcr.id) !== -1) { hasEvent = true; break; }
-    }
-    if (!hasEvent) {
-      TIMELINE_EVENTS.unshift({msg: lastNcr.id + " raised — " + a.md.proj + ", " + a.md.tower + ", " + a.md.flat, time:"Just now", dot:"dR"});
-      if (TIMELINE_EVENTS.length > 10) TIMELINE_EVENTS.pop();
-    }
-  }
 }
 
 // ================================================================
@@ -780,7 +731,7 @@ function mdHdr(upTo) {
   var md = V.act.md;
   var h = '<div class="mdH"><div class="mdHT">&#128274; Master Data &mdash; Inherited Read-Only</div><div class="mdF">';
   var pairs = [["Activity ID",V.act.id],["Project",md.proj],["Tower",md.tower],["Floor",md.floor],
-               ["Flat No.",md.flat],["Tower In-Charge",md.tic],["Civil Engineers",md.civil],["MEP Engineers",md.mep],["Tower Manager",md.mgr]];
+               ["Flat No.",md.flat],["Tower In-Charge",md.tic],["Civil Engineers",md.civil],["MEP Engineers",md.mep]];
   for (var i = 0; i < pairs.length; i++) {
     h += '<div><div class="mdk">' + pairs[i][0] + '</div><div class="mdv">' + xE(pairs[i][1]) + '</div></div>';
   }
@@ -1059,13 +1010,11 @@ function pgDash() {
   if (myNC.length) h += '<div class="al alD mb14"><span class="alIc">&#9888;</span><div>You have <strong>' + myNC.length + ' outstanding NCR compliance submission(s)</strong>. <button class="btn bSm bD" style="margin-left:8px;margin-top:4px" onclick="go(\'ncrComply\')">Submit Now</button></div></div>';
 
   if (a.created) {
-    h += '<div class="card"><div class="cT mb12">Activity Overview — Master Data</div><div class="tblW"><table class="tbl">';
-    h += '<tr><th>Activity ID</th><td class="mono tAcc">' + a.id + '</td><th>Status</th><td><span class="badge ' + (a.status === "closed" ? "bCl" : a.frozen ? "bFr" : "bAc") + '">' + a.status + '</span></td></tr>';
-    h += '<tr><th>Project</th><td>' + xE(a.md.proj) + '</td><th>Tower</th><td>' + xE(a.md.tower) + '</td></tr>';
-    h += '<tr><th>Floor</th><td>' + xE(a.md.floor) + '</td><th>Flat No.</th><td>' + xE(a.md.flat) + '</td></tr>';
-    h += '<tr><th>Tower In-Charge</th><td>' + xE(a.md.tic) + '</td><th>Tower Manager</th><td>' + xE(a.md.mgr) + '</td></tr>';
-    h += '<tr><th>Civil Engineers</th><td>' + xE(a.md.civil) + '</td><th>MEP Engineers</th><td>' + xE(a.md.mep) + '</td></tr>';
-    h += '<tr><th>Created</th><td>' + xE(a.md.date) + '</td><th>Current Stage</th><td class="fw7">' + a.curStage + ' / 5</td></tr></table></div></div>';
+    h += '<div class="card"><div class="cT mb12">Activity Overview</div><div class="tblW"><table class="tbl">';
+    h += '<tr><th>Activity ID</th><td class="mono">' + a.id + '</td><th>Status</th><td><span class="badge ' + (a.status === "closed" ? "bCl" : a.frozen ? "bFr" : "bAc") + '">' + a.status + '</span></td></tr>';
+    h += '<tr><th>Project</th><td>' + a.md.proj + '</td><th>Tower</th><td>' + a.md.tower + '</td></tr>';
+    h += '<tr><th>Floor</th><td>' + a.md.floor + '</td><th>Flat No.</th><td>' + a.md.flat + '</td></tr>';
+    h += '<tr><th>Civil Engineers</th><td>' + a.md.civil + '</td><th>MEP Engineers</th><td>' + a.md.mep + '</td></tr></table></div></div>';
   }
   return h;
 }
@@ -1078,9 +1027,9 @@ function pgCreate() {
   var prOpts = "", twOpts = "", flOpts = "", ftOpts = "", cvOpts = "", mpOpts = "", mgOpts = "";
   for (var p in CASCADE) prOpts += '<option' + (p === FS.proj ? " selected" : "") + ">" + p + "</option>";
   for (var t = 0; t < pd.towers.length; t++) twOpts += '<option' + (pd.towers[t] === tw ? " selected" : "") + ">" + pd.towers[t] + "</option>";
-  for (var f = 1; f <= pd.floors; f++) flOpts += '<option value="' + f + '"' + (f === fl ? " selected" : "") + ">" + ordFloor(f) + "</option>";
+  for (var f = 1; f <= pd.floors; f++) flOpts += '<option value="' + f + '"' + (f === fl ? " selected" : "") + ">Floor " + f + "</option>";
   var base = pd.flatBase[tw] || 701;
-  for (var ft = 0; ft < pd.flats; ft++) ftOpts += "<option>Flat " + (base + ft + (fl - 1) * pd.flats) + "</option>";
+  for (var ft = 0; ft < pd.flats; ft++) ftOpts += "<option>Flat " + (base + ft) + "</option>";
   for (var ci = 0; ci < pd.civil.length; ci++) cvOpts += "<option" + (ci < 2 ? " selected" : "") + ">" + pd.civil[ci] + "</option>";
   for (var mi = 0; mi < pd.mep.length; mi++) mpOpts += "<option" + (mi === 0 ? " selected" : "") + ">" + pd.mep[mi] + "</option>";
   for (var gi = 0; gi < pd.mgr.length; gi++) mgOpts += "<option" + (gi === 0 ? " selected" : "") + ">" + pd.mgr[gi] + "</option>";
@@ -1141,18 +1090,13 @@ function getMulti(id) {
   for (var i = 0; i < el.options.length; i++) if (el.options[i].selected) v.push(el.options[i].text);
   return v.join(", ");
 }
-function ordFloor(n) {
-  var s = ["th","st","nd","rd"], v = n % 100;
-  return n + (s[(v-20)%10] || s[v] || s[0]) + " Floor";
-}
 function doCreate() {
   var pd = CASCADE[FS.proj];
   var proj = gv("fP") || FS.proj;
   var tower = gv("fT") || FS.tower;
   var tic = document.getElementById("fTIC") ? document.getElementById("fTIC").value : (pd.tic[tower] || "");
   var flEl = document.getElementById("fF");
-  var floorNum = flEl ? parseInt(flEl.value) : FS.floor;
-  var floor = ordFloor(floorNum);
+  var floor = flEl ? flEl.options[flEl.selectedIndex].text : "Floor 7";
   var flat = gv("fFt") || "Flat 702";
   var civil = getMulti("fCV") || pd.civil.slice(0,2).join(", ");
   var mep = getMulti("fMP") || pd.mep[0];
@@ -1160,7 +1104,6 @@ function doCreate() {
   V.act.md = {date:"23 Apr 2026",proj:proj,tower:tower,tic:tic,floor:floor,flat:flat,civil:civil,mep:mep,mgr:mgr};
   V.act.created = true; V.act.status = "active";
   V.act.stages[1].st = "pending";
-  V.act.curStage = 1;
   toast("&#10003; Activity " + V.act.id + " created. Stage 1 unlocked and assigned.", "success");
   go("dash");
 }
@@ -1766,7 +1709,6 @@ function doSubmitNCR() {
                raisedBy:"QC Inspector &mdash; Priya Sharma", raisedDate:"23 Apr 2026", compliance:null, qhComment:""});
   a.ncrCtr++; V.activeNcr = id;
   toast("&#128221; NCR " + id + " submitted to Project Quality Head.", "info");
-  syncPortfolio();
   go("dash");
 }
 
@@ -1800,7 +1742,6 @@ function doQHReview(id, dec) {
     ncr.status = "closed";
     toast("NCR rejected. Work continues uninterrupted.", "info");
   }
-  syncPortfolio();
   go("dash");
 }
 
@@ -1856,7 +1797,6 @@ function doCompReview(dec) {
   var ncr = ncrsBy("compliance_review")[0]; if (!ncr) return;
   if (dec === "accept") { ncr.status = "closed"; V.act.frozen = false; V.act.status = "active"; toast("&#10003; Compliance accepted. Activity unfrozen. Work may resume.", "success"); }
   else { ncr.status = "compliance_pending"; toast("&#128680; Compliance rejected and escalated. Activity remains frozen.", "warning"); }
-  syncPortfolio();
   go("dash");
 }
 
@@ -1901,30 +1841,16 @@ function pgConsolidated() {
   var h = '<div class="pH"><div><div class="pT">Consolidated Activity Record</div><div class="pS">Auto-generated on closure &middot; Permanent quality documentation &middot; Admissible under project QMS</div></div><div class="fl g8 aic"><button class="printBtn" onclick="printRecord()">&#128424; Print / PDF</button><span class="badge bCl">&#10003; Closed</span><span class="aId">' + a.id + '</span></div></div>';
   h += '<div class="al alS mb14"><span class="alIc">&#127942;</span>Activity formally closed at ' + (a.closedAt || 'N/A') + '. Record permanently locked. All stage data, QC approvals and photographic evidence immutably archived.</div>';
   h += '<div class="crBl"><div class="crBH"><span class="crBT">Master Data</span><span class="badge bAp">Immutable</span></div><div class="crBB"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px">';
-  var pairs = [["Activity ID",a.id],["Project",md.proj],["Tower",md.tower],["Floor",md.floor],["Flat No.",md.flat],["Tower In-Charge",md.tic],["Civil Engineers",md.civil],["MEP Engineers",md.mep],["Tower Manager",md.mgr],["Closed At",a.closedAt||"\u2014"]];
+  var pairs = [["Activity ID",a.id],["Project",md.proj],["Tower",md.tower],["Floor",md.floor],["Flat No.",md.flat],["Tower In-Charge",md.tic],["Civil Engineers",md.civil],["MEP Engineers",md.mep],["Closed At",a.closedAt||"\u2014"]];
   for (var pi = 0; pi < pairs.length; pi++) h += '<div><div class="mdk">' + pairs[pi][0] + '</div><div class="mdv">' + xE(pairs[pi][1]) + '</div></div>';
   h += '</div></div></div>';
   for (var n = 1; n <= 5; n++) {
-    var s = a.stages[n], cl = CL[n], locsN = LOCS[n];
+    var s = a.stages[n], cl = CL[n], ld = s.ld[0] || {}, locsN = LOCS[n];
     h += '<div class="crBl"><div class="crBH"><span class="crBT">Stage ' + n + ' &mdash; ' + cl.title + '</span>' + (s.qcRec ? '<span class="badge bAp">&#10003; Approved &middot; ' + s.qcRec.date + '</span>' : '<span class="badge bLk">&mdash;</span>') + '</div><div class="crBB">';
-    if (s.drg) h += '<div class="f12 tMut mb8">Drawing Ref: <span class="tAcc">' + xE(s.drg) + '</span></div>';
     if (s.sub) h += '<div class="f12 tMut mb8">Subcontractor: ' + xE(s.sub) + '</div>';
-    for (var locIdx = 0; locIdx < locsN.length; locIdx++) {
-      var ld = s.ld[locIdx] || {};
-      var locHasData = false;
-      for (var ck = 0; ck < cl.items.length; ck++) if (ld[ck] && ld[ck].r) { locHasData = true; break; }
-      if (locHasData || Object.keys(s.ld).length > 0) {
-        h += '<div class="f11 fw7 tAcc mt8 mb8" style="letter-spacing:.5px">' + xE(locsN[locIdx]) + (s.lp[locIdx] ? ' &#128247;' : '') + '</div>';
-        for (var idx = 0; idx < cl.items.length; idx++) {
-          var d = ld[idx] || {}, ac = d.r === "YES" ? "yes" : d.r === "NA" ? "na" : "bl", av = d.r === "YES" ? "&#10003; YES" : d.r === "NA" ? "&mdash; N/A" : "&mdash;";
-          h += '<div class="crIt"><span class="crAns ' + ac + '">' + av + '</span><span class="crQ"><span class="crQN">' + cl.items[idx].n + '</span>' + xE(cl.items[idx].q) + '</span></div>';
-        }
-      }
-    }
-    if (Object.keys(s.ld).length === 0) {
-      for (var idx2 = 0; idx2 < cl.items.length; idx2++) {
-        h += '<div class="crIt"><span class="crAns bl">&mdash;</span><span class="crQ"><span class="crQN">' + cl.items[idx2].n + '</span>' + xE(cl.items[idx2].q) + '</span></div>';
-      }
+    for (var idx = 0; idx < cl.items.length; idx++) {
+      var d = ld[idx] || {}, ac = d.r === "YES" ? "yes" : d.r === "NA" ? "na" : "bl", av = d.r === "YES" ? "&#10003; YES" : d.r === "NA" ? "&mdash; N/A" : "&mdash;";
+      h += '<div class="crIt"><span class="crAns ' + ac + '">' + av + '</span><span class="crQ"><span class="crQN">' + cl.items[idx].n + '</span>' + xE(cl.items[idx].q) + '</span></div>';
     }
     var pc = Object.keys(s.lp).length;
     h += '<div class="mt8 f12" style="color:var(--grn)">&#128247; ' + pc + ' of ' + locsN.length + ' location photo(s) archived.</div>';
