@@ -19,14 +19,14 @@
   --f:'Inter',system-ui,sans-serif;--fm:'Courier New',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--txt);font-family:var(--f);font-size:14px;line-height:1.6;min-height:100vh}
+body{background:radial-gradient(circle at top, var(--surf), var(--bg));color:var(--txt);font-family:var(--f);font-size:14px;line-height:1.6;min-height:100vh;overflow-x:hidden;width:100vw}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--surf)}::-webkit-scrollbar-thumb{background:var(--b2);border-radius:3px}
 button{cursor:pointer;font-family:var(--f)}
 input,select,textarea{font-family:var(--f);color:var(--txt)}
 
 /* ROLE SELECT */
 #RS{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;
-    background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(245,166,35,.06),transparent 70%)}
+    background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(245,166,35,.12),var(--bg) 60%)}
 .rHero{text-align:center;margin-bottom:28px}
 .rLogo{width:68px;height:68px;background:linear-gradient(135deg,var(--acc),#b87010);border-radius:16px;
        display:flex;align-items:center;justify-content:center;font-weight:900;font-size:24px;color:#000;
@@ -37,8 +37,8 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 .dBanner{background:var(--adim);border:1px solid rgba(245,166,35,.4);border-radius:var(--r);
          padding:10px 20px;font-size:12px;color:var(--acc);margin-bottom:26px;font-family:var(--fm);text-align:center}
 .rGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:10px;width:100%;max-width:880px}
-.rCard{background:var(--card);border:1px solid var(--b);border-radius:var(--rl);padding:18px;cursor:pointer;transition:.18s;text-align:left}
-.rCard:hover{border-color:var(--acc);background:var(--card2);transform:translateY(-3px)}
+.rCard{background:rgba(23, 29, 51, 0.7);backdrop-filter:blur(10px);border:1px solid rgba(245,166,35,.15);border-radius:var(--rl);padding:18px;cursor:pointer;transition:.25s ease;text-align:left;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.rCard:hover{border-color:var(--acc);background:rgba(28, 34, 57, 0.9);transform:translateY(-4px);box-shadow:0 12px 30px rgba(245,166,35,.2)}
 .rci{font-size:26px;margin-bottom:10px}
 .rcn{font-weight:700;font-size:13px;margin-bottom:4px}
 .rcd{font-size:11px;color:var(--mut);line-height:1.5;margin-bottom:10px}
@@ -47,30 +47,49 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 /* MAIN APP */
 #MA{display:none;flex-direction:column;min-height:100vh}
 
+/* MOBILE HAMBURGER */
+.mobBtn{display:none;background:none;border:none;color:var(--acc);font-size:22px;padding:4px 8px;cursor:pointer;line-height:1}
+.sbOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}
+.sbOverlay.show{display:block}
+
 /* TOPBAR */
-.TB{height:54px;background:var(--surf);border-bottom:1px solid var(--b);display:flex;align-items:center;
+.TB{height:54px;background:rgba(17, 22, 39, 0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--b);display:flex;align-items:center;
     justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:100;flex-shrink:0}
-.TBL{display:flex;align-items:center;gap:10px}
+.TBL{display:flex;align-items:center;gap:10px;min-width:0}
 .TBLI{width:30px;height:30px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:7px;
       display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;color:#000;flex-shrink:0}
-.TBN{font-weight:700;font-size:14px}
-.TBS{font-size:10px;color:var(--mut);margin-top:-2px}
+.TBL > div:last-child { min-width: 0; }
+.TBN{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.TBS{font-size:10px;color:var(--mut);margin-top:-2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .TBR{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:10px;font-family:var(--fm);border:1px solid;white-space:nowrap}
 .cDemo{background:var(--adim);border-color:rgba(245,166,35,.5);color:var(--acc)}
 .cFroz{background:var(--pdim);border-color:var(--pb);color:var(--pur)}
 .cClos{background:var(--gdim);border-color:var(--gb);color:var(--grn)}
 .rSw{background:var(--card2);border:1px solid var(--b);padding:5px 11px;border-radius:20px;font-size:12px;
-     color:var(--mut);display:flex;align-items:center;gap:5px;transition:.15s}
+     color:var(--mut);display:flex;align-items:center;gap:5px;transition:.15s;max-width:140px}
+.rSw #xRN{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rSw:hover{border-color:var(--acc);color:var(--acc)}
-.rDot{width:6px;height:6px;border-radius:50%;background:var(--grn)}
+.rDot{width:6px;height:6px;border-radius:50%;background:var(--grn);flex-shrink:0}
 
 /* LAYOUT */
 .LY{display:flex;flex:1;min-height:0}
 .SB{width:218px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--b);
     padding:14px 8px;overflow-y:auto;height:calc(100vh - 54px);position:sticky;top:54px}
-.MN{flex:1;padding:22px;overflow-x:hidden;min-width:0}
-@media(max-width:768px){.SB{display:none}.MN{padding:14px}.TB{padding:0 12px}}
+.MN{flex:1;padding:22px;overflow-x:hidden;min-width:0;width:100%}
+@media(max-width:768px){
+  .mobBtn{display:inline-flex}
+  .SB{position:fixed;left:-260px;top:54px;z-index:200;height:calc(100vh - 54px);transition:left .25s ease;width:240px;border-right:none}
+  .SB.open{left:0;box-shadow:4px 0 30px rgba(0,0,0,.6)}
+  .MN{padding:14px;width:100vw}
+  .TB{padding:0 12px;gap:8px}
+  .TBL{gap:6px}
+  .TBS{display:none}
+  .TBN{font-size:13px;max-width:140px}
+  .chip.cDemo{display:none !important}
+  .rSw{padding:5px 8px}
+  .rSw #xRN{max-width:70px}
+}
 
 .sbS{margin-bottom:16px}
 .sbL{font-size:10px;color:var(--dim);letter-spacing:1.2px;text-transform:uppercase;padding:0 8px;margin-bottom:5px;font-family:var(--fm)}
@@ -174,11 +193,15 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 
 /* LOCATION TABS */
 .lTabs{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap}
-.lTab{padding:5px 12px;border-radius:20px;border:1px solid var(--b);background:transparent;color:var(--mut);font-size:12px;transition:.1s}
+.lTab{padding:5px 12px;border-radius:20px;border:1px solid var(--b);background:transparent;color:var(--mut);font-size:12px;transition:.1s;white-space:nowrap}
 .lTab:hover{background:var(--card2);color:var(--txt)}
 .lTab.on{background:var(--adim);border-color:rgba(245,166,35,.4);color:var(--acc)}
 .lTab.done{background:var(--gdim);border-color:var(--gb);color:var(--grn)}
 .lTab.bad{border-color:var(--rb);color:var(--red)}
+@media(max-width:768px){
+  .lTabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+  .lTab{flex-shrink:0}
+}
 
 /* SUBMIT GATE */
 .gate{background:var(--card2);border:1px solid var(--b);border-radius:var(--r);padding:13px 16px;margin-bottom:14px}
@@ -195,7 +218,7 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 .clAc{border-left:3px solid var(--grn);background:rgba(30,203,160,.04)}
 .clRj{border-left:3px solid var(--red);background:rgba(255,80,80,.04)}
 .clGr{opacity:.4;pointer-events:none;position:relative}
-.clGr::after{content:"✓ QC Accepted — locked";position:absolute;right:12px;bottom:8px;font-size:10px;color:var(--grn);font-family:var(--fm)}
+.clGr::after{content:"✓ Accepted — locked";position:absolute;right:12px;bottom:8px;font-size:10px;color:var(--grn);font-family:var(--fm)}
 .clRw{display:flex;gap:9px;align-items:flex-start}
 .clNm{font-family:var(--fm);font-size:10px;color:var(--dim);width:22px;flex-shrink:0;padding-top:2px}
 .clBd{flex:1}
@@ -297,13 +320,13 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 .tRed{color:var(--red)}.tGrn{color:var(--grn)}.tAcc{color:var(--acc)}.tMut{color:var(--mut)}.tBlu{color:var(--blu)}
 
 /* EXECUTIVE DASHBOARD */
-.exHero{background:linear-gradient(135deg,rgba(245,166,35,.08),rgba(91,158,245,.06));border:1px solid rgba(245,166,35,.2);border-radius:var(--rl);padding:22px 24px;margin-bottom:18px;position:relative;overflow:hidden}
-.exHero::after{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(245,166,35,.12),transparent 70%);border-radius:50%}
+.exHero{background:linear-gradient(135deg,rgba(245,166,35,.12),rgba(91,158,245,.08));border:1px solid rgba(245,166,35,.3);border-radius:var(--rl);padding:24px 28px;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:inset 0 0 40px rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.2)}
+.exHero::after{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(245,166,35,.15),transparent 70%);border-radius:50%}
 .exHT{font-size:clamp(18px,3vw,26px);font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
 .exHS{font-size:13px;color:var(--mut);line-height:1.6}
 .exKPI{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:18px}
-.kpi{background:var(--card);border:1px solid var(--b);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;transition:.2s}
-.kpi:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.kpi{background:linear-gradient(180deg, var(--card), var(--surf));border:1px solid var(--b);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;transition:.3s ease;box-shadow:0 4px 15px rgba(0,0,0,.2)}
+.kpi:hover{border-color:var(--acc);transform:translateY(-4px);box-shadow:0 8px 25px rgba(245,166,35,.15)}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r) var(--r) 0 0}
 .kpi.kG::before{background:var(--grn)}.kpi.kR::before{background:var(--red)}.kpi.kB::before{background:var(--blu)}.kpi.kA::before{background:var(--acc)}.kpi.kP::before{background:var(--pur)}.kpi.kY::before{background:var(--yel)}
 .kpiN{font-size:32px;font-weight:800;line-height:1;margin-bottom:2px}
@@ -347,24 +370,19 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 /* BETTER LANDING PAGE */
 .rHero h1{background:linear-gradient(135deg,#fff,var(--acc));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .rHero h1 span{-webkit-text-fill-color:var(--acc)}
-.platHighlights{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:20px auto 0;max-width:880px}
-.platH{background:var(--card);border:1px solid var(--b);border-radius:var(--r);padding:14px;text-align:center;transition:.15s}
-.platH:hover{border-color:var(--acc);transform:translateY(-2px)}
-.platHI{font-size:28px;margin-bottom:6px}
-.platHT{font-size:12px;font-weight:700;margin-bottom:2px}
-.platHD{font-size:10px;color:var(--mut);line-height:1.5}
 
 /* PRINT STYLES */
 @media print{
   body{background:#fff!important;color:#000!important;font-size:11px}
   .TB,.SB,#TR,.btn,.bRow,.rSw,.pipe,.fzBan,.al,.locPB,.evPB,.progW{display:none!important}
   .MN{padding:10px!important}
-  .card,.crBl,.ncrC,.mdH,.stat{border:1px solid #ccc!important;background:#fff!important;break-inside:avoid}
+  .card,.crBl,.ncrC,.mdH,.stat{border:1px solid #ccc!important;background:#fff!important;break-inside:avoid;box-shadow:none!important}
   .crBH{background:#f5f5f5!important}
   .badge{border:1px solid #999!important;color:#333!important;background:#eee!important}
-  .pT{color:#000!important;font-size:18px}
+  .pT{color:#000!important;font-size:18px;font-weight:800;border-bottom:2px solid #000;padding-bottom:5px;margin-bottom:10px}
   .mdk,.mdv,.crQ,.crAns{color:#000!important}
   .printOnly{display:block!important}
+  body::before{content:"CONFIDENTIAL — INTERNAL QUALITY ASSURANCE RECORD";display:block;text-align:center;font-size:10px;font-weight:bold;color:#666;margin-bottom:15px;letter-spacing:1px}
   @page{margin:15mm}
 }
 .printOnly{display:none}
@@ -372,8 +390,8 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 .printBtn:hover{border-color:var(--acc);color:var(--acc)}
 
 /* FADE TRANSITION */
-.fadeIn{animation:fadeSlide .3s ease}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fadeIn{animation:fadeSlide .5s cubic-bezier(0.16, 1, 0.3, 1)}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
@@ -386,12 +404,12 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
   </div>
   <div class="dBanner">&#9889; DEMO ENVIRONMENT &mdash; No data persisted &middot; No real emails &middot; Auto-escalation timer: 10 minutes &middot; Select a role to begin</div>
   <div class="rGrid" id="RG"></div>
-  <p style="margin-top:18px;font-size:11px;color:var(--dim);text-align:center">Activity: WP-2026-0041 &middot; Skyline Residency Phase II &middot; Tower A &middot; 7th Floor &middot; Flat 702</p>
 </div>
 
 <div id="MA">
   <div class="TB">
     <div class="TBL">
+      <button class="mobBtn" onclick="toggleSB()" aria-label="Menu">&#9776;</button>
       <div class="TBLI">QC</div>
       <div><div class="TBN">QC Workflow System</div><div class="TBS">Waterproofing Activity Lifecycle</div></div>
     </div>
@@ -402,6 +420,7 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
       <button class="rSw" onclick="switchRole()"><span class="rDot"></span><span id="xRN">&mdash;</span><span style="font-size:9px;opacity:.5">&#9660;</span></button>
     </div>
   </div>
+  <div class="sbOverlay" id="sbOvl" onclick="toggleSB()"></div>
   <div class="LY">
     <div class="SB" id="SB"></div>
     <div class="MN" id="MN"></div>
@@ -585,14 +604,7 @@ var V = {
   }
   g.innerHTML = h;
 
-  // Platform highlights
-  var ph = document.createElement('div');
-  ph.className = 'platHighlights';
-  ph.innerHTML = '<div class="platH"><div class="platHI">&#128203;</div><div class="platHT">5-Stage Gate Process</div><div class="platHD">Structured quality checkpoints from RCC readiness through final sign-off</div></div>'
-    + '<div class="platH"><div class="platHI">&#128274;</div><div class="platHT">NCR & Freeze System</div><div class="platHD">Non-conformance tracking with automatic workflow freeze & escalation</div></div>'
-    + '<div class="platH"><div class="platHI">&#128247;</div><div class="platHT">Photo Evidence Trail</div><div class="platHD">Mandatory photographic proof at every location for audit compliance</div></div>'
-    + '<div class="platH"><div class="platHI">&#128202;</div><div class="platHT">Executive Dashboard</div><div class="platHD">Real-time portfolio visibility across all projects, towers & activities</div></div>';
-  document.getElementById('RS').insertBefore(ph, document.querySelector('#RS > p:last-of-type'));
+  // Platform highlights removed per user request
 }());
 
 function selRole(id) {
@@ -612,7 +624,15 @@ function getRole(id) {
   for (var i = 0; i < ROLES.length; i++) if (ROLES[i].id === id) return ROLES[i];
   return ROLES[0];
 }
-function go(v, p) { V.view = v; V.params = p || {}; paint(); window.scrollTo(0, 0); }
+function go(v, p) { V.view = v; V.params = p || {}; paint(); window.scrollTo(0, 0); closeSB(); }
+function toggleSB() {
+  var sb = document.getElementById('SB'), ov = document.getElementById('sbOvl');
+  if (sb) { sb.classList.toggle('open'); ov.classList.toggle('show'); }
+}
+function closeSB() {
+  var sb = document.getElementById('SB'), ov = document.getElementById('sbOvl');
+  if (sb) { sb.classList.remove('open'); if (ov) ov.classList.remove('show'); }
+}
 
 // ================================================================
 //  PAINT
@@ -626,6 +646,54 @@ function paint() {
                ncrForm:pgNCRForm, ncrQH:pgNCRQH, ncrComply:pgNCRComply, ncrCR:pgNCRCR,
                detail:pgDetail, consolidated:pgConsolidated};
   document.getElementById("MN").innerHTML = '<div class="fadeIn">' + ((views[V.view] || pgDash)()) + '</div>';
+  syncPortfolio();
+}
+
+// Sync live activity state back into PORTFOLIO for executive dashboard
+function syncPortfolio() {
+  var a = V.act;
+  if (!a.created) return;
+  // Find matching entry in PORTFOLIO by id
+  var found = false;
+  for (var i = 0; i < PORTFOLIO.length; i++) {
+    if (PORTFOLIO[i].id === a.id) {
+      PORTFOLIO[i].status = a.status;
+      PORTFOLIO[i].curStage = a.curStage;
+      PORTFOLIO[i].ncrs = a.ncrs.length;
+      PORTFOLIO[i].proj = a.md.proj;
+      PORTFOLIO[i].tower = a.md.tower;
+      PORTFOLIO[i].floor = a.md.floor;
+      PORTFOLIO[i].flat = a.md.flat;
+      for (var s = 1; s <= 5; s++) {
+        var st = a.stages[s].st;
+        var pSt = "pending";
+        if (st === "locked") pSt = "locked";
+        else if (st === "approved") pSt = "approved";
+        else if (st === "rejected" || st === "cf_rejected") pSt = "rejected";
+        else if (st === "cf_approved" || st === "qc_review") pSt = "cf_approved";
+        PORTFOLIO[i].stages[s-1] = pSt;
+      }
+      found = true; break;
+    }
+  }
+  // If not found (new activity), add it
+  if (!found) {
+    PORTFOLIO.unshift({id:a.id, proj:a.md.proj, tower:a.md.tower, floor:a.md.floor, flat:a.md.flat,
+      status:a.status, curStage:a.curStage, stages:["pending","locked","locked","locked","locked"],
+      ncrs:a.ncrs.length, created:a.md.date, days:0});
+  }
+  // Also update TIMELINE_EVENTS with latest NCR events
+  if (a.ncrs.length > 0) {
+    var lastNcr = a.ncrs[a.ncrs.length - 1];
+    var hasEvent = false;
+    for (var t = 0; t < TIMELINE_EVENTS.length; t++) {
+      if (TIMELINE_EVENTS[t].msg.indexOf(lastNcr.id) !== -1) { hasEvent = true; break; }
+    }
+    if (!hasEvent) {
+      TIMELINE_EVENTS.unshift({msg: lastNcr.id + " raised — " + a.md.proj + ", " + a.md.tower + ", " + a.md.flat, time:"Just now", dot:"dR"});
+      if (TIMELINE_EVENTS.length > 10) TIMELINE_EVENTS.pop();
+    }
+  }
 }
 
 // ================================================================
@@ -731,7 +799,7 @@ function mdHdr(upTo) {
   var md = V.act.md;
   var h = '<div class="mdH"><div class="mdHT">&#128274; Master Data &mdash; Inherited Read-Only</div><div class="mdF">';
   var pairs = [["Activity ID",V.act.id],["Project",md.proj],["Tower",md.tower],["Floor",md.floor],
-               ["Flat No.",md.flat],["Tower In-Charge",md.tic],["Civil Engineers",md.civil],["MEP Engineers",md.mep]];
+               ["Flat No.",md.flat],["Tower In-Charge",md.tic],["Civil Engineers",md.civil],["MEP Engineers",md.mep],["Tower Manager",md.mgr]];
   for (var i = 0; i < pairs.length; i++) {
     h += '<div><div class="mdk">' + pairs[i][0] + '</div><div class="mdv">' + xE(pairs[i][1]) + '</div></div>';
   }
@@ -1010,11 +1078,13 @@ function pgDash() {
   if (myNC.length) h += '<div class="al alD mb14"><span class="alIc">&#9888;</span><div>You have <strong>' + myNC.length + ' outstanding NCR compliance submission(s)</strong>. <button class="btn bSm bD" style="margin-left:8px;margin-top:4px" onclick="go(\'ncrComply\')">Submit Now</button></div></div>';
 
   if (a.created) {
-    h += '<div class="card"><div class="cT mb12">Activity Overview</div><div class="tblW"><table class="tbl">';
-    h += '<tr><th>Activity ID</th><td class="mono">' + a.id + '</td><th>Status</th><td><span class="badge ' + (a.status === "closed" ? "bCl" : a.frozen ? "bFr" : "bAc") + '">' + a.status + '</span></td></tr>';
-    h += '<tr><th>Project</th><td>' + a.md.proj + '</td><th>Tower</th><td>' + a.md.tower + '</td></tr>';
-    h += '<tr><th>Floor</th><td>' + a.md.floor + '</td><th>Flat No.</th><td>' + a.md.flat + '</td></tr>';
-    h += '<tr><th>Civil Engineers</th><td>' + a.md.civil + '</td><th>MEP Engineers</th><td>' + a.md.mep + '</td></tr></table></div></div>';
+    h += '<div class="card"><div class="cT mb12">Activity Overview — Master Data</div><div class="tblW"><table class="tbl">';
+    h += '<tr><th>Activity ID</th><td class="mono tAcc">' + a.id + '</td><th>Status</th><td><span class="badge ' + (a.status === "closed" ? "bCl" : a.frozen ? "bFr" : "bAc") + '">' + a.status + '</span></td></tr>';
+    h += '<tr><th>Project</th><td>' + xE(a.md.proj) + '</td><th>Tower</th><td>' + xE(a.md.tower) + '</td></tr>';
+    h += '<tr><th>Floor</th><td>' + xE(a.md.floor) + '</td><th>Flat No.</th><td>' + xE(a.md.flat) + '</td></tr>';
+    h += '<tr><th>Tower In-Charge</th><td>' + xE(a.md.tic) + '</td><th>Tower Manager</th><td>' + xE(a.md.mgr) + '</td></tr>';
+    h += '<tr><th>Civil Engineers</th><td>' + xE(a.md.civil) + '</td><th>MEP Engineers</th><td>' + xE(a.md.mep) + '</td></tr>';
+    h += '<tr><th>Created</th><td>' + xE(a.md.date) + '</td><th>Current Stage</th><td class="fw7">' + a.curStage + ' / 5</td></tr></table></div></div>';
   }
   return h;
 }
@@ -1027,9 +1097,9 @@ function pgCreate() {
   var prOpts = "", twOpts = "", flOpts = "", ftOpts = "", cvOpts = "", mpOpts = "", mgOpts = "";
   for (var p in CASCADE) prOpts += '<option' + (p === FS.proj ? " selected" : "") + ">" + p + "</option>";
   for (var t = 0; t < pd.towers.length; t++) twOpts += '<option' + (pd.towers[t] === tw ? " selected" : "") + ">" + pd.towers[t] + "</option>";
-  for (var f = 1; f <= pd.floors; f++) flOpts += '<option value="' + f + '"' + (f === fl ? " selected" : "") + ">Floor " + f + "</option>";
+  for (var f = 1; f <= pd.floors; f++) flOpts += '<option value="' + f + '"' + (f === fl ? " selected" : "") + ">" + ordFloor(f) + "</option>";
   var base = pd.flatBase[tw] || 701;
-  for (var ft = 0; ft < pd.flats; ft++) ftOpts += "<option>Flat " + (base + ft) + "</option>";
+  for (var ft = 0; ft < pd.flats; ft++) ftOpts += "<option>Flat " + (base + ft + (fl - 1) * pd.flats) + "</option>";
   for (var ci = 0; ci < pd.civil.length; ci++) cvOpts += "<option" + (ci < 2 ? " selected" : "") + ">" + pd.civil[ci] + "</option>";
   for (var mi = 0; mi < pd.mep.length; mi++) mpOpts += "<option" + (mi === 0 ? " selected" : "") + ">" + pd.mep[mi] + "</option>";
   for (var gi = 0; gi < pd.mgr.length; gi++) mgOpts += "<option" + (gi === 0 ? " selected" : "") + ">" + pd.mgr[gi] + "</option>";
@@ -1090,13 +1160,18 @@ function getMulti(id) {
   for (var i = 0; i < el.options.length; i++) if (el.options[i].selected) v.push(el.options[i].text);
   return v.join(", ");
 }
+function ordFloor(n) {
+  var s = ["th","st","nd","rd"], v = n % 100;
+  return n + (s[(v-20)%10] || s[v] || s[0]) + " Floor";
+}
 function doCreate() {
   var pd = CASCADE[FS.proj];
   var proj = gv("fP") || FS.proj;
   var tower = gv("fT") || FS.tower;
   var tic = document.getElementById("fTIC") ? document.getElementById("fTIC").value : (pd.tic[tower] || "");
   var flEl = document.getElementById("fF");
-  var floor = flEl ? flEl.options[flEl.selectedIndex].text : "Floor 7";
+  var floorNum = flEl ? parseInt(flEl.value) : FS.floor;
+  var floor = ordFloor(floorNum);
   var flat = gv("fFt") || "Flat 702";
   var civil = getMulti("fCV") || pd.civil.slice(0,2).join(", ");
   var mep = getMulti("fMP") || pd.mep[0];
@@ -1104,6 +1179,7 @@ function doCreate() {
   V.act.md = {date:"23 Apr 2026",proj:proj,tower:tower,tic:tic,floor:floor,flat:flat,civil:civil,mep:mep,mgr:mgr};
   V.act.created = true; V.act.status = "active";
   V.act.stages[1].st = "pending";
+  V.act.curStage = 1;
   toast("&#10003; Activity " + V.act.id + " created. Stage 1 unlocked and assigned.", "success");
   go("dash");
 }
@@ -1167,7 +1243,7 @@ function pgStage() {
     h += '<div class="clI' + (greyed ? " clGr" : rejItem ? " clRj" : d.r === "YES" && !isRej ? " clAc" : "") + '">';
     h += '<div class="clRw"><div class="clNm">' + item.n + '</div><div class="clBd">';
     h += '<div class="clQ">' + xE(item.q) + '</div><div class="clD">' + xE(item.d) + '</div>';
-    if (rejItem) h += '<div style="font-size:11px;color:var(--red);margin-top:4px">&#10007; Rejected by QC &mdash; address and resubmit</div>';
+    if (rejItem) h += '<div style="font-size:11px;color:var(--red);margin-top:4px">&#10007; Rejected &mdash; address and resubmit</div>';
     h += '</div></div>';
     if (!greyed) {
       h += '<div class="clRR">';
@@ -1275,7 +1351,7 @@ function doSubmitStage(n) {
   var s = V.act.stages[n];
   var drgEl = document.getElementById("drgInp"); if (drgEl) s.drg = drgEl.value;
   var subEl = document.getElementById("subInp"); if (subEl) s.sub = subEl.value;
-  s.st = (n === 1) ? "submitted" : "cf_approved";
+  s.st = (n === 1) ? "submitted" : "qc_review";
   toast("&#128228; Stage " + n + " submitted" + (n === 1 ? " for Civil Finish review" : " for QC review") + ".", "success");
   go("dash");
 }
@@ -1454,6 +1530,15 @@ function doCFReview(dec) {
     toast("&#10003; Stage 1 approved by Civil Finish. Forwarded to QC Inspector.", "success");
   } else {
     if (!cfAll.hasNo) { toast("&#9888; Cannot reject \u2014 no items marked NO. Use Approve.", "warning"); return; }
+    for (var lk in s1.cfd) {
+      for (var ik in s1.cfd[lk]) {
+        var rv = (s1.cfd[lk][ik] || {}).r;
+        if (!s1.ld[lk]) s1.ld[lk] = {};
+        if (!s1.ld[lk][ik]) s1.ld[lk][ik] = {};
+        s1.ld[lk][ik].qcLk = (rv === "YES");
+        s1.ld[lk][ik].qcRj = (rv === "NO");
+      }
+    }
     s1.st = "cf_rejected";
     s1.cfRec = {by:"Civil Finish Engineer \u2014 Suresh Patel", date:now, dec:"rejected", comment:cfAll.noCount + " item(s) rejected."};
     toast("&#9888; Stage 1 rejected. Returned to Civil RCC Team.", "warning");
@@ -1709,6 +1794,7 @@ function doSubmitNCR() {
                raisedBy:"QC Inspector &mdash; Priya Sharma", raisedDate:"23 Apr 2026", compliance:null, qhComment:""});
   a.ncrCtr++; V.activeNcr = id;
   toast("&#128221; NCR " + id + " submitted to Project Quality Head.", "info");
+  syncPortfolio();
   go("dash");
 }
 
@@ -1742,6 +1828,7 @@ function doQHReview(id, dec) {
     ncr.status = "closed";
     toast("NCR rejected. Work continues uninterrupted.", "info");
   }
+  syncPortfolio();
   go("dash");
 }
 
@@ -1797,6 +1884,7 @@ function doCompReview(dec) {
   var ncr = ncrsBy("compliance_review")[0]; if (!ncr) return;
   if (dec === "accept") { ncr.status = "closed"; V.act.frozen = false; V.act.status = "active"; toast("&#10003; Compliance accepted. Activity unfrozen. Work may resume.", "success"); }
   else { ncr.status = "compliance_pending"; toast("&#128680; Compliance rejected and escalated. Activity remains frozen.", "warning"); }
+  syncPortfolio();
   go("dash");
 }
 
@@ -1841,16 +1929,30 @@ function pgConsolidated() {
   var h = '<div class="pH"><div><div class="pT">Consolidated Activity Record</div><div class="pS">Auto-generated on closure &middot; Permanent quality documentation &middot; Admissible under project QMS</div></div><div class="fl g8 aic"><button class="printBtn" onclick="printRecord()">&#128424; Print / PDF</button><span class="badge bCl">&#10003; Closed</span><span class="aId">' + a.id + '</span></div></div>';
   h += '<div class="al alS mb14"><span class="alIc">&#127942;</span>Activity formally closed at ' + (a.closedAt || 'N/A') + '. Record permanently locked. All stage data, QC approvals and photographic evidence immutably archived.</div>';
   h += '<div class="crBl"><div class="crBH"><span class="crBT">Master Data</span><span class="badge bAp">Immutable</span></div><div class="crBB"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px">';
-  var pairs = [["Activity ID",a.id],["Project",md.proj],["Tower",md.tower],["Floor",md.floor],["Flat No.",md.flat],["Tower In-Charge",md.tic],["Civil Engineers",md.civil],["MEP Engineers",md.mep],["Closed At",a.closedAt||"\u2014"]];
+  var pairs = [["Activity ID",a.id],["Project",md.proj],["Tower",md.tower],["Floor",md.floor],["Flat No.",md.flat],["Tower In-Charge",md.tic],["Civil Engineers",md.civil],["MEP Engineers",md.mep],["Tower Manager",md.mgr],["Closed At",a.closedAt||"\u2014"]];
   for (var pi = 0; pi < pairs.length; pi++) h += '<div><div class="mdk">' + pairs[pi][0] + '</div><div class="mdv">' + xE(pairs[pi][1]) + '</div></div>';
   h += '</div></div></div>';
   for (var n = 1; n <= 5; n++) {
-    var s = a.stages[n], cl = CL[n], ld = s.ld[0] || {}, locsN = LOCS[n];
+    var s = a.stages[n], cl = CL[n], locsN = LOCS[n];
     h += '<div class="crBl"><div class="crBH"><span class="crBT">Stage ' + n + ' &mdash; ' + cl.title + '</span>' + (s.qcRec ? '<span class="badge bAp">&#10003; Approved &middot; ' + s.qcRec.date + '</span>' : '<span class="badge bLk">&mdash;</span>') + '</div><div class="crBB">';
+    if (s.drg) h += '<div class="f12 tMut mb8">Drawing Ref: <span class="tAcc">' + xE(s.drg) + '</span></div>';
     if (s.sub) h += '<div class="f12 tMut mb8">Subcontractor: ' + xE(s.sub) + '</div>';
-    for (var idx = 0; idx < cl.items.length; idx++) {
-      var d = ld[idx] || {}, ac = d.r === "YES" ? "yes" : d.r === "NA" ? "na" : "bl", av = d.r === "YES" ? "&#10003; YES" : d.r === "NA" ? "&mdash; N/A" : "&mdash;";
-      h += '<div class="crIt"><span class="crAns ' + ac + '">' + av + '</span><span class="crQ"><span class="crQN">' + cl.items[idx].n + '</span>' + xE(cl.items[idx].q) + '</span></div>';
+    for (var locIdx = 0; locIdx < locsN.length; locIdx++) {
+      var ld = s.ld[locIdx] || {};
+      var locHasData = false;
+      for (var ck = 0; ck < cl.items.length; ck++) if (ld[ck] && ld[ck].r) { locHasData = true; break; }
+      if (locHasData || Object.keys(s.ld).length > 0) {
+        h += '<div class="f11 fw7 tAcc mt8 mb8" style="letter-spacing:.5px">' + xE(locsN[locIdx]) + (s.lp[locIdx] ? ' &#128247;' : '') + '</div>';
+        for (var idx = 0; idx < cl.items.length; idx++) {
+          var d = ld[idx] || {}, ac = d.r === "YES" ? "yes" : d.r === "NA" ? "na" : "bl", av = d.r === "YES" ? "&#10003; YES" : d.r === "NA" ? "&mdash; N/A" : "&mdash;";
+          h += '<div class="crIt"><span class="crAns ' + ac + '">' + av + '</span><span class="crQ"><span class="crQN">' + cl.items[idx].n + '</span>' + xE(cl.items[idx].q) + '</span></div>';
+        }
+      }
+    }
+    if (Object.keys(s.ld).length === 0) {
+      for (var idx2 = 0; idx2 < cl.items.length; idx2++) {
+        h += '<div class="crIt"><span class="crAns bl">&mdash;</span><span class="crQ"><span class="crQN">' + cl.items[idx2].n + '</span>' + xE(cl.items[idx2].q) + '</span></div>';
+      }
     }
     var pc = Object.keys(s.lp).length;
     h += '<div class="mt8 f12" style="color:var(--grn)">&#128247; ' + pc + ' of ' + locsN.length + ' location photo(s) archived.</div>';
