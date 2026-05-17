@@ -235,12 +235,6 @@ Waterproofing-Activity-Management-System-Demo/
 
 ---
 
-## 📬 Contact
-
-If you are a real estate developer, construction company, or project management firm interested in deploying QualityTrack WP for your projects — reach out for a live walkthrough.
-
----
-
 ## 📄 License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for full terms.
