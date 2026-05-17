@@ -1,7 +1,3 @@
-<div align="center">
-
-<img src="https://img.shields.io/badge/QualityTrack-WP-b45309?style=for-the-badge&logoColor=white" alt="QualityTrack WP"/>
-
 # Waterproofing Activity Management System
 
 **Enterprise digital quality control platform for waterproofing inspections in real estate construction — Multi-project portfolio management with role-based 5-stage gate process**
