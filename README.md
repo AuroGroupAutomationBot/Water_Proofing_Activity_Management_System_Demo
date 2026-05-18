@@ -65,7 +65,7 @@ Select your role on the cover page and the system adapts entirely to what you ne
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│        Activity Created by Civil RCC Engineer (9-field MD)       │
+│        Activity Created by Civil RCC Engineer (9-field MD)      │
 │     Project · Tower · Floor · Flat · TIC · Civil · MEP · Mgr    │
 └──────────────────────────────┬──────────────────────────────────┘
                                ▼
@@ -101,8 +101,8 @@ Select your role on the cover page and the system adapts entirely to what you ne
                              │ Final QC Approval ✓
                              ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│    Activity Closed — Consolidated Record Auto-Generated          │
-│    All stage data, QC decisions, photos permanently archived     │
+│    Activity Closed — Consolidated Record Auto-Generated         │
+│    All stage data, QC decisions, photos permanently archived    │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -120,10 +120,10 @@ QC raises NCR → Quality Head reviews → Approve: Activity FROZEN + 10-min tim
 
     ┌─────────────────────────────────────────┐
     │         NCR Approved — FROZEN           │
-    │  All stage progression halted            │
-    │  10-minute escalation timer starts       │
-    │  Responsible party must submit           │
-    │  compliance with corrective actions      │
+    │  All stage progression halted           │
+    │  10-minute escalation timer starts      │
+    │  Responsible party must submit          │
+    │  compliance with corrective actions     │
     └────────────────────┬────────────────────┘
                          ▼
               QC reviews compliance
