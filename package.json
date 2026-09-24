@@ -1,0 +1,25 @@
+{
+  "name": "arpl-qc-waterproofing-management",
+  "version": "3.0.0",
+  "description": "Enterprise-Grade Digital Quality Governance & Waterproofing Activity Management System for Construction Operations",
+  "main": "index.html",
+  "scripts": {
+    "test": "node tests/run_all_tests.js"
+  },
+  "keywords": [
+    "qc",
+    "waterproofing",
+    "quality-assurance",
+    "iso-9001-2015",
+    "construction-quality",
+    "state-machine",
+    "rbac",
+    "dpdp-act",
+    "ncr-escalation",
+    "observation",
+    "swn",
+    "geofencing"
+  ],
+  "author": "Antigravity Engineering Team",
+  "license": "UNLICENSED"
+}
