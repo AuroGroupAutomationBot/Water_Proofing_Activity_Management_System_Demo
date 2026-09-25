@@ -812,41 +812,59 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
     <span class="statutory-tag" style="color:var(--pur);border-color:var(--pb)">&#128220; ISO 9001:2015 Clause 8.6 Standard</span>
   </div>
 
-  <!-- 5-STAGE GOVERNANCE WORKFLOW RIBBON -->
-  <div class="landing-workflow-strip">
+  <!-- 9-FIELD MASTER DATA INITIATION BANNER -->
+  <div style="width:100%;max-width:960px;background:rgba(245,166,35,0.08);border:1px dashed rgba(245,166,35,0.4);border-radius:var(--rs);padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="background:var(--acc);color:#000;font-weight:900;font-size:10px;padding:3px 8px;border-radius:4px;font-family:var(--fm);letter-spacing:0.5px">ROOT CREATION</span>
+      <span style="font-weight:700;font-size:12.5px;color:var(--txt)">Activity Created by Civil RCC Engineer &bull; 9-Field Master Data</span>
+    </div>
+    <div style="font-size:11px;font-family:var(--fm);color:var(--acc);display:flex;gap:6px;flex-wrap:wrap">
+      <span>Project</span> &bull; <span>Tower</span> &bull; <span>Floor</span> &bull; <span>Flat</span> &bull; <span>TIC</span> &bull; <span>Civil</span> &bull; <span>MEP</span> &bull; <span>Mgr</span> &bull; <span>WGS84 GPS</span>
+    </div>
+  </div>
+
+  <!-- 5-STAGE CANONICAL GOVERNANCE WORKFLOW RIBBON -->
+  <div class="landing-workflow-strip" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));max-width:960px">
     <div class="lws-node">
       <div class="lws-num">1</div>
       <div>
-        <div class="lws-title">RCC Handover</div>
-        <div class="lws-desc">13 structural checks &middot; tie-rod non-shrink grouting</div>
+        <div class="lws-title">Stage 1: RCC Readiness</div>
+        <div class="lws-desc"><b>13 items</b> &middot; 6 locations<br>Filled by: <b>Civil RCC</b><br>Review: <b>CF Review &rarr; QC</b></div>
       </div>
     </div>
     <div class="lws-node">
       <div class="lws-num">2</div>
       <div>
-        <div class="lws-title">MEP Clearance</div>
-        <div class="lws-desc">Core cuts, pipe slopes &middot; 0.5 MPa hydrostatic testing</div>
+        <div class="lws-title">Stage 2: MEP Core Cuts</div>
+        <div class="lws-desc"><b>6 items</b> &middot; 6 locations<br>Filled by: <b>MEP Team</b><br>Review: <b>QC Approval &check;</b></div>
       </div>
     </div>
     <div class="lws-node">
       <div class="lws-num">3</div>
       <div>
-        <div class="lws-title">48h Pre-Ponding</div>
-        <div class="lws-desc">45&deg; coving fillets, V-grooves &middot; 48h flood test</div>
+        <div class="lws-title">Stage 3: 48h Pre-Ponding</div>
+        <div class="lws-desc"><b>7 items</b> &middot; 7 locations<br>Filled by: <b>Civil Finish</b><br>Review: <b>QC Approval &check;</b></div>
       </div>
     </div>
     <div class="lws-node">
       <div class="lws-num">4</div>
       <div>
-        <div class="lws-title">Membrane &amp; DFT</div>
-        <div class="lws-desc">Multi-coat application, 300mm upturns &middot; DFT gauging</div>
+        <div class="lws-title">Stage 4: WP Coating &amp; DFT</div>
+        <div class="lws-desc"><b>8 items</b> &middot; 7 locations<br>Filled by: <b>Civil Finish</b><br>Review: <b>QC Approval &check;</b></div>
       </div>
     </div>
     <div class="lws-node">
       <div class="lws-num">5</div>
       <div>
-        <div class="lws-title">Screed &amp; 72h Test</div>
-        <div class="lws-desc">1:100 slope, 7-day cure &middot; 72h flood test &amp; QMS archival</div>
+        <div class="lws-title">Stage 5: Screed &amp; 72h Test</div>
+        <div class="lws-desc"><b>3 items</b> &middot; 7 locations<br>Filled by: <b>Civil Finish</b><br>Gate: <b>Final QC Approval &check;</b><br><span style="color:var(--grn);font-size:9.5px">(QC Sole Gatekeeper &bull; No PM)</span></div>
+      </div>
+    </div>
+    <div class="lws-node" style="border-color:rgba(30,203,160,0.4);background:rgba(30,203,160,0.06)">
+      <div class="lws-num" style="background:var(--gdim);color:var(--grn);border-color:var(--gb)">&check;</div>
+      <div>
+        <div class="lws-title" style="color:var(--grn)">Consolidated QMS Dossier</div>
+        <div class="lws-desc">Auto-Generated Record<br><b>A4 PDF Report:</b><br><span style="color:var(--acc);font-weight:700">Quality Engineers Only</span></div>
       </div>
     </div>
   </div>
@@ -878,22 +896,26 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
         <span>&#10003; Mandatory Physical Site Verification</span>
       </div>
     </div>
-    <div class="proto-grid">
+    <div class="proto-grid" style="grid-template-columns:repeat(auto-fit,minmax(175px,1fr))">
       <div class="proto-card">
-        <div class="proto-card-t" style="color:var(--red)">&#128683; 1. Stop Work Notification &mdash; Entire Tower Freeze (BRD &sect;11.4)</div>
-        <p class="proto-card-d">Structural or systemic hazards trigger an immediate <b>blanket Entire Tower Freeze</b>. All active stages across all floors and flats in the tower are halted until joint Quality Head and PM clearance.</p>
+        <div class="proto-card-t" style="color:var(--red)">&#128683; 1. SWN &mdash; Tower Freeze (BRD &sect;11.4)</div>
+        <p class="proto-card-d">Structural or batch defect freezes <b>Entire Tower</b>. Revocation strictly requires <b>Joint Signoff: Quality Head (QH) + Project Manager (PM)</b>.</p>
       </div>
       <div class="proto-card">
-        <div class="proto-card-t" style="color:var(--yel)">&#9888; 2. 10-Minute NCR &mdash; Floor Worksite Freeze (BRD &sect;11)</div>
-        <p class="proto-card-d">Quality Head endorsement halts works across the <b>entire floor slab (Floor Freeze)</b> with a <b>10-minute escalation countdown timer</b> until compliance submission is inspected and accepted by QC.</p>
+        <div class="proto-card-t" style="color:var(--yel)">&#9888; 2. NCR &mdash; Floor Freeze (BRD &sect;11)</div>
+        <p class="proto-card-d">Quality Head exclusive approval halts target <b>Floor Slab</b> with a <b>10-minute escalation countdown timer</b> until CAPA inspection and QH closure.</p>
       </div>
       <div class="proto-card">
-        <div class="proto-card-t" style="color:var(--blu)">&#128065; 3. Quality Observations &mdash; Flat Freeze (BRD &sect;12)</div>
-        <p class="proto-card-d">Bilateral fast-track resolution between QC and site engineers for unit defects. <b>Freezes the specific flat (Flat Freeze)</b> while adjacent units proceed uninterrupted until photographic closeout.</p>
+        <div class="proto-card-t" style="color:var(--blu)">&#128065; 3. Observation &mdash; Flat Freeze (BRD &sect;12)</div>
+        <p class="proto-card-d">Bilateral fast-track resolution. Freezes the <b>specific flat worksite</b> while adjacent flats proceed. Physically inspected &amp; closed by <b>QC Inspector</b>.</p>
       </div>
       <div class="proto-card">
-        <div class="proto-card-t" style="color:var(--grn)">&#128208; 4. 1:100 Slope &amp; 300mm Upturn Mandate</div>
-        <p class="proto-card-d">Minimum 1:100 protection screed gradient directed toward drainage outlets, with 300mm continuous membrane upturn on perimeter walls to guarantee comprehensive splash zone protection.</p>
+        <div class="proto-card-t" style="color:var(--grn)">&#128208; 4. 1:100 Slope &amp; 300mm Upturn</div>
+        <p class="proto-card-d">Minimum 1:100 screed slope to drains, 48h pre-ponding &amp; 72h final flood tests with zero tolerance for moisture seepage on ceiling soffit.</p>
+      </div>
+      <div class="proto-card" style="border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.06)">
+        <div class="proto-card-t" style="color:var(--acc)">&#128196; 5. A4 QMS PDF &mdash; Quality Only</div>
+        <p class="proto-card-d">Official ISO 9001:2015 Clause 8.6 A4 QMS PDF Report is accessible <b>exclusively to Quality Engineers (QC &amp; QH)</b>, matching EHS Demo parity. Other roles locked.</p>
       </div>
     </div>
   </div>
@@ -960,14 +982,14 @@ function generateActivityId(proj) {
 //  DATA — Roles & Master Data (DPDP Act 2023 Compliant: No PII)
 // ================================================================
 var ROLES = [
-  {id:"civil_rcc",   cat:"eng",  lbl:"Civil RCC Engineer",      ic:"&#127959;", ds:"Creates activity &middot; Fills Stage 1 RCC Readiness checklist",        bg:"rgba(245,166,35,.12)",  fc:"#f5a623"},
-  {id:"civil_finish",cat:"eng",  lbl:"Civil Finish Team",       ic:"&#129695;", ds:"Reviews Stage 1 &middot; Fills Stages 3, 4 &amp; 5 checklists",          bg:"rgba(91,158,245,.12)",  fc:"#5b9ef5"},
-  {id:"mep",         cat:"eng",  lbl:"MEP Team",                ic:"&#128295;", ds:"Fills Stage 2 &mdash; MEP Core Cut &amp; Installation checklist",         bg:"rgba(167,139,250,.12)", fc:"#a78bfa"},
-  {id:"qc",          cat:"qc",   lbl:"QC Inspector / Engineer", ic:"&#128269;", ds:"Reviews all stages &middot; Issues approvals / rejections &middot; NCRs", bg:"rgba(30,203,160,.12)",  fc:"#1ecba0"},
-  {id:"qh",          cat:"qc",   lbl:"Project Quality Head",    ic:"&#128081;", ds:"Approves or rejects NCR submissions from QC Engineer",                    bg:"rgba(245,158,11,.12)",  fc:"#f59e0b"},
-  {id:"pm",          cat:"mgmt", lbl:"Project / Tower Manager", ic:"&#128202;", ds:"Monitors activity status &middot; Receives escalation alerts",            bg:"rgba(91,158,245,.12)",  fc:"#5b9ef5"},
-  {id:"senior",      cat:"mgmt", lbl:"Senior Management",       ic:"&#127970;", ds:"Read-only visibility across all projects and activities",                 bg:"rgba(102,120,154,.12)", fc:"#66789a"},
-  {id:"admin",       cat:"admin",lbl:"Site & Systems Administrator",ic:"&#128205;", ds:"Configures worksite GPS coordinates, geofence radius & system radar", bg:"rgba(100,116,139,.18)", fc:"#94a3b8"}
+  {id:"civil_rcc",   cat:"eng",  lbl:"Civil RCC Engineer",      ic:"&#127959;", ds:"Initiates Activity (9-field MD) &middot; Fills Stage 1 RCC Readiness (13 items, 6 locations)", bg:"rgba(245,166,35,.12)",  fc:"#f5a623"},
+  {id:"civil_finish",cat:"eng",  lbl:"Civil Finish Team",       ic:"&#129695;", ds:"Stage 1 Joint Handover Review &middot; Fills Stages 3, 4 &amp; 5 Checklists (7 locations)",      bg:"rgba(91,158,245,.12)",  fc:"#5b9ef5"},
+  {id:"mep",         cat:"eng",  lbl:"MEP Team",                ic:"&#128295;", ds:"Fills Stage 2 MEP Core Cuts &amp; Sleeves (6 items) &middot; 0.5 MPa Hydrostatic Test",        bg:"rgba(167,139,250,.12)", fc:"#a78bfa"},
+  {id:"qc",          cat:"qc",   lbl:"QC Inspector / Engineer", ic:"&#128269;", ds:"Sole Technical Gatekeeper for Stages 1&ndash;5 &middot; Closes Observations &middot; A4 QMS PDF Export", bg:"rgba(30,203,160,.12)",  fc:"#1ecba0"},
+  {id:"qh",          cat:"qc",   lbl:"Project Quality Head",    ic:"&#128081;", ds:"Approves Floor NCRs &middot; Co-signs SWN Lifting Order &middot; Official A4 QMS PDF Export",        bg:"rgba(245,158,11,.12)",  fc:"#f59e0b"},
+  {id:"pm",          cat:"mgmt", lbl:"Project / Tower Manager", ic:"&#128202;", ds:"Site In-Charge (MD) &middot; Co-signs SWN Lifting with Quality Head &middot; Zero Stage Checklist Signoff", bg:"rgba(91,158,245,.12)",  fc:"#5b9ef5"},
+  {id:"senior",      cat:"mgmt", lbl:"Senior Management",       ic:"&#127970;", ds:"Executive Governance &middot; Portfolio Quality KPIs &middot; Read-Only Transparency across Towers", bg:"rgba(102,120,154,.12)", fc:"#66789a"},
+  {id:"admin",       cat:"admin",lbl:"Site & Systems Administrator",ic:"&#128205;", ds:"Configures worksite GPS coordinates, geofence radius &amp; system radar (280x280 Canvas)", bg:"rgba(100,116,139,.18)", fc:"#94a3b8"}
 ];
 
 // Project Geofence Perimeter Configurations (from EHS Demo pattern)
@@ -1200,6 +1222,11 @@ function getActiveUserLabel() {
     admin: "Site Administrator (ADMIN-001)"
   };
   return roleMap[V.role] || "Site Quality Engineer (QA-01)";
+}
+
+function canAccessQmsReport(role) {
+  var r = role || V.role;
+  return ['qc', 'qh'].indexOf(r) !== -1;
 }
 
 function openDPDPModal() {
@@ -3355,7 +3382,11 @@ function pgDetail() {
 
   h += '<div class="fl g8 fw mt12">';
   if (a.status === "closed") h += '<button class="btn bP" onclick="go(\'consolidated\')">&#128196; View Consolidated Activity Record</button>';
-  h += '<button class="btn btn-pdf" onclick="generateActivityPDF()"><i class="fa fa-file-pdf"></i> &#128196; Download Official PDF Report</button>';
+  if (canAccessQmsReport()) {
+    h += '<button class="btn btn-pdf" onclick="generateActivityPDF()"><i class="fa fa-file-pdf"></i> &#128196; Download Official PDF Report</button>';
+  } else {
+    h += '<button class="btn btn-pdf btn-disabled" onclick="toast(\'&#128274; Access Restricted: Official ISO 9001:2015 A4 QMS PDF Reports are accessible exclusively to Quality Engineers (QC Inspector &amp; Quality Head).\',\'warning\')" title="Restricted to Quality Engineers (QC/QH)"><i class="fa fa-lock"></i> &#128274; Download Official PDF Report (Quality Engineers Only)</button>';
+  }
   h += '</div>';
   return h;
 }
@@ -4180,7 +4211,11 @@ function resetDemoData() {
 // ================================================================
 function pgConsolidated() {
   var a = V.act, md = a.md;
-  var h = '<div class="pH"><div><div class="pT">Consolidated Activity Record</div><div class="pS">Auto-generated on closure &middot; Permanent quality documentation &middot; Admissible under project QMS</div></div><div class="fl g8 aic"><button class="btn btn-pdf bSm" onclick="generateActivityPDF()"><i class="fa fa-file-pdf"></i> &#128196; Download Official PDF Report</button><button class="printBtn" onclick="printRecord()">&#128424; Print</button><span class="badge bCl">&#10003; Closed</span><span class="aId">' + a.id + '</span></div></div>';
+  var canPdf = canAccessQmsReport();
+  var pdfBtns = canPdf
+    ? '<button class="btn btn-pdf bSm" onclick="generateActivityPDF()"><i class="fa fa-file-pdf"></i> &#128196; Download Official PDF Report</button><button class="printBtn" onclick="printRecord()">&#128424; Print</button>'
+    : '<button class="btn btn-pdf bSm btn-disabled" onclick="toast(\'&#128274; Access Restricted: Official ISO 9001:2015 A4 QMS PDF Reports are accessible exclusively to Quality Engineers (QC Inspector &amp; Quality Head).\',\'warning\')" title="Restricted to Quality Engineers (QC/QH)"><i class="fa fa-lock"></i> Download Official PDF Report (Quality Engineers Only)</button><button class="printBtn btn-disabled" onclick="toast(\'&#128274; Access Restricted: Official A4 QMS Print Dossier is restricted exclusively to Quality Engineers.\',\'warning\')" title="Restricted to Quality Engineers"><i class="fa fa-lock"></i> Print (Restricted)</button>';
+  var h = '<div class="pH"><div><div class="pT">Consolidated Activity Record</div><div class="pS">Auto-generated on closure &middot; Permanent quality documentation &middot; Admissible under project QMS</div></div><div class="fl g8 aic">' + pdfBtns + '<span class="badge bCl">&#10003; Closed</span><span class="aId">' + a.id + '</span></div></div>';
   h += '<div class="al alS mb14"><span class="alIc">&#127942;</span>Activity formally closed at ' + (a.closedAt || 'N/A') + '. Record permanently locked. All stage data, QC approvals and photographic evidence immutably archived.</div>';
   h += '<div class="crBl"><div class="crBH"><span class="crBT">Master Data</span><span class="badge bAp">Immutable</span></div><div class="crBB"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px">';
   var pairs = [
@@ -4384,6 +4419,10 @@ function animateCounters() {
 //  PRINT
 // ================================================================
 function printRecord() {
+  if (!canAccessQmsReport(V.role)) {
+    toast("&#128274; Access Restricted: Official A4 QMS Print Dossier is restricted exclusively to Quality Engineers.", "warning");
+    return false;
+  }
   try { window.print(); } catch(e) { toast('Print not available in this browser.', 'warning'); }
 }
 
@@ -4671,7 +4710,12 @@ function pdfImgFormat(dataUrl) {
 
 function generateActivityPDF() {
   var a = V.act, md = a.md;
-  if (!a) { toast("No active record found.", "warning"); return; }
+  if (!a) { toast("No active record found.", "warning"); return false; }
+
+  if (!canAccessQmsReport(V.role)) {
+    toast("&#128274; Access Restricted: Official ISO 9001:2015 A4 QMS PDF Reports are accessible exclusively to Quality Engineers (QC Inspector &amp; Quality Head).", "warning");
+    return false;
+  }
 
   if (!(typeof window !== 'undefined' && window.jspdf && window.jspdf.jsPDF)) {
     toast("PDF library deferred or offline. Opening browser print export...", "info");

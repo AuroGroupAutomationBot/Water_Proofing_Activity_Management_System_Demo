@@ -2,11 +2,13 @@
  * SUITE 10: ISO 9001:2015 CLAUSE 8.6 A4 QMS PDF EXPORT & DOSSIER ENGINE
  *
  * Verifies that:
- * 1. generateActivityPDF generates compliant ISO 9001:2015 Clause 8.6 Handover Dossier.
- * 2. Corporate QA/QC header, project metadata, and 5-stage summary are included.
- * 3. All 37 checklist items are rendered with status badges.
- * 4. GPS worksite coordinates and digital signatures are embedded.
- * 5. printRecord fallback operates correctly via window.print.
+ * 1. canAccessQmsReport enforces Quality Engineer exclusivity (qc, qh ONLY).
+ * 2. Non-quality roles (civil_rcc, civil_finish, mep, pm, senior, admin) are blocked from PDF generation and print.
+ * 3. Authorized roles (qc, qh) execute generateActivityPDF and create compliant ISO 9001:2015 Clause 8.6 Handover Dossier.
+ * 4. Corporate QA/QC header, project metadata, and 5-stage summary are included.
+ * 5. All 37 checklist items are rendered with status badges.
+ * 6. GPS worksite coordinates and digital signatures are embedded.
+ * 7. printRecord fallback operates correctly via window.print for authorized quality engineers.
  */
 
 const fs = require('fs');
@@ -26,7 +28,8 @@ assert(src.includes('@media print'), 'index.html must contain @media print style
 assert(src.includes('page-break-inside') || src.includes('break-inside'), 'Print styles must handle page breaks cleanly');
 assert(src.includes('generateActivityPDF'), 'HTML must declare generateActivityPDF handler');
 assert(src.includes('printRecord'), 'HTML must declare printRecord handler');
-console.log('  ✓ PASS: Print CSS and PDF button directives present');
+assert(src.includes('canAccessQmsReport'), 'HTML must declare canAccessQmsReport RBAC helper');
+console.log('  ✓ PASS: Print CSS, PDF handlers, and canAccessQmsReport RBAC directives present');
 
 // 2. VM Execution Setup with Mock jsPDF
 console.log('\n--- 2. Runtime jsPDF Execution & Output Verification ---');
@@ -111,10 +114,33 @@ sandbox.window.window = sandbox.window;
 vm.createContext(sandbox);
 vm.runInContext(scriptMatch[1], sandbox);
 
-// 3. Test generateActivityPDF()
-console.log('\n--- 3. Executing generateActivityPDF() with Mock jsPDF ---');
-assert(typeof sandbox.generateActivityPDF === 'function', 'generateActivityPDF must be defined');
+// 3. Test RBAC Exclusivity Gate (canAccessQmsReport)
+console.log('\n--- 3. Testing RBAC Exclusivity (Quality Engineers Only) ---');
+assert(typeof sandbox.canAccessQmsReport === 'function', 'canAccessQmsReport must be defined');
 
+const unauthorizedRoles = ['civil_rcc', 'civil_finish', 'mep', 'pm', 'senior', 'admin'];
+unauthorizedRoles.forEach(r => {
+    assert.strictEqual(sandbox.canAccessQmsReport(r), false, `Role ${r} must be DENIED QMS report access`);
+    sandbox.V.role = r;
+    const resPdf = sandbox.generateActivityPDF();
+    assert.strictEqual(resPdf, false, `Role ${r} generateActivityPDF must abort and return false`);
+    printCalled = false;
+    const resPrint = sandbox.printRecord();
+    assert.strictEqual(resPrint, false, `Role ${r} printRecord must abort and return false`);
+    assert.strictEqual(printCalled, false, `Role ${r} must not trigger window.print()`);
+});
+console.log('  ✓ PASS: All 6 non-quality roles successfully blocked from PDF export & print dossier');
+
+const authorizedRoles = ['qc', 'qh'];
+authorizedRoles.forEach(r => {
+    assert.strictEqual(sandbox.canAccessQmsReport(r), true, `Role ${r} must be AUTHORIZED for QMS report access`);
+});
+console.log('  ✓ PASS: Quality roles (qc, qh) successfully authorized');
+
+// 4. Test generateActivityPDF() with Authorized Quality Role
+console.log('\n--- 4. Executing generateActivityPDF() with Authorized Role (qc) ---');
+sandbox.V.role = 'qc';
+pdfTextOutput = [];
 sandbox.generateActivityPDF();
 
 const allPdfText = pdfTextOutput.join(' ');
@@ -125,12 +151,13 @@ assert(allPdfText.includes('DPDP Act 2023 Compliant'), 'PDF must state DPDP Act 
 assert(allPdfText.includes(sandbox.V.act.id), 'PDF must include activity ID');
 console.log(`  ✓ PASS: generateActivityPDF rendered ${pdfTextOutput.length} text blocks including corporate branding & ISO standards`);
 
-// 4. Test Fallback printRecord()
-console.log('\n--- 4. Testing Fallback printRecord() ---');
-assert(typeof sandbox.printRecord === 'function', 'printRecord must be defined');
+// 5. Test Fallback printRecord() with Authorized Quality Role
+console.log('\n--- 5. Testing printRecord() with Authorized Role (qh) ---');
+sandbox.V.role = 'qh';
+printCalled = false;
 sandbox.printRecord();
-assert.strictEqual(printCalled, true, 'printRecord must invoke window.print()');
-console.log('  ✓ PASS: Fallback printRecord invoked window.print() successfully');
+assert.strictEqual(printCalled, true, 'printRecord must invoke window.print() for authorized quality head');
+console.log('  ✓ PASS: printRecord invoked window.print() successfully for quality engineer');
 
 console.log('\n================================================================');
 console.log('SUITE 10: ISO 9001:2015 PDF EXPORT - ALL TESTS PASSED');

@@ -189,6 +189,7 @@ The following matrix delineates operational boundaries across the software:
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **Create New Waterproofing Activity** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Fill & Submit Stage 1 Checklist** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Review Stage 1 (Substrate Handover)**| ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Fill & Submit Stage 2 Checklist** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Fill & Submit Stages 3, 4, 5** | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Approve Stage Checklist (Sign-off)** | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
@@ -200,12 +201,12 @@ The following matrix delineates operational boundaries across the software:
 | **Submit RCA & CAPA on NCR** | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | **Close NCR & Unfreeze Floor Worksite** | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
 | **Issue Stop Work Notification (SWN - Tower)**| ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ |
-| **Lift Stop Work Notification (SWN)** | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| **Lift Stop Work Notification (SWN)** | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ |
 | **Configure Geofence Radar & Boundaries**| ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
 | **Perform On-Site Physical GPS Calibration**| ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
 | **Reset Factory Baseline Geofence Pin** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
 | **Sign Administrative Authorization** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| **Export Official A4 QMS PDF Report** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Export Official A4 QMS PDF Report** | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
 
 ---
 
@@ -368,7 +369,7 @@ The accompanying interactive visual document `qc_swimlanes.html` specifies 13 en
 - **Steps:** Penetration primer coat (4h cure) ➔ Horizontal first coat with reinforcement mesh ➔ Vertical second coat with 300mm wall upturn ➔ Wet film gauge readings ➔ Magnetic/ultrasonic DFT comb test (1.2mm - 1.5mm) ➔ Stage 4 Signoff.
 
 ### 8.5 Flow 5: Stage 5 Protection Screed & 72-Hour Post-Ponding Flood Test
-- **Actors:** Civil Finish Engineer (`CIVIL-FIN-001`), QC Inspection Engineer (`QC-INSP-001`), Project Manager (`PM-001`).
+- **Actors:** Civil Finish Engineer (`CIVIL-FIN-001`), QC Inspection Engineer (`QC-INSP-001`).
 - **Steps:** 300-micron polyethylene separation layer ➔ 40mm M20 protection screed with PP fibers ➔ 7-day curing ➔ 72-hour final flood test ➔ Zero soffit sweating signoff ➔ Quality Clearance Certificate.
 
 ### 8.6 Flow 6: Stage Approval & Partial Rejection Lifecycle
