@@ -7,17 +7,18 @@
 **WP-01 Structural RCC Readiness · WP-02 MEP Core Cuts & Sleeves · WP-03 Surface Prep & 48h Pre-Ponding · WP-04 Membrane Coating & DFT Gauging · WP-05 Protection Screed & 72h Post-Ponding**
 
 [![Status](https://img.shields.io/badge/Status-Production_Ready-brightgreen?style=for-the-badge)](/)
-[![Tests](https://img.shields.io/badge/Tests-11%20Suites%20Passed-success?style=for-the-badge)](/)
+[![Status](https://img.shields.io/badge/Status-Production_Ready-brightgreen?style=for-the-badge)](/)
+[![Tests](https://img.shields.io/badge/Tests-15%20Master%20Suites%20Passed-success?style=for-the-badge)](/)
 [![Pass Rate](https://img.shields.io/badge/Pass_Rate-100%25-brightgreen?style=for-the-badge)](/)
 [![Quality Standard](https://img.shields.io/badge/Standard-ISO_9001:2015_Clause_8.6-blue?style=for-the-badge)](/)
 [![DPDP](https://img.shields.io/badge/Privacy-DPDP_Act_2023_Compliant-purple?style=for-the-badge)](/)
-[![GPS Geofence](https://img.shields.io/badge/Geolocation-WGS84_Geofenced-0ea5e9?style=for-the-badge)](/)
+[![GPS Geofence](https://img.shields.io/badge/Geolocation-WGS84_Radar_Engine-0ea5e9?style=for-the-badge)](/)
 [![Digital Signatures](https://img.shields.io/badge/Signatures-HTML5_Canvas_Vector-38bdf8?style=for-the-badge)](/)
 [![Zero Build](https://img.shields.io/badge/Architecture-Zero_Build_Single_File-16a34a?style=for-the-badge)](/)
 
 ---
 
-*An enterprise-grade, zero-dependency quality assurance platform implementing the end-to-end waterproofing activity lifecycle across residential towers — from RCC structural handover through MEP penetration sealing, 48-hour pre-ponding flood tests, multi-coat membrane thickness verification, 72-hour final flood tests, hierarchical defect governance (Observations, NCRs, Stop Work Notifications), WGS84 GPS geofencing, DPDP Act 2023 compliant digital canvas signatures, and automated ISO 9001:2015 Clause 8.6 A4 QMS PDF handover dossier generation.*
+*An enterprise-grade, zero-dependency quality assurance platform implementing the end-to-end waterproofing activity lifecycle across residential towers — from RCC structural handover through MEP penetration sealing, 48-hour pre-ponding flood tests, multi-coat membrane thickness verification, 72-hour final flood tests, 3-tier hierarchical defect freezing governance (Flat Observation, Floor NCR, Tower SWN), dual-phase defect raising (pre- & post-checklist submission), mutual exclusivity concurrency locks, interactive 280x280 WGS84 GPS geofence radar, DPDP Act 2023 compliant digital canvas signatures, and automated ISO 9001:2015 Clause 8.6 A4 QMS PDF handover dossier generation.*
 
 </div>
 
@@ -32,7 +33,7 @@
    - 3.2 [External Dependencies & Subresource Integrity](#32-external-dependencies--subresource-integrity)
    - 3.3 [Browser Compatibility Matrix](#33-browser-compatibility-matrix)
    - 3.4 [Configuration-Driven Architecture](#34-configuration-driven-architecture)
-4. [Role-Based Access Control (RBAC) & Categorized Personas](#4-role-based-access-control-rbac--categorized-personas)
+4. [Role-Based Access Control (RBAC) & 8 Categorized Personas](#4-role-based-access-control-rbac--categorized-personas)
    - 4.1 [Role Persona Directory](#41-role-persona-directory)
    - 4.2 [Functional Permissions Matrix](#42-functional-permissions-matrix)
    - 4.3 [Dynamic Role Switcher Architecture](#43-dynamic-role-switcher-architecture)
@@ -46,36 +47,40 @@
    - 5.7 [Master Data Cascades (Projects, Towers, TIC, Civil, MEP, PM Registries)](#57-master-data-cascades-projects-towers-tic-civil-mep-pm-registries)
    - 5.8 [Flat Types & Spatial Room Hierarchy (1BHK, 2BHK, 3BHK Locations)](#58-flat-types--spatial-room-hierarchy-1bhk-2bhk-3bhk-locations)
 6. [Core Workflow: Waterproofing Activity Lifecycle Finite State Machine (FSM)](#6-core-workflow-waterproofing-activity-lifecycle-finite-state-machine-fsm)
-   - 6.1 [State Transition Model](#61-state-transition-model)
+   - 6.1 [State Transition Model & 3-Tier Freezing Scopes](#61-state-transition-model)
    - 6.2 [Stage Gate Transition Conditions](#62-stage-gate-transition-conditions)
    - 6.3 [Activity Closure and Lock-in Criteria](#63-activity-closure-and-lock-in-criteria)
 7. [Approval Topology & Gatekeeping Protocols](#7-approval-topology--gatekeeping-protocols)
    - 7.1 [Sequential Stage Progression Engine](#71-sequential-stage-progression-engine)
-   - 7.2 [Partial Rejection & YES Answer Immutability](#72-partial-rejection--yes-answer-immutability)
-   - 7.3 [Delta Re-Inspection & Revision Auditing](#73-delta-re-inspection--revision-auditing)
-8. [Process Swimlanes (12 Operational Flows)](#8-process-swimlanes-12-operational-flows)
+   - 7.2 [Tri-State Checklist Inspection (YES / NO / N/A) & Escalation Gates](#72-tri-state-checklist-inspection-yes--no--na--escalation-gates)
+   - 7.3 [Partial Rejection & YES Answer Immutability](#73-partial-rejection--yes-answer-immutability)
+   - 7.4 [Delta Re-Inspection & Revision Auditing](#74-delta-re-inspection--revision-auditing)
+8. [Process Swimlanes (13 Operational Flows)](#8-process-swimlanes-13-operational-flows)
    - 8.1 [Flow 1: Stage 1 RCC Structural Readiness](#81-flow-1-stage-1-rcc-structural-readiness)
    - 8.2 [Flow 2: Stage 2 MEP Core Cuts & Sleeves](#82-flow-2-stage-2-mep-core-cuts--sleeves)
    - 8.3 [Flow 3: Stage 3 Surface Prep & 48-Hour Pre-Ponding Flood Test](#83-flow-3-stage-3-surface-prep--48-hour-pre-ponding-flood-test)
    - 8.4 [Flow 4: Stage 4 Membrane Coating & DFT Gauging](#84-flow-4-stage-4-membrane-coating--dft-gauging)
    - 8.5 [Flow 5: Stage 5 Protection Screed & 72-Hour Post-Ponding Flood Test](#85-flow-5-stage-5-protection-screed--72-hour-post-ponding-flood-test)
    - 8.6 [Flow 6: Stage Approval & Partial Rejection Lifecycle](#86-flow-6-stage-approval--partial-rejection-lifecycle)
-   - 8.7 [Flow 7: Non-Conformance Report (NCR) & 10-Minute Escalation Freeze Lifecycle](#87-flow-7-non-conformance-report-ncr--10-minute-escalation-freeze-lifecycle)
-   - 8.8 [Flow 8: Quality Observation (OBS) Bilateral Fast-Track Lifecycle (BRD §12)](#88-flow-8-quality-observation-obs-bilateral-fast-track-lifecycle-brd-12)
-   - 8.9 [Flow 9: Stop Work Notification (SWN) Tower-Level Governance (BRD §11.4)](#89-flow-9-stop-work-notification-swn-tower-level-governance-brd-114)
+   - 8.7 [Flow 7: Non-Conformance Report (NCR) Floor-Slab Worksite Freeze (Dual-Phase)](#87-flow-7-non-conformance-report-ncr--10-minute-escalation-freeze-lifecycle)
+   - 8.8 [Flow 8: Quality Observation (OBS) Flat Worksite Freeze (Dual-Phase)](#88-flow-8-quality-observation-obs-bilateral-fast-track-lifecycle-brd-12)
+   - 8.9 [Flow 9: Stop Work Notification (SWN) Blanket Entire Tower Freeze (Dual-Phase)](#89-flow-9-stop-work-notification-swn-tower-level-governance-brd-114)
    - 8.10 [Flow 10: Worksite GPS Geofencing & Tamper-Evident Proximity Engine](#810-flow-10-worksite-gps-geofencing--tamper-evident-proximity-engine)
    - 8.11 [Flow 11: DPDP Act 2023 Compliant Digital Canvas Signatures](#811-flow-11-dpdp-act-2023-compliant-digital-canvas-signatures)
    - 8.12 [Flow 12: Official ISO 9001:2015 Clause 8.6 A4 QMS PDF Export & Handback](#812-flow-12-official-iso-90012015-clause-86-a4-qms-pdf-export--handback)
-9. [Defect Governance Hierarchy: NCR vs Quality Observation (OBS) vs SWN](#9-defect-governance-hierarchy-ncr-vs-quality-observation-obs-vs-swn)
-   - 9.1 [3-Tier Defect Scope Comparison Matrix](#91-3-tier-defect-scope-comparison-matrix)
-   - 9.2 [Quality Observation (OBS - BRD §12) Fast-Track Protocol](#92-quality-observation-obs---brd-12-fast-track-protocol)
-   - 9.3 [Non-Conformance Report (NCR - BRD §11) & 10-Minute Escalation Freeze](#93-non-conformance-report-ncr---brd-11--10-minute-escalation-freeze)
-   - 9.4 [Stop Work Notification (SWN - BRD §11.4) Blanket Tower Governance](#94-stop-work-notification-swn---brd-114-blanket-tower-governance)
+   - 8.13 [Flow 13: Site & Systems Administrator Geolocation Radar Configuration & Governance](#813-flow-13-site--systems-administrator-geolocation-radar-configuration--governance)
+9. [Defect Governance Hierarchy: 3-Tier Freezing Scopes, Dual-Phase Raising & Concurrency Locks](#9-defect-governance-hierarchy-ncr-vs-quality-observation-obs-vs-swn)
+   - 9.1 [3-Tier Defect Scope Comparison Matrix (Tower vs Floor vs Flat)](#91-3-tier-defect-scope-comparison-matrix)
+   - 9.2 [Dual-Phase Defect Governance (Pre- & Post-Submission Raising)](#92-dual-phase-defect-governance-pre---post-submission-raising)
+   - 9.3 [Mutual Exclusivity & Concurrency Locking Engine](#93-mutual-exclusivity--concurrency-locking-engine)
+   - 9.4 [Quality Observation (OBS) Flat Fast-Track Protocol](#94-quality-observation-obs-flat-fast-track-protocol)
+   - 9.5 [Non-Conformance Report (NCR) Floor Freeze & 10-Minute Escalation](#95-non-conformance-report-ncr-floor-freeze--10-minute-escalation)
+   - 9.6 [Stop Work Notification (SWN) Blanket Tower Governance](#96-stop-work-notification-swn-blanket-tower-governance)
 10. [Continuous Flood Testing Engineering Protocols (48-Hour & 72-Hour)](#10-continuous-flood-testing-engineering-protocols-48-hour--72-hour)
 11. [Dry Film Thickness (DFT) & Coating Application Standards](#11-dry-film-thickness-dft--coating-application-standards)
 12. [Notification, Alerting & Audit Logging Engine](#12-notification-alerting--audit-logging-engine)
-13. [WGS84 GPS Geofencing & Tamper-Evident Proximity Engine](#13-wgs84-gps-geofencing--tamper-evident-proximity-engine)
-14. [DPDP Act 2023 Compliant Digital Signature Engine](#14-dpdp-act-2023-compliant-digital-signature-engine)
+13. [WGS84 GPS Geofencing, Interactive Radar & Site Admin Configuration](#13-wgs84-gps-geofencing--tamper-evident-proximity-engine)
+14. [DPDP Act 2023 Compliant Digital Signature Engine & Privacy Safeguards](#14-dpdp-act-2023-compliant-digital-signature-engine)
 15. [Official ISO 9001:2015 Clause 8.6 A4 QMS PDF Dossier Generation](#15-official-iso-90012015-clause-86-a4-qms-pdf-dossier-generation)
 16. [Role-Specific Executive Dashboards & Portfolio KPIs](#16-role-specific-executive-dashboards--portfolio-kpis)
 17. [Activity Register, Multi-Token Filtering & Search](#17-activity-register-multi-token-filtering--search)
@@ -83,7 +88,7 @@
 19. [Data Persistence, LocalStorage & State Management](#19-data-persistence-localstorage--state-management)
 20. [Unified UI Component Library & Token Design System](#20-unified-ui-component-library--token-design-system)
 21. [Security, Audit Remediation & DPDP Statutory Compliance](#21-security-audit-remediation--dpdp-statutory-compliance)
-22. [Testing & Quality Assurance (11 Standalone Test Suites)](#22-testing--quality-assurance-11-standalone-test-suites)
+22. [Testing & Quality Assurance (15 Master Automated Test Suites)](#22-testing--quality-assurance-11-standalone-test-suites)
 23. [Engineering Glossary & IS Standards Reference Index](#23-engineering-glossary--is-standards-reference-index)
 
 ---
@@ -176,26 +181,31 @@ In full compliance with the **India Digital Personal Data Protection (DPDP) Act 
 | `qh` | Quality Governance | **Project Quality Head** | Evaluates NCR RCA/CAPA, authorizes worksite unfreezing, issues and lifts Stop Work Notifications (SWN). |
 | `pm` | Operations Management| **Project / Tower Manager** | Monitors portfolio health, tracks stage cycle times, co-signs SWN closures, receives escalation alerts. |
 | `senior` | Corporate Executive | **Senior Management** | Read-only executive visibility across multi-project portfolio KPIs, quality scores, and defect distributions. |
+| `admin` | Systems & Spatial Admin | **Site & Systems Administrator** | Configures multi-project geofence boundaries, dynamic radar canvas, on-site GPS calibration, factory resets, and authorization. |
 
 ### 4.2 Functional Permissions Matrix
 The following matrix delineates operational boundaries across the software:
-| Operational Action | `civil_rcc` | `civil_finish` | `mep` | `qc` | `qh` | `pm` | `senior` |
-|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Create New Waterproofing Activity** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Fill & Submit Stage 1 Checklist** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Fill & Submit Stage 2 Checklist** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Fill & Submit Stages 3, 4, 5** | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Approve Stage Checklist (Sign-off)** | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
-| **Issue Partial Rejection with Remarks**| ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
-| **Log Quality Observation (OBS - BRD §12)**| ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ |
-| **Submit Observation Rectification Note**| ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Close Quality Observation** | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ |
-| **Raise Non-Conformance Report (NCR)**| ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ |
-| **Submit RCA & CAPA on NCR** | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Close NCR & Unfreeze Activity** | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
-| **Issue Stop Work Notification (SWN)**| ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
-| **Lift Stop Work Notification (SWN)** | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
-| **Export Official A4 QMS PDF Report** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Operational Action | `civil_rcc` | `civil_finish` | `mep` | `qc` | `qh` | `pm` | `senior` | `admin` |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Create New Waterproofing Activity** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Fill & Submit Stage 1 Checklist** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Fill & Submit Stage 2 Checklist** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Fill & Submit Stages 3, 4, 5** | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Approve Stage Checklist (Sign-off)** | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Issue Partial Rejection with Remarks**| ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Log Quality Observation (OBS - Flat)**| ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **Submit Observation Rectification Note**| ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Close Quality Observation (Unfreeze Flat)**| ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **Raise Non-Conformance Report (NCR - Floor)**| ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **Submit RCA & CAPA on NCR** | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Close NCR & Unfreeze Floor Worksite** | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| **Issue Stop Work Notification (SWN - Tower)**| ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ |
+| **Lift Stop Work Notification (SWN)** | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| **Configure Geofence Radar & Boundaries**| ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **Perform On-Site Physical GPS Calibration**| ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **Reset Factory Baseline Geofence Pin** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **Sign Administrative Authorization** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **Export Official A4 QMS PDF Report** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ---
 
@@ -302,11 +312,13 @@ stateDiagram-v2
     CLOSED --> [*]
 ```
 
-### 6.1 State Transition Model
-- `draft`: Activity declared; metadata configured; awaiting Stage 1 checklist start.
+### 6.1 State Transition Model & 3-Tier Freezing Scopes
+- `draft`: Activity declared; metadata configured; checklist editable prior to submission.
 - `in_progress`: Active execution across stages 1 through 5. Sub-states govern each stage (`locked`, `pending`, `submitted`, `rejected`, `approved`).
-- `frozen`: Worksite halted at flat/floor level due to an active Non-Conformance Report (NCR). All form inputs disabled; 10-minute countdown active.
-- `tower_halted`: Blanket stoppage across all activities in the tower due to an active Stop Work Notification (SWN).
+- `flat_frozen`: Worksite halted specifically at flat level due to an active Quality Observation (`flatFrozen = true`). Adjacent units on the floor proceed unhindered.
+- `floor_frozen`: Worksite halted across the floor slab due to an active Non-Conformance Report (`floorFrozen = true`). Form inputs locked; 10-minute countdown active.
+- `tower_halted`: Blanket stoppage across all activities and trades in the tower due to an active Stop Work Notification (`towerFrozen = true`).
+- `frozen`: Composite lock condition (`towerFrozen || floorFrozen || flatFrozen`) strictly preventing checklist submission for that unit while any defect hold remains active.
 - `closed`: Formally approved through Stage 5. All data, signatures, and photographic logs permanently locked; ISO 9001 dossier archived.
 
 ---
@@ -316,20 +328,28 @@ stateDiagram-v2
 ### 7.1 Sequential Stage Progression Engine
 The software disallows out-of-order stage submissions. Stage $N+1$ remains in a `locked` state until Stage $N$ has been marked `approved` with an authenticated digital signature from `qc`.
 
-### 7.2 Partial Rejection & YES Answer Immutability
+### 7.2 Tri-State Checklist Inspection (YES / NO / N/A) & Escalation Gates
+Inspection items across all 5 stages support unambiguous tri-state evaluation:
+- `YES` (Compliant): Parameter conforms fully to technical specifications and IS codes.
+- `NO` (Non-Compliant): Parameter exhibits deficiency. Mandates detailed corrective remarks. Automatically generates direct escalation action shortcuts:
+  - **Raise Floor NCR:** Instantly launches Floor NCR modal targeting the whole floor slab.
+  - **Raise Flat Observation:** Instantly launches Quality Observation modal targeting the specific flat.
+- `N/A` (Not Applicable): Parameter excluded with mandatory technical justification.
+
+### 7.3 Partial Rejection & YES Answer Immutability
 A critical innovation in WP-AMS is **YES Answer Immutability**:
 - When a QC Inspector reviews a stage checklist, items passing inspection are tagged as `YES`.
 - If one or more items fail, the QC Inspector marks them `NO`, specifies a mandatory rejection reason, and rejects the stage.
 - **The approved `YES` items are permanently locked in memory.** Upon resubmission, the field engineer is only required to address and rectify the flagged `NO` items. This eliminates redundant re-checking, reduces friction, and maintains audit integrity.
 
-### 7.3 Delta Re-Inspection & Revision Auditing
+### 7.4 Delta Re-Inspection & Revision Auditing
 Every rejection increments an internal revision counter (`revisions: 1, 2, ...`). The QC Inspector conducts a targeted delta re-audit solely focusing on the previously failed items. Once all items achieve `YES`, the stage transitions to `approved`.
 
 ---
 
-## 8. Process Swimlanes (12 Operational Flows)
+## 8. Process Swimlanes (13 Operational Flows)
 
-The accompanying interactive visual document `qc_swimlanes.html` specifies 12 end-to-end BPMN process flows:
+The accompanying interactive visual document `qc_swimlanes.html` specifies 13 end-to-end BPMN process flows:
 
 ### 8.1 Flow 1: Stage 1 RCC Structural Readiness
 - **Actors:** Civil RCC Engineer (`CIVIL-ENG-001`), QC Inspection Engineer (`QC-INSP-001`).
@@ -355,47 +375,69 @@ The accompanying interactive visual document `qc_swimlanes.html` specifies 12 en
 - **Actors:** QC Inspection Engineer, Civil Site Engineer.
 - **Steps:** Item-level deficiency flagging ➔ Rejection comment entry ➔ Locking approved YES items ➔ Targeted field remediation ➔ Delta re-audit ➔ Revision counter increment.
 
-### 8.7 Flow 7: Non-Conformance Report (NCR) & 10-Minute Escalation Freeze Lifecycle
+### 8.7 Flow 7: Non-Conformance Report (NCR) Floor-Slab Worksite Freeze (Dual-Phase)
 - **Actors:** QC Inspector, Civil Site Engineer, Quality Head (`QC-HEAD-001`).
-- **Steps:** Discovery of critical defect (active leak or >10% delamination) ➔ Immediate stage freeze (RED lock) ➔ 10-minute countdown trigger to Quality Head ➔ 5-Why Root Cause Analysis (RCA) ➔ CAPA execution ➔ Quality Head digital sign-off and stage unfreeze.
+- **Steps:** Discovery of critical defect (active leak or >10% delamination) ➔ Dual-phase raising (available pre-submission and post-submission) ➔ Concurrency lock `[ 🔒 Floor Frozen ]` ➔ Floor worksite freeze (`floorFrozen = true`) ➔ 10-minute countdown trigger to Quality Head ➔ 5-Why RCA ➔ CAPA execution ➔ Quality Head digital sign-off and floor unfreeze.
 
-### 8.8 Flow 8: Quality Observation (OBS) Bilateral Fast-Track Lifecycle (BRD §12)
+### 8.8 Flow 8: Quality Observation (OBS) Flat Worksite Freeze (Dual-Phase)
 - **Actors:** QC Inspector, Civil Site Engineer.
-- **Steps:** Spotting localized minor deficiency (e.g. Master Bath blemish) ➔ Logging observation with photo ➔ **ZERO FREEZE (work continues uninterrupted)** ➔ Same-shift spot repair ➔ Submission of rectification note ➔ QC bilateral verification and closure.
+- **Steps:** Localized workmanship deficiency ➔ Dual-phase raising (available pre-submission and post-submission) ➔ Concurrency lock `[ 🔒 Flat Frozen ]` ➔ Flat worksite freeze (`flatFrozen = true` while adjacent flats proceed) ➔ Field repair ➔ Submission of rectification note ➔ QC bilateral verification and unfreeze.
 
-### 8.9 Flow 9: Stop Work Notification (SWN) Tower-Level Governance (BRD §11.4)
+### 8.9 Flow 9: Stop Work Notification (SWN) Blanket Entire Tower Freeze (Dual-Phase)
 - **Actors:** Quality Head (`QC-HEAD-001`), Project Manager (`PM-001`), All Site Teams.
-- **Steps:** Detection of systemic failure (defective chemical batch across Tower A) ➔ SWN broadcast ➔ Blanket stoppage of all waterproofing activities in target tower (`towerFrozen = true`) ➔ Site quality audit panel ➔ Batch replacement & NABL re-testing ➔ Formal SWN lifting order.
+- **Steps:** Detection of systemic failure ➔ Dual-phase raising ➔ Concurrency lock `[ 🔒 Tower Frozen ]` ➔ Blanket stoppage of all waterproofing activities in target tower (`towerFrozen = true`) ➔ Site quality audit panel ➔ Batch replacement & NABL re-testing ➔ Formal SWN lifting order.
 
 ### 8.10 Flow 10: Worksite GPS Geofencing & Tamper-Evident Proximity Engine
 - **Actors:** Mobile Client Device, System Geofence Engine, QA Auditor.
-- **Steps:** HTML5 Geolocation API query ➔ Haversine distance computation against project datum ➔ Proximity check against 500m geofence radius ➔ Coordinate tagging into inspection payload ➔ Audit override justification if outside boundary.
+- **Steps:** HTML5 Geolocation API query ➔ Haversine distance computation against project datum ➔ Proximity check against active geofence radius ➔ Coordinate tagging into inspection payload ➔ Audit override justification if outside boundary.
 
 ### 8.11 Flow 11: DPDP Act 2023 Compliant Digital Canvas Signatures
 - **Actors:** Authorized Signatory, System Privacy Engine.
-- **Steps:** Modal launch with authenticated role code (zero personal name) ➔ Touch/pointer canvas vector stroke capture ➔ High-DPI scaling ➔ Base64 PNG serialization ➔ ISO 8601 UTC+IST timestamp embedding.
+- **Steps:** Modal launch with authenticated role code (zero personal name) ➔ Contextual statutory consent acknowledgment ➔ Touch/pointer canvas vector stroke capture ➔ High-DPI scaling ➔ Base64 PNG serialization ➔ ISO 8601 UTC+IST timestamp embedding.
 
 ### 8.12 Flow 12: Official ISO 9001:2015 Clause 8.6 A4 QMS PDF Export & Handback
 - **Actors:** QC Engineer, Handover Lead, Client / Statutory Auditor.
 - **Steps:** Click Export PDF ➔ DOM assembly of all 5 stages (37 items) ➔ Embedding of digital signatures and GPS telemetry ➔ Client-side jsPDF rendering ➔ Vector A4 portrait PDF download with corporate header.
 
+### 8.13 Flow 13: Site & Systems Administrator Geolocation Radar Configuration & Governance
+- **Actors:** Site Administrator (`ADMIN-001`), Radar Canvas Engine, System Geofence Registry.
+- **Steps:** Role switch to Site Administrator ➔ Open `admin-config` console ➔ Multi-project selection (`PRJ-SRP-02`, `PRJ-MHP-01`, `PRJ-GVA-03`) ➔ Live 280x280 Radar Canvas rendering with rotating beam & target pulse ➔ Radius range slider (25m - 1000m) with quick presets ➔ On-site physical GPS coordinate calibration ➔ Factory site pin reset safeguard ➔ Administrative authorization canvas signature with DPDP consent.
+
 ---
 
-## 9. Defect Governance Hierarchy: NCR vs Quality Observation (OBS) vs SWN
+## 9. Defect Governance Hierarchy: 3-Tier Freezing Scopes, Dual-Phase Raising & Concurrency Locks
 
-A core design achievement of WP-AMS is establishing strict demarcation between defect severity tiers per **QC_Workflow_BRD_v3.md**:
+A core design achievement of WP-AMS is establishing strict demarcation between defect severity tiers and worksite freezing scopes, aligned with the operational realities of high-rise construction:
 
 ### 9.1 3-Tier Defect Scope Comparison Matrix
 
-| Governance Dimension | Quality Observation (OBS - BRD §12) | Non-Conformance Report (NCR - BRD §11) | Stop Work Notification (SWN - BRD §11.4) |
+| Governance Dimension | Quality Observation (OBS) | Non-Conformance Report (NCR) | Stop Work Notification (SWN) |
 |:---|:---|:---|:---|
-| **Defect Severity** | Minor / Workmanship Blemish | Major / Critical System Failure | Systemic / Structural Moratorium |
-| **Physical Scope** | **Location / Room Level** (e.g. Master Bath) | **Flat / Floor-Slab Level** (e.g. Flat 702) | **Tower / Block Level** (e.g. Tower B) |
-| **Stage Freeze Impact**| **NO FREEZE • NO WORK STOPPAGE** (Work continues uninterrupted) | **STAGE FROZEN IMMEDIATELY** (Form locked in RED state) | **BLANKET TOWER STOPPAGE** (`towerFrozen = true` across all units) |
-| **Defect Examples** | Mortar splatter, dust on primer, small cove pinhole | Active soffit leak, delamination >10%, hollow core concrete | Failed chemical batch, structural crack across floor slabs |
-| **Escalation Timer** | None (24-hour target turnaround) | **10-Minute Countdown to Quality Head** | Immediate Executive Incident Broadcast |
-| **Resolution Protocol**| Bilateral between QC & Civil Engineer | Mandatory 5-Why RCA & Formal CAPA | Multi-Party Quality Panel & Lab Re-test |
+| **Defect Severity** | Minor / Workmanship Blemish | Major / Critical Floor Failure | Systemic / Structural Moratorium |
+| **Physical Scope** | **Flat Worksite Level** (e.g. Flat 702) | **Floor-Slab Worksite Level** (e.g. Floor 7) | **Tower / Block Level** (e.g. Tower B) |
+| **Freeze Scope Flag** | `flatFrozen = true` (**Flat Freeze**) | `floorFrozen = true` (**Floor Freeze**) | `towerFrozen = true` (**Blanket Tower Freeze**) |
+| **Worksite Blast Radius**| Halts specific flat; adjacent flats proceed unhindered | Halts entire floor slab; other floors proceed unhindered | Blanket halt across all floors, flats &amp; trades in tower |
+| **Dual-Phase Raising** | ✅ Pre-Submission (Draft) &amp; Post-Submission | ✅ Pre-Submission (Draft) &amp; Post-Submission | ✅ Pre-Submission (Draft) &amp; Post-Submission |
+| **Mutual Exclusivity Lock**| `[ 🔒 Flat Frozen ]` (Prevents duplicate OBS) | `[ 🔒 Floor Frozen ]` (Prevents duplicate NCR) | `[ 🔒 Tower Frozen ]` (Prevents duplicate SWN) |
+| **Defect Examples** | Mortar splatter, cove pinhole, tie-wire blemish | Active soffit leak, delamination >10%, hollow core concrete | Defective chemical batch, structural crack across floors |
+| **Escalation Timer** | 24-hour target turnaround SLA | **10-Minute Countdown to Quality Head** | Immediate Executive Incident Broadcast |
+| **Resolution Protocol**| Bilateral between QC &amp; Civil Engineer | Mandatory 5-Why RCA &amp; Formal CAPA | Multi-Party Quality Panel &amp; NABL Lab Re-test |
 | **Closure Authority** | QC Inspection Engineer (`qc`) | **Quality Head Exclusive (`qh`)** | **Quality Head + Project Manager** |
+
+### 9.2 Dual-Phase Defect Governance (Pre- &amp; Post-Submission Raising)
+Mirroring the enterprise permit-to-work defect governance pattern:
+- **Phase 1: Pre-Submission Raising (Draft State):** Defect shortcuts and the Defect Governance Bar are immediately accessible while drafting the checklist. If an engineer or inspector spots an issue on-site, they can halt the flat, floor, or tower immediately before any formal checklist submission.
+- **Phase 2: Post-Submission Raising (Under Review / Approved States):** Defect governance remains perpetually accessible during QC review and even after stage approval. If a latent defect manifests during curing or subsequent trade activities, the scope can be halted immediately.
+- **Stage Gating Enforcement:** While any defect hold is active (`frozen = true`), stage checklist submission is strictly blocked (`doSubmitStage()` halts with an active freeze warning).
+
+### 9.3 Mutual Exclusivity &amp; Concurrency Locking Engine
+To prevent race conditions, duplicate hold creation, and administrative inconsistency:
+- When a defect at a specific scope is active, the corresponding button in the Defect Governance Bar dynamically updates to an immutable lock indicator:
+  - Tower SWN active ➔ `[ 🔒 Tower Frozen ]` (styled with `.btn-disabled`).
+  - Floor NCR active ➔ `[ 🔒 Floor Frozen ]` (styled with `.btn-disabled`).
+  - Flat Observation active ➔ `[ 🔒 Flat Frozen ]` (styled with `.btn-disabled`).
+- If an operator attempts to trigger a duplicate defect creation modal, `showActiveFreezeAlert(scope)` intercepts the invocation and displays a descriptive toast warning (e.g. `[ 🔒 Floor Frozen (NCR Active: NCR-TowerA-01) ] - Cannot raise duplicate Floor NCR. Floor slab stoppage active.`).
+- **Independent Multi-Hold Resolution:** Lifting an SWN leaves active floor NCRs and flat observations intact; closing an observation leaves floor NCRs intact. Each hold clears independently.
 
 ---
 
@@ -439,18 +481,38 @@ WP-AMS maintains a live, chronological operational audit ledger:
 
 ---
 
-## 13. WGS84 GPS Geofencing & Tamper-Evident Proximity Engine
+## 13. WGS84 GPS Geofencing, Interactive Radar &amp; Site Admin Configuration
 
-To eliminate "armchair sign-offs", WP-AMS interfaces with the device's HTML5 Geolocation API:
+To eliminate "armchair sign-offs" and guarantee technical integrity, WP-AMS interfaces directly with WGS84 spatial coordinates and provides a dedicated **Site Administrator Geofence Radar Engine**:
 
-### Haversine Great-Circle Distance Derivation
+### 13.1 Haversine Great-Circle Distance Derivation
 Distance $d$ between device coordinates $(\varphi_1, \lambda_1)$ and project datum $(\varphi_2, \lambda_2)$ is computed via:
 $$a = \sin^2\left(\frac{\Delta \varphi}{2}\right) + \cos(\varphi_1) \cdot \cos(\varphi_2) \cdot \sin^2\left(\frac{\Delta \lambda}{2}\right)$$
 $$d = 2 R \cdot \arcsin\left(\sqrt{a}\right)$$
 where $R = 6,371,000\text{ meters}$ (mean radius of Earth).
 
-- **Geofence Radius Threshold:** Configurable between 200m and 500m per project.
-- **Audit Override Protocol:** If an engineer operates inside deep RCC basements where satellite signals are obscured, the system captures a fallback status requiring explicit written justification stored in the permanent QMS ledger.
+### 13.2 Interactive 280x280 HTML5 Geofence Radar Canvas
+Integrated within the `admin-config` console, the live canvas radar provides real-time situational awareness:
+- **Procedural Visualization:** Concentric range rings scaled dynamically (25m, 50m, 100m, 250m, 500m, 1000m) with cardinal compass axes (N, S, E, W).
+- **Active Scanning Beam:** Continuous rotating radial sweep rendered via `requestAnimationFrame` and high-DPI scaling.
+- **Pulsing Tower Beacons:** Visualizes Tower A and Tower B coordinates relative to the project datum with glowing target beacons.
+
+### 13.3 Multi-Project Geofence Registry &amp; Quick Presets
+Administrators can select from authorized enterprise developments:
+- **PRJ-SRP-02 (Skyline Residency Phase II):** Lat 19.0760°, Lng 72.8777°, Baseline Radius 250m.
+- **PRJ-MHP-01 (Metro Heights Phase I):** Lat 18.5204°, Lng 73.8567°, Baseline Radius 200m.
+- **PRJ-GVA-03 (Greenview Apartments):** Lat 12.9716°, Lng 77.5946°, Baseline Radius 300m.
+- **Dynamic Radius Range:** Adjustable from 25m to 1000m via interactive slider or instant preset pills (50m, 100m, 250m, 500m, 1000m).
+
+### 13.4 On-Site Physical GPS Calibration &amp; Factory Reset
+- **Tag Current Location (On-Site):** Queries `navigator.geolocation.getCurrentPosition()` with high accuracy, automatically updating project coordinates to the engineer's exact field position.
+- **Factory Site Pin Reset:** Instantly restores factory baseline coordinates if field drift or accidental misalignment occurs.
+
+### 13.5 Statutory Administrative Authorization &amp; Audit Commitment
+Modifications to geofencing parameters require formal administrative sign-off via `saveGeofenceModal`:
+- Captures `ADMIN-001` digital vector signature on HTML5 canvas.
+- Requires explicit DPDP Act 2023 statutory consent verification (`adminDpdpConsentChk`).
+- Persists changes immutably into `GEO_CONFIG` and active session state.
 
 ---
 
@@ -536,20 +598,20 @@ The system adopts a tailored dark-mode corporate design system:
 
 ---
 
-## 22. Testing & Quality Assurance (11 Standalone Test Suites)
+## 22. Testing & Quality Assurance (15 Master Automated Test Suites)
 
-WP-AMS includes an exhaustive automated test harness situated in the `tests/` directory. All 11 test suites run via native Node.js standard libraries (`node tests/run_all_tests.js`) achieving a **100% clean pass rate**:
+WP-AMS includes an exhaustive automated test harness situated in the `tests/` directory. All 15 test suites execute via native Node.js standard libraries (`node tests/run_all_tests.js`) achieving a **100% clean pass rate across 15/15 suites**:
 
 ```
 ================================================================
-STARTING WP-AMS MASTER TEST SUITE EXECUTION (ALL 11 SUITES)
-AURO REALTY PRIVATE LIMITED • CORPORATE QA/QC DIVISION
+STARTING MASTER TEST SUITE EXECUTION (ALL 15 SUITES)
+ARPL QUALITY ASSURANCE & DEFECT GOVERNANCE VERIFICATION HARNESS
 ================================================================
 
 >>> RUNNING TEST SUITE 1: MASTER DATA & STATIC ARCHITECTURE INTEGRITY
   ✓ PASS: Critical DOM structural anchors present in index.html
   ✓ PASS: Master CASCADE projects verified: Skyline Residency Phase II, Metro Heights Phase I, Greenview Apartments
-  ✓ PASS: 7 DPDP-compliant roles configured: civil_rcc, civil_finish, mep, qc, qh, pm, senior
+  ✓ PASS: 8 DPDP-compliant roles configured: civil_rcc, civil_finish, mep, qc, qh, pm, senior, admin
   ✓ PASS: Exactly 5 sequential stages with 37 unique checklist items verified (13 + 6 + 7 + 8 + 3 = 37)
   ✓ PASS: Initial activities seeded: 12 portfolio records in memory
 
@@ -561,36 +623,36 @@ AURO REALTY PRIVATE LIMITED • CORPORATE QA/QC DIVISION
   ✓ Stage 4 APPROVED -> Stage 5 unlocked to PENDING
   ✓ PASS: Stage 5 APPROVED; Activity closed
 
->>> RUNNING TEST SUITE 3: STAGE PARTIAL REJECTION, YES IMMUTABILITY & RESUBMISSION
-  ✓ PASS: All 6 previously approved items remain locked in YES state
-  ✓ PASS: Resubmitted stage with revision counter = 1 and rectification note
-  ✓ PASS: Delta audit succeeded and stage 3 fully approved
-
->>> RUNNING TEST SUITE 4: NON-CONFORMANCE REPORT (NCR) & 10-MIN ESCALATION FREEZE
-  ✓ PASS: NCR raised. Activity is FROZEN; 10-minute timer running
-  ✓ PASS: Lower roles rejected from closing NCR
-  ✓ PASS: RCA and CAPA submitted for Quality Head review
-  ✓ PASS: Quality Head closed NCR; Activity successfully unfrozen
-
->>> RUNNING TEST SUITE 5: QUALITY OBSERVATION (OBS) BILATERAL LIFECYCLE (BRD §12)
-  ✓ PASS: Observation logged. Status: open. Activity frozen: false (ZERO FREEZE)
-  ✓ PASS: Rectification note recorded. Status: rectified
-  ✓ PASS: Observation closed formally by QC Inspector. Work continued uninterrupted
-
->>> RUNNING TEST SUITE 6: STOP WORK NOTIFICATION (SWN) TOWER GOVERNANCE (BRD §11.4)
-  ✓ PASS: Lower roles blocked from issuing Stop Work Notifications
-  ✓ PASS: SWN issued. towerFrozen = true. Blanket stoppage enforced
-  ✓ PASS: SWN lifted formally by Quality Head. towerFrozen = false. Operations restored
-
->>> RUNNING TEST SUITE 7: WORKSITE GPS GEOFENCING & TAMPER-EVIDENT PROXIMITY
+>>> RUNNING TEST SUITE 3: WORKSITE GPS GEOFENCING & TAMPER-EVIDENT PROXIMITY
   ✓ PASS: haversineDistance formula validated
   ✓ PASS: GPS-001 Validated (numeric coordinates returned)
   ✓ PASS: gpsBoxUI renders correctly with coordinates and perimeter badge
 
+>>> RUNNING TEST SUITE 4: STOP WORK NOTIFICATION (SWN) TOWER GOVERNANCE (BRD §11.4)
+  ✓ PASS: Lower roles blocked from issuing Stop Work Notifications
+  ✓ PASS: SWN issued. towerFrozen = true. Blanket stoppage enforced
+  ✓ PASS: SWN lifted formally by Quality Head. towerFrozen = false. Operations restored
+
+>>> RUNNING TEST SUITE 5: NON-CONFORMANCE REPORT (NCR) & 10-MIN ESCALATION FREEZE
+  ✓ PASS: NCR raised. Activity is FROZEN (floorFrozen = true); 10-minute timer running
+  ✓ PASS: Lower roles rejected from closing NCR
+  ✓ PASS: RCA and CAPA submitted for Quality Head review
+  ✓ PASS: Quality Head closed NCR; Activity successfully unfrozen
+
+>>> RUNNING TEST SUITE 6: QUALITY OBSERVATION (OBS) BILATERAL LIFECYCLE (BRD §12)
+  ✓ PASS: Observation logged. Status: open. Activity flatFrozen = true (Flat Freeze)
+  ✓ PASS: Rectification note recorded. Status: rectified
+  ✓ PASS: Observation closed formally by QC Inspector. Flat unfreezes
+
+>>> RUNNING TEST SUITE 7: STAGE PARTIAL REJECTION, YES IMMUTABILITY & RESUBMISSION
+  ✓ PASS: All 6 previously approved items remain locked in YES state
+  ✓ PASS: Resubmitted stage with revision counter = 1 and rectification note
+  ✓ PASS: Delta audit succeeded and stage 3 fully approved
+
 >>> RUNNING TEST SUITE 8: DPDP ACT 2023 PRIVACY & DATA MINIMIZATION COMPLIANCE
   ✓ PASS: Zero hardcoded personal names in master data and portfolio
   ✓ PASS: getActiveUserLabel returns strictly DPDP-compliant role codes for all roles
-  ✓ PASS: acceptDPDPConsent stores consent token in localStorage
+  ✓ PASS: Contextual statutory consent in signature pads verified
 
 >>> RUNNING TEST SUITE 9: DIGITAL SIGNATURE PAD ENGINE & VECTOR COMPLIANCE
   ✓ PASS: Signature pad section markup rendered with all required action controls
@@ -599,7 +661,7 @@ AURO REALTY PRIVATE LIMITED • CORPORATE QA/QC DIVISION
   ✓ PASS: clearSigPad cleanly wiped buffer and state
 
 >>> RUNNING TEST SUITE 10: ISO 9001:2015 CLAUSE 8.6 A4 QMS PDF EXPORT ENGINE
-  ✓ PASS: generateActivityPDF rendered text blocks including corporate branding & ISO standards
+  ✓ PASS: generateActivityPDF rendered 73 text blocks including corporate branding & ISO standards
   ✓ PASS: Fallback printRecord invoked window.print() successfully
 
 >>> RUNNING TEST SUITE 11: RESPONSIVE DESIGN & CROSS-DEVICE ERGONOMICS
@@ -608,8 +670,40 @@ AURO REALTY PRIVATE LIMITED • CORPORATE QA/QC DIVISION
   ✓ PASS: qc_swimlanes.html collapses actor column to single-column layout on mobile screens
   ✓ PASS: Touch event listeners and ergonomic controls validated
 
+>>> RUNNING TEST SUITE 12: SITE ADMINISTRATOR GPS GEOFENCING CONFIGURATION & RADAR
+  ✓ PASS: 8th Role verified: Site & Systems Administrator (ID: admin, Category: admin)
+  ✓ PASS: Multi-project geofence registry verified
+  ✓ PASS: pgAdminConfig view markup rendered with interactive radar and controls
+  ✓ PASS: Dynamic radius range & presets verified (50m, 250m, 500m)
+  ✓ PASS: Tagged coordinates on-site
+  ✓ PASS: Factory site pin successfully reset to standard project baseline
+  ✓ PASS: Geofence successfully saved & authorized by ADMIN-001
+
+>>> RUNNING TEST SUITE 13: TRI-STATE CHECKLIST INSPECTION & DEFECT ESCALATION GATES
+  ✓ PASS: Tri-state buttons (YES / NO / N/A) successfully rendered in pgStage
+  ✓ PASS: Response set to NO with detailed remarks
+  ✓ PASS: Response set to N/A with mandatory justification
+  ✓ PASS: Flagged NO item renders direct escalation shortcuts to Floor NCR and Flat Observation
+  ✓ PASS: Stage gate passes with compliant checklist answers and verified evidence
+
+>>> RUNNING TEST SUITE 14: DUAL-PHASE DEFECT GOVERNANCE (PRE- & POST-SUBMISSION)
+  ✓ PASS: renderDefectGovBar rendered across Dashboard, Stage Form, QC Review & Detail views
+  ✓ PASS: Phase 1: Observation logged prior to checklist submission (Flat Frozen)
+  ✓ PASS: Checklist submission strictly blocked while defect hold is active
+  ✓ PASS: Phase 2: SWN raised post-submission. towerFrozen = true
+  ✓ PASS: Freeze banners correctly display tower stoppage across all post-submission views
+  ✓ PASS: Post-submission SWN lifted. Normal quality workflow restored
+
+>>> RUNNING TEST SUITE 15: 3-TIER FREEZE SCOPES & MUTUAL EXCLUSIVITY LOCKS
+  ✓ PASS: Initial baseline verified (0 holds active)
+  ✓ PASS: Scope 1: Tower frozen by SWN. Duplicate attempt locked: [ 🔒 Tower Frozen ]
+  ✓ PASS: Scope 2: Floor frozen by NCR. Duplicate attempt locked: [ 🔒 Floor Frozen ]
+  ✓ PASS: Scope 3: Flat frozen by OBS. Duplicate attempt locked: [ 🔒 Flat Frozen ]
+  ✓ PASS: All 3 tiers show synchronized lock indicators in Defect Governance Bar
+  ✓ PASS: Multi-hold independent resolution verified (Tower SWN lifted -> Floor/Flat persist; OBS closed -> Floor persists; All cleared -> restored)
+
 ================================================================
-MASTER TEST SUITE SUMMARY: ALL 11 / 11 SUITES PASSED CLEANLY (100% PASS RATE)
+MASTER TEST SUITE SUMMARY: ALL 15 / 15 SUITES PASSED CLEANLY (100% PASS RATE)
 ALL 5 QUALITY STAGES, NCR/OBS/SWN HIERARCHY & DPDP PRIVACY VALIDATED
 ================================================================
 ```

@@ -102,9 +102,12 @@ assert(obs.id.includes('01'), 'Observation ID must include counter');
 assert.strictEqual(obs.status, 'open', 'Observation status must be open');
 assert.strictEqual(obs.loc, 'Master Bathroom', 'Observation location must be Master Bathroom');
 
-// CRITICAL ASSERTION: NO FREEZE
-assert.strictEqual(sandbox.V.act.frozen, false, 'CRITICAL: Quality Observation MUST NOT freeze activity (work continues)');
-console.log(`  ✓ PASS: Observation ${obs.id} logged. Status: ${obs.status}. Activity frozen: ${sandbox.V.act.frozen} (ZERO FREEZE)`);
+// CRITICAL ASSERTION: 3-TIER FREEZE SCOPE (Flat Freeze per User Directive)
+assert.strictEqual(sandbox.V.act.flatFrozen, true, 'Observation MUST set flatFrozen = true (Flat Freeze)');
+assert.strictEqual(sandbox.V.act.towerFrozen, false, 'Observation MUST NOT freeze entire tower');
+assert.strictEqual(sandbox.V.act.floorFrozen, false, 'Observation MUST NOT freeze entire floor');
+assert.strictEqual(sandbox.V.act.frozen, true, 'Composite freeze must be true for the flat');
+console.log(`  ✓ PASS: Observation ${obs.id} logged. Status: ${obs.status}. Flat frozen: ${sandbox.V.act.flatFrozen} (Flat Freeze enforced).`);
 
 // 3. Civil Engineer Submits Rectification via doSubmitRectifyObs()
 console.log('\n--- 3. Civil Engineer Submits Rectification Note ---');
@@ -128,8 +131,9 @@ sandbox.doCloseObs(obs.id);
 assert.strictEqual(obs.status, 'closed', 'Observation status must be closed');
 assert(obs.closedBy, 'closedBy role must be recorded');
 assert(obs.closedAt, 'closedAt timestamp must be recorded');
-assert.strictEqual(sandbox.V.act.frozen, false, 'Activity remains active and not frozen');
-console.log(`  ✓ PASS: Observation ${obs.id} closed formally by QC Inspector. All 3 states verified.`);
+assert.strictEqual(sandbox.V.act.flatFrozen, false, 'flatFrozen must reset to false after closeout');
+assert.strictEqual(sandbox.V.act.frozen, false, 'Activity successfully unfrozen');
+console.log(`  ✓ PASS: Observation ${obs.id} closed formally by QC Inspector. Flat unfrozen. All 3 states verified.`);
 
 console.log('\n================================================================');
 console.log('SUITE 5: QUALITY OBSERVATION LIFECYCLE - ALL TESTS PASSED');

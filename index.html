@@ -510,11 +510,28 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 /* PDF DOWNLOAD BUTTON STYLES */
 .btn-pdf{background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;border:none;font-weight:700}
 .btn-pdf:hover{background:linear-gradient(135deg,#a93226,#cb4335);transform:translateY(-1px)}
+
+/* QUALITY GOVERNANCE & DEFECT ACTION BAR */
+.defect-gov-bar{background:linear-gradient(135deg,rgba(23,29,51,0.92),rgba(28,34,57,0.92));border:1px solid var(--b2);border-radius:var(--r);padding:12px 16px;margin-bottom:14px;box-shadow:0 4px 20px rgba(0,0,0,0.25)}
+.bFroz{background:var(--pdim)!important;border:1px solid var(--pb)!important;color:var(--pur)!important;cursor:pointer}
+.bFroz:hover{border-color:var(--pur)!important}
+.bY{background:var(--ydim);border:1px solid var(--yb);color:var(--yel)}
+.bY:hover{background:rgba(245,158,11,.2);border-color:var(--yel)}
+.btn-disabled{opacity:.55;cursor:not-allowed!important}
+
+/* GEOFENCE RADAR & ADMIN CONFIG */
+.geofence-radar-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px}
+.geofence-radar-canvas{box-shadow:0 0 30px rgba(245,166,35,0.15)}
+.radius-preset-pill{padding:4px 11px;border-radius:15px;background:var(--card2);border:1px solid var(--b);font-size:11px;color:var(--mut);cursor:pointer;transition:.15s}
+.radius-preset-pill:hover,.radius-preset-pill.active{border-color:var(--acc);color:var(--acc);background:var(--adim)}
+.dpdp-tag{font-size:10.5px;font-family:var(--fm);padding:2px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px}
+.dpdp-consent-pill{display:flex;align-items:flex-start;gap:10px;background:var(--adim);border:1px solid rgba(245,166,35,.35);border-radius:var(--rs);padding:10px 12px;cursor:pointer;transition:border-color .15s}
+.dpdp-consent-pill:hover{border-color:var(--acc)}
 </style>
 </head>
 <body>
 
-<!-- DPDP PRIVACY COMPLIANCE MODAL -->
+<!-- DPDP PRIVACY COMPLIANCE MODAL (Non-blocking educational modal) -->
 <div id="dpdpModal" class="dpdp-overlay" style="display:none">
   <div class="dpdp-modal">
     <div class="dpdp-hdr">
@@ -528,12 +545,14 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
       This quality assurance system adheres strictly to the principles of data minimization and purpose limitation under the DPDP Act 2023:
     </div>
     <div class="dpdp-pts">
-      <div class="dpdp-pt">&#10003; <span><b>Zero PII Tagging:</b> Personal names are completely detached from operational roles. All activities, approvals, and inspections are attributed solely via role-based identifiers (e.g., <code>CIVIL-ENG-001</code>, <code>QC-INSP-01</code>).</span></div>
+      <div class="dpdp-pt">&#10003; <span><b>Zero PII Tagging:</b> Personal names are completely detached from operational roles. All activities, approvals, and inspections are attributed solely via role-based identifiers (e.g., <code>CIVIL-ENG-001</code>, <code>QC-INSP-01</code>, <code>ADMIN-001</code>).</span></div>
       <div class="dpdp-pt">&#10003; <span><b>Geofenced Site Verification:</b> Location coordinates are captured solely during photographic evidence recording to authenticate physical worksite presence within approved project perimeters.</span></div>
       <div class="dpdp-pt">&#10003; <span><b>Non-Persistent Sandbox:</b> All session data executes client-side within browser memory. No personal tracking or cloud telemetry is transmitted.</span></div>
+      <div class="dpdp-pt">&#10003; <span><b>Contextual Action Consent:</b> Statutory consent declarations are captured directly inside digital signature signing pads during formal approvals.</span></div>
     </div>
     <div style="display:flex;gap:10px;justify-content:flex-end">
-      <button class="btn bP" onclick="acceptDPDPConsent()">&#10003; Acknowledge &amp; Proceed</button>
+      <button class="btn bG" onclick="closeDPDPModal()">&#10005; Close</button>
+      <button class="btn bP" onclick="acceptDPDPConsent()">&#10003; Acknowledge &amp; Close</button>
     </div>
   </div>
 </div>
@@ -544,18 +563,18 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
   <div class="loading-text" id="loadingText">Switching workspace...</div>
 </div>
 
-<!-- QUALITY OBSERVATION MODAL (BRD §12) -->
+<!-- QUALITY OBSERVATION MODAL (BRD §12 - Flat Freeze) -->
 <div id="obsModal" class="dpdp-overlay" style="display:none">
   <div class="dpdp-modal" style="max-width:540px">
     <div class="pH" style="margin-bottom:12px">
       <div>
-        <div class="pT" style="font-size:17px">&#128065; Log Quality Observation (BRD &sect;12)</div>
-        <div class="pS">Bilateral fast-track resolution &middot; No stage freeze &middot; Work continues</div>
+        <div class="pT" style="font-size:17px">&#128065; Log Quality Observation &mdash; Flat Freeze</div>
+        <div class="pS">BRD &sect;12 &middot; Freezes Flat &middot; Adjacent flats proceed &middot; Bilateral fast-track</div>
       </div>
       <button class="btn bG bSm" onclick="closeObsModal()">&#10005; Close</button>
     </div>
     <div class="al alI mb12" style="font-size:11.5px">
-      Observations document minor, rapidly rectifiable site-level deficiencies (mortar splatter, debris, minor coving blemishes) without halting active work.
+      Observations document flat/location-level deficiencies. Logging an observation immediately halts work in this specific flat (Flat Freeze) until the responsible team submits rectification and QC inspects &amp; closes it.
     </div>
     <div class="fld"><label class="lbl">Stage &amp; Work Area</label>
       <select id="obsStage" class="fInp" onchange="updateObsLocOptions()">
@@ -596,7 +615,7 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
     </div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
       <button class="btn bG" onclick="closeObsModal()">Cancel</button>
-      <button class="btn bP" onclick="doSubmitObs()">&#10003; Log Observation</button>
+      <button class="btn bP" onclick="doSubmitObs()">&#10003; Log Observation &amp; Freeze Flat</button>
     </div>
   </div>
 </div>
@@ -620,6 +639,146 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
       <button class="btn bG" onclick="closeRectifyObsModal()">Cancel</button>
       <button class="btn bP" onclick="doSubmitRectifyObs()">&#10003; Submit Fix for QC Closeout</button>
+    </div>
+  </div>
+</div>
+
+<!-- STOP WORK NOTIFICATION (SWN) MODAL (BRD §11.4 - Entire Tower Freeze) -->
+<div id="swnModal" class="dpdp-overlay" style="display:none">
+  <div class="dpdp-modal" style="max-width:560px">
+    <div class="pH" style="margin-bottom:12px">
+      <div>
+        <div class="pT" style="font-size:16px;color:var(--red)">&#128683; Issue Stop Work Notification (SWN)</div>
+        <div class="pS">BRD &sect;11.4 &middot; Entire Tower Freeze &middot; Blanket Stoppage</div>
+      </div>
+      <button class="btn bG bSm" onclick="closeSWNModal()">&#10005; Close</button>
+    </div>
+    <div class="al alD mb12">
+      <span class="alIc">&#128683;</span>
+      <div><strong>CRITICAL TOWER-WIDE STOPPAGE:</strong> Issuing an SWN immediately halts ALL waterproofing stages across all floors and flats in the selected tower until formal remediation and Quality Head / PM authorization.</div>
+    </div>
+    <div class="fld"><label class="lbl">Target Tower Scope <span class="req">*</span></label>
+      <select id="swnTower" class="fInp">
+        <option value="Tower A">Tower A (Current Activity Tower)</option>
+        <option value="Tower B">Tower B</option>
+        <option value="Tower C">Tower C</option>
+      </select>
+    </div>
+    <div class="fld"><label class="lbl">Hazard Category / Root Cause <span class="req">*</span></label>
+      <select id="swnCat" class="fInp">
+        <option value="Structural Integrity Threat">Structural Integrity Threat / Core Cut through Shear Wall</option>
+        <option value="Batching Plant Concrete Failure">Batching Plant Concrete Failure / Cube Strength Deficit</option>
+        <option value="Catastrophic Water Ingress">Catastrophic Underside Leakage / Slab Cracking</option>
+        <option value="Uncertified Waterproofing Chemical">Uncertified Waterproofing Chemical / Specification Breach</option>
+        <option value="Severe Fall Protection Hazard">Severe Edge Fall / Scaffold Safety Hazard</option>
+      </select>
+    </div>
+    <div class="fld"><label class="lbl">Justification &amp; Mandatory Immediate Stoppage Mandate <span class="req">*</span></label>
+      <textarea id="swnDesc" class="fInp" rows="3" placeholder="Describe the systemic defect or hazard requiring an immediate entire-tower stoppage..."></textarea>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+      <button class="btn bG" onclick="closeSWNModal()">Cancel</button>
+      <button class="btn bD" onclick="doSubmitSWN()">&#128683; Authorize Tower Freeze</button>
+    </div>
+  </div>
+</div>
+
+<!-- SWN LIFT / UNFREEZE MODAL -->
+<div id="swnLiftModal" class="dpdp-overlay" style="display:none">
+  <div class="dpdp-modal" style="max-width:520px">
+    <div class="pH" style="margin-bottom:12px">
+      <div>
+        <div class="pT" style="font-size:16px;color:var(--grn)">&#128275; Lift Stop Work Notification</div>
+        <div class="pS" id="swnLiftTitle">Tower Stoppage Verification &amp; Unfreeze</div>
+      </div>
+      <button class="btn bG bSm" onclick="closeLiftSWNModal()">&#10005; Close</button>
+    </div>
+    <div class="fld"><label class="lbl">Remediation Verification &amp; Joint Sign-Off Note <span class="req">*</span></label>
+      <textarea id="swnLiftNote" class="fInp" rows="3" placeholder="Describe structural verification, remedial actions verified, and safety clearance..."></textarea>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+      <button class="btn bG" onclick="closeLiftSWNModal()">Cancel</button>
+      <button class="btn bP" onclick="doConfirmLiftSWN()">&#128275; Authorize Tower Unfreeze</button>
+    </div>
+  </div>
+</div>
+
+<!-- RAPID NCR MODAL (Floor Freeze - BRD §11) -->
+<div id="rapidNcrModal" class="dpdp-overlay" style="display:none">
+  <div class="dpdp-modal" style="max-width:560px">
+    <div class="pH" style="margin-bottom:12px">
+      <div>
+        <div class="pT" style="font-size:16px;color:var(--yel)">&#9888; Raise Non-Conformance Report (NCR)</div>
+        <div class="pS">BRD &sect;11 &middot; Floor Freeze &middot; Quality Head Gate &middot; 10-Min Timer</div>
+      </div>
+      <button class="btn bG bSm" onclick="closeRapidNcrModal()">&#10005; Close</button>
+    </div>
+    <div class="al alD mb12">
+      <span class="alIc">&#9888;</span>
+      <div><strong>FLOOR FREEZE NOTICE:</strong> Quality Head approval of this NCR freezes all activity across <span id="rapidNcrFloorTxt" class="fw7">7th Floor</span> and initiates the 10-minute escalation countdown timer.</div>
+    </div>
+    <div class="form-grid mb10" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fld"><label class="lbl">Related Stage <span class="req">*</span></label>
+        <select id="rapidNcrStage" class="fInp">
+          <option value="1">Stage 1: RCC Readiness</option>
+          <option value="2">Stage 2: MEP Core Cuts</option>
+          <option value="3" selected>Stage 3: Surface Prep &amp; Ponding</option>
+          <option value="4">Stage 4: Membrane &amp; DFT</option>
+          <option value="5">Stage 5: Screed &amp; 72h Ponding</option>
+        </select>
+      </div>
+      <div class="fld"><label class="lbl">Responsible Trade <span class="req">*</span></label>
+        <select id="rapidNcrResp" class="fInp">
+          <option value="civil_finish">Civil Finish Team (CIVIL-ENG-002)</option>
+          <option value="mep">MEP Services Team (MEP-ENG-001)</option>
+          <option value="civil_rcc">Civil RCC Team (CIVIL-ENG-001)</option>
+          <option value="subcontractor">Specialist WP Applicator</option>
+        </select>
+      </div>
+    </div>
+    <div class="fld"><label class="lbl">Nature of Non-Conformance <span class="req">*</span></label>
+      <textarea id="rapidNcrDesc" class="fInp" rows="3" placeholder="Describe the non-conformance: measurement readings, failed test criteria, exact location on floor slab..."></textarea>
+    </div>
+    <div class="fld"><label class="lbl">Corrective Action Required (CAPA Mandate) <span class="req">*</span></label>
+      <textarea id="rapidNcrAct" class="fInp" rows="2" placeholder="Specify required corrective actions to be completed before unfreeze..."></textarea>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+      <button class="btn bG" onclick="closeRapidNcrModal()">Cancel</button>
+      <button class="btn bD" onclick="doSubmitRapidNCR()">&#9888; Submit to Quality Head</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN GEOFENCE AUTHORIZATION MODAL (Matches EHS Demo Pattern) -->
+<div id="saveGeofenceModal" class="dpdp-overlay" style="display:none">
+  <div class="dpdp-modal" style="max-width:540px">
+    <div class="pH" style="margin-bottom:12px">
+      <div>
+        <div class="pT" style="font-size:16px"><i class="fa fa-floppy-disk"></i> Authorize Geofence Configuration</div>
+        <div class="pS">Site &amp; Systems Administrator Authorization &bull; DPDP Consent Verified</div>
+      </div>
+      <button class="btn bG bSm" onclick="closeSaveGeofenceModal()">&#10005; Close</button>
+    </div>
+    <div id="adminModalSummary" style="background:var(--card2);border:1px solid var(--b);border-radius:var(--rs);padding:12px;margin-bottom:14px;font-size:12px;line-height:1.6"></div>
+    <div class="fld mb10">
+      <label class="lbl">Administrator Full Name / Role Code <span class="req">*</span></label>
+      <input type="text" id="adminSignerName" class="fInp" value="ADMIN-001" placeholder="Enter Administrator name or role code">
+    </div>
+    <div class="mb12">
+      <label class="dpdp-consent-pill">
+        <input type="checkbox" id="adminDpdpConsentChk" checked style="margin-top:2px;transform:scale(1.2);accent-color:var(--acc)">
+        <span style="font-size:11.5px;color:var(--txt);line-height:1.5">
+          <strong style="color:var(--acc)">DPDP Statutory Consent Declaration:</strong> I authorize statutory recording of worksite GPS coordinates, geofence radius perimeter, and timestamp under India DPDP Act 2023 with verified cryptographic signature.
+        </span>
+      </label>
+    </div>
+    <div class="fld">
+      <label class="lbl">Administrator Digital Signature <span class="req">*</span></label>
+      <div id="adminSigSectionWrap"></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+      <button class="btn bG" onclick="closeSaveGeofenceModal()">Cancel</button>
+      <button class="btn bP" onclick="doConfirmSaveGeofence()">&#10003; Authorize &amp; Apply Coordinates</button>
     </div>
   </div>
 </div>
@@ -698,10 +857,11 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 
   <!-- ROLE FILTER TABS -->
   <div class="role-filter-tabs">
-    <button class="rf-tab active" onclick="filterLandingRoles('all', this)">All Roles (7)</button>
+    <button class="rf-tab active" onclick="filterLandingRoles('all', this)">All Roles (8)</button>
     <button class="rf-tab" onclick="filterLandingRoles('eng', this)">Site Engineers (3)</button>
     <button class="rf-tab" onclick="filterLandingRoles('qc', this)">Quality Control (2)</button>
     <button class="rf-tab" onclick="filterLandingRoles('mgmt', this)">Management (2)</button>
+    <button class="rf-tab" onclick="filterLandingRoles('admin', this)">Administration (1)</button>
   </div>
 
   <div class="rGrid" id="RG"></div>
@@ -720,16 +880,16 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
     </div>
     <div class="proto-grid">
       <div class="proto-card">
-        <div class="proto-card-t" style="color:var(--blu)">&#128167; 1. 48h &amp; 72h Continuous Flood Tests</div>
-        <p class="proto-card-d">Pre-ponding flood test (Stage 3 @ 120mm water depth for 48 hours) and post-screed flood test (Stage 5 for 72 hours). Soffit underside inspection strictly enforced with <b>zero leakage or dampness tolerance</b>.</p>
+        <div class="proto-card-t" style="color:var(--red)">&#128683; 1. Stop Work Notification &mdash; Entire Tower Freeze (BRD &sect;11.4)</div>
+        <p class="proto-card-d">Structural or systemic hazards trigger an immediate <b>blanket Entire Tower Freeze</b>. All active stages across all floors and flats in the tower are halted until joint Quality Head and PM clearance.</p>
       </div>
       <div class="proto-card">
-        <div class="proto-card-t" style="color:var(--red)">&#128274; 2. 10-Minute NCR Worksite Freeze (BRD &sect;11)</div>
-        <p class="proto-card-d">Quality Head endorsement triggers an immediate flat/floor worksite freeze. Stage filling halted and <b>10-minute escalation countdown timer</b> initiated until compliance submission is inspected and accepted by QC.</p>
+        <div class="proto-card-t" style="color:var(--yel)">&#9888; 2. 10-Minute NCR &mdash; Floor Worksite Freeze (BRD &sect;11)</div>
+        <p class="proto-card-d">Quality Head endorsement halts works across the <b>entire floor slab (Floor Freeze)</b> with a <b>10-minute escalation countdown timer</b> until compliance submission is inspected and accepted by QC.</p>
       </div>
       <div class="proto-card">
-        <div class="proto-card-t" style="color:var(--yel)">&#128065; 3. Quality Observations Fast-Track (BRD &sect;12)</div>
-        <p class="proto-card-d">Lightweight bilateral mechanism between QC and site engineers for minor room-level deficiencies. <b>Work continues uninterrupted with zero stage freeze</b>; resolved via photographic before/after rectification.</p>
+        <div class="proto-card-t" style="color:var(--blu)">&#128065; 3. Quality Observations &mdash; Flat Freeze (BRD &sect;12)</div>
+        <p class="proto-card-d">Bilateral fast-track resolution between QC and site engineers for unit defects. <b>Freezes the specific flat (Flat Freeze)</b> while adjacent units proceed uninterrupted until photographic closeout.</p>
       </div>
       <div class="proto-card">
         <div class="proto-card-t" style="color:var(--grn)">&#128208; 4. 1:100 Slope &amp; 300mm Upturn Mandate</div>
@@ -741,8 +901,8 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
   <!-- PRODUCTION LANDING FOOTER -->
   <div class="landing-footer">
     <div class="lf-title"><i class="fa fa-shield-alt"></i> ARPL Digital Waterproofing &amp; Quality Management System (QMS)</div>
-    <div>ISO 9001:2015 Clause 8.6 &bull; SOP-QC-WP-01 &bull; IS 3067:1988 &bull; NBC 2016 Part 7 QA &bull; DPDP Act 2023</div>
-    <div style="margin-top:4px">Enterprise Quality Demo Build &bull; Role-Based Operational Authorization</div>
+    <div>ISO 9001:2015 Clause 8.6 &bull; SOP-QC-WP-01 &bull; IS 3067:1988 &bull; NBC 2016 Part 7 QA &bull; <a href="#" class="lf-link" onclick="openDPDPModal();return false;">DPDP Act 2023 Compliance Policy</a></div>
+    <div style="margin-top:4px">Enterprise Quality Demo Build &bull; Role-Based Operational Authorization &bull; 8 Authorized Roles</div>
     <div style="margin-top:8px">
       <a href="#" class="lf-link" onclick="resetDemoData();return false;">&#8634; Reset Demo Data &amp; Reinitialize Workspace</a>
     </div>
@@ -806,15 +966,22 @@ var ROLES = [
   {id:"qc",          cat:"qc",   lbl:"QC Inspector / Engineer", ic:"&#128269;", ds:"Reviews all stages &middot; Issues approvals / rejections &middot; NCRs", bg:"rgba(30,203,160,.12)",  fc:"#1ecba0"},
   {id:"qh",          cat:"qc",   lbl:"Project Quality Head",    ic:"&#128081;", ds:"Approves or rejects NCR submissions from QC Engineer",                    bg:"rgba(245,158,11,.12)",  fc:"#f59e0b"},
   {id:"pm",          cat:"mgmt", lbl:"Project / Tower Manager", ic:"&#128202;", ds:"Monitors activity status &middot; Receives escalation alerts",            bg:"rgba(91,158,245,.12)",  fc:"#5b9ef5"},
-  {id:"senior",      cat:"mgmt", lbl:"Senior Management",       ic:"&#127970;", ds:"Read-only visibility across all projects and activities",                 bg:"rgba(102,120,154,.12)", fc:"#66789a"}
+  {id:"senior",      cat:"mgmt", lbl:"Senior Management",       ic:"&#127970;", ds:"Read-only visibility across all projects and activities",                 bg:"rgba(102,120,154,.12)", fc:"#66789a"},
+  {id:"admin",       cat:"admin",lbl:"Site & Systems Administrator",ic:"&#128205;", ds:"Configures worksite GPS coordinates, geofence radius & system radar", bg:"rgba(100,116,139,.18)", fc:"#94a3b8"}
 ];
 
 // Project Geofence Perimeter Configurations (from EHS Demo pattern)
 var GEO_CONFIG = {
-  "Skyline Residency Phase II": { lat: 19.0760, lng: 72.8777, radius: 250, address: "Andheri East, Mumbai, MH" },
-  "Metro Heights Phase I":      { lat: 18.5204, lng: 73.8567, radius: 200, address: "Koregaon Park, Pune, MH" },
-  "Greenview Apartments":       { lat: 12.9716, lng: 77.5946, radius: 300, address: "Whitefield, Bangalore, KA" }
+  "Skyline Residency Phase II": { lat: 19.0760, lng: 72.8777, radius: 250, address: "Andheri East, Mumbai, MH", configured: true, configuredBy: "ADMIN-001", configuredAt: "2026-09-24 10:00" },
+  "Metro Heights Phase I":      { lat: 18.5204, lng: 73.8567, radius: 200, address: "Koregaon Park, Pune, MH", configured: true, configuredBy: "ADMIN-001", configuredAt: "2026-09-24 10:00" },
+  "Greenview Apartments":       { lat: 12.9716, lng: 77.5946, radius: 300, address: "Whitefield, Bangalore, KA", configured: true, configuredBy: "ADMIN-001", configuredAt: "2026-09-24 10:00" }
 };
+
+var PROJECTS = [
+  { id: "PRJ-SRP-02", name: "Skyline Residency Phase II", site: GEO_CONFIG["Skyline Residency Phase II"], radius: 250, configured: true, configuredBy: "ADMIN-001", configuredAt: "2026-09-24 10:00", tagMethod: "On-Site Tagged" },
+  { id: "PRJ-MHP-01", name: "Metro Heights Phase I", site: GEO_CONFIG["Metro Heights Phase I"], radius: 200, configured: true, configuredBy: "ADMIN-001", configuredAt: "2026-09-24 10:00", tagMethod: "On-Site Tagged" },
+  { id: "PRJ-GVA-03", name: "Greenview Apartments", site: GEO_CONFIG["Greenview Apartments"], radius: 300, configured: true, configuredBy: "ADMIN-001", configuredAt: "2026-09-24 10:00", tagMethod: "On-Site Tagged" }
+];
 
 // Cascading Master Data — Role-based identifiers, zero personal names (DPDP Act 2023)
 var CASCADE = {
@@ -824,7 +991,8 @@ var CASCADE = {
     floors:20, flats:4, flatBase:{"Tower A":701,"Tower B":801,"Tower C":901},
     civil:["CIVIL-ENG-001","CIVIL-ENG-002","CIVIL-ENG-003","CIVIL-ENG-004"],
     mep:["MEP-ENG-001","MEP-ENG-002","MEP-ENG-003"],
-    mgr:["PM-001","PM-002"]
+    mgr:["PM-001","PM-002"],
+    admin:["ADMIN-001"]
   },
   "Metro Heights Phase I":{
     towers:["Tower 1","Tower 2"],
@@ -832,7 +1000,8 @@ var CASCADE = {
     floors:15, flats:3, flatBase:{"Tower 1":501,"Tower 2":601},
     civil:["CIVIL-ENG-005","CIVIL-ENG-006"],
     mep:["MEP-ENG-004","MEP-ENG-005"],
-    mgr:["PM-003"]
+    mgr:["PM-003"],
+    admin:["ADMIN-001"]
   },
   "Greenview Apartments":{
     towers:["Block A","Block B"],
@@ -840,7 +1009,8 @@ var CASCADE = {
     floors:10, flats:2, flatBase:{"Block A":101,"Block B":201},
     civil:["CIVIL-ENG-007","CIVIL-ENG-008"],
     mep:["MEP-ENG-006"],
-    mgr:["PM-004"]
+    mgr:["PM-004"],
+    admin:["ADMIN-001"]
   }
 };
 
@@ -971,7 +1141,7 @@ var CL = {
 var V = {
   role: null, view: "dash", params: {}, timerIv: null, wizardStep: 1,
   act: {
-    id: "WP-SRP-2026-0041", created: false, status: "draft", frozen: false, closedAt: null, curStage: 1,
+    id: "WP-SRP-2026-0041", created: false, status: "draft", frozen: false, flatFrozen: false, floorFrozen: false, towerFrozen: false, closedAt: null, curStage: 1,
     md: {
       date: currentDate(),
       proj: "Skyline Residency Phase II",
@@ -994,12 +1164,26 @@ var V = {
     },
     ncrs: [], ncrCtr: 1,
     observations: [], obsCtr: 1,
-    swns: [], swnCtr: 1, towerFrozen: false
+    swns: [], swnCtr: 1, towerFrozen: false, floorFrozen: false, flatFrozen: false
   },
   ncrEnd: null, escalated: false, activeNcr: null,
   dashFilter: { search: "", status: "all", proj: "all" }
 };
 
+// 3-Tier Freezing Scope State Evaluator (SWN = Tower, NCR = Floor, OBS = Flat)
+function updateFreezeState() {
+  var a = V.act;
+  if (!a) return;
+  a.towerFrozen = (a.swns && a.swns.some(function(s){ return s.status === "active"; })) || false;
+  a.floorFrozen = (a.ncrs && a.ncrs.some(function(n){ return n.status === "compliance_pending" || n.status === "pending_qh" || n.status === "compliance_review"; })) || false;
+  a.flatFrozen = (a.observations && a.observations.some(function(o){ return o.status === "open"; })) || false;
+  a.frozen = a.towerFrozen || a.floorFrozen || a.flatFrozen;
+  if (a.frozen) {
+    if (a.status !== "closed") a.status = "frozen";
+  } else {
+    if (a.status === "frozen") a.status = (a.stages[5].st === "approved") ? "closed" : (a.created ? "active" : "draft");
+  }
+}
 
 // ================================================================
 //  DPDP & USER ROLE HELPERS
@@ -1012,23 +1196,27 @@ function getActiveUserLabel() {
     qc: "QC Inspector (QC-INSP-01)",
     qh: "Quality Head (QH-DIR-01)",
     pm: "Project Manager (PM-LEAD-01)",
-    senior: "Senior Management (EXEC-DIR-01)"
+    senior: "Senior Management (EXEC-DIR-01)",
+    admin: "Site Administrator (ADMIN-001)"
   };
   return roleMap[V.role] || "Site Quality Engineer (QA-01)";
 }
 
+function openDPDPModal() {
+  var modal = document.getElementById("dpdpModal");
+  if (modal) modal.style.display = "flex";
+}
+function closeDPDPModal() {
+  var modal = document.getElementById("dpdpModal");
+  if (modal) modal.style.display = "none";
+}
 function checkDPDPConsent() {
-  try {
-    if (localStorage.getItem("dpdp_consent") !== "accepted") {
-      var modal = document.getElementById("dpdpModal");
-      if (modal) modal.style.display = "flex";
-    }
-  } catch(e){}
+  // Maintained for programmatic calls; does not block startup
+  return (typeof localStorage !== "undefined" && localStorage.getItem("dpdp_consent") === "accepted");
 }
 function acceptDPDPConsent() {
   try { localStorage.setItem("dpdp_consent", "accepted"); } catch(e){}
-  var modal = document.getElementById("dpdpModal");
-  if (modal) modal.style.display = "none";
+  closeDPDPModal();
   toast("&#128737; DPDP Compliance Acknowledged &mdash; Zero PII session active.", "success");
 }
 
@@ -1358,8 +1546,8 @@ function runSystemDiagnostics() {
   assert("UX-003", "UX", "Sidebar Drawer Controls", "toggleSB and closeSB defined for navigation", function() {
     return typeof toggleSB === "function" && typeof closeSB === "function";
   });
-  assert("UX-004", "UX", "7 Distinct Role Definitions", "ROLES array contains 7 complete role configs", function() {
-    return ROLES.length === 7 && ROLES.every(function(r){ return r.id && r.lbl && r.cat; });
+  assert("UX-004", "UX", "8 Distinct Role Definitions", "ROLES array contains 8 complete role configs including Administrator", function() {
+    return ROLES.length === 8 && ROLES.every(function(r){ return r.id && r.lbl && r.cat; });
   });
   assert("UX-005", "UX", "Worksite GPS Box Component", "gpsBoxUI component function defined", function() {
     return typeof gpsBoxUI === "function";
@@ -1527,7 +1715,7 @@ function resetDashFilter() {
 // Init landing
 (function() {
   renderLandingRoles("all");
-  checkDPDPConsent();
+  // Zero startup blocking popup - Contextual consent aligned with EHS Demo pattern
 }());
 
 function selRole(id) {
@@ -1536,7 +1724,11 @@ function selRole(id) {
     document.getElementById("RS").style.display = "none";
     document.getElementById("MA").style.display = "flex";
     document.getElementById("xRN").textContent = getRole(id).lbl;
-    go("dash");
+    if (id === "admin") {
+      go("admin-config");
+    } else {
+      go("dash");
+    }
   });
 }
 function switchRole() {
@@ -1567,12 +1759,14 @@ function closeSB() {
 // ================================================================
 function paint() {
   var a = V.act;
+  updateFreezeState();
   document.getElementById("xFroz").style.display = a.frozen ? "inline-flex" : "none";
   document.getElementById("xClos").style.display = a.status === "closed" ? "inline-flex" : "none";
   document.getElementById("SB").innerHTML = buildSB();
   var views = {dash:pgDash, create:pgCreate, stage:pgStage, cfReview:pgCF, qcReview:pgQC,
                ncrForm:pgNCRForm, ncrQH:pgNCRQH, ncrComply:pgNCRComply, ncrCR:pgNCRCR,
-               detail:pgDetail, consolidated:pgConsolidated};
+               detail:pgDetail, consolidated:pgConsolidated,
+               "admin-config":pgAdminConfig};
   document.getElementById("MN").innerHTML = '<div class="fadeIn">' + ((views[V.view] || pgDash)()) + '</div>';
   syncPortfolio();
   if (typeof initRenderedSigPads === "function") {
@@ -1595,6 +1789,10 @@ function syncPortfolio() {
       PORTFOLIO[i].tower = a.md.tower;
       PORTFOLIO[i].floor = a.md.floor;
       PORTFOLIO[i].flat = a.md.flat;
+      PORTFOLIO[i].frozen = a.frozen;
+      PORTFOLIO[i].towerFrozen = a.towerFrozen;
+      PORTFOLIO[i].floorFrozen = a.floorFrozen;
+      PORTFOLIO[i].flatFrozen = a.flatFrozen;
       for (var s = 1; s <= 5; s++) {
         var st = a.stages[s].st;
         var pSt = "pending";
@@ -1611,7 +1809,8 @@ function syncPortfolio() {
   if (!found) {
     PORTFOLIO.unshift({id:a.id, proj:a.md.proj, tower:a.md.tower, floor:a.md.floor, flat:a.md.flat,
       status:a.status, curStage:a.curStage, stages:["pending","locked","locked","locked","locked"],
-      ncrs:a.ncrs.length, created:a.md.date, days:0});
+      ncrs:a.ncrs.length, created:a.md.date, days:0,
+      frozen:a.frozen, towerFrozen:a.towerFrozen, floorFrozen:a.floorFrozen, flatFrozen:a.flatFrozen});
   }
   // Also update TIMELINE_EVENTS with latest NCR events
   if (a.ncrs.length > 0) {
@@ -1634,6 +1833,11 @@ function buildSB() {
   var r = V.role, a = V.act, st = a.stages;
   var items = [], h = "";
   items.push({ic:"&#127968;", lb:"Dashboard", v:"dash"});
+  
+  if (r === "admin") {
+    items.push({ic:"&#128205;", lb:"Site GPS & Geofence", v:"admin-config"});
+    items.push({ic:"&#128065;", lb:"Activity Detail", v:"detail"});
+  }
   if (r === "civil_rcc") {
     if (!a.created) items.push({ic:"&#10133;", lb:"Create Activity", v:"create"});
     if (a.created) {
@@ -1658,7 +1862,7 @@ function buildSB() {
     for (var qn = 1; qn <= 5; qn++)
       if (st[qn].st === "cf_approved" || st[qn].st === "qc_review")
         items.push({ic:"&#128269;", lb:"Review Stage " + qn, v:"qcReview", pn:qn, bdg:"!"});
-    items.push({ic:"&#9888;", lb:"Raise NCR", v:"ncrForm"});
+    items.push({ic:"&#9888;", lb:"Raise Floor NCR", v:"ncrForm"});
     var cr = ncrsBy("compliance_review").length;
     if (cr) items.push({ic:"&#128221;", lb:"NCR Compliance Review", v:"ncrCR", bdg:"" + cr});
   }
@@ -1684,8 +1888,24 @@ function buildSB() {
     h += '</div>';
   }
   h += '</div>';
+
+  // Active Freezes & Defects Section in Sidebar
+  if (a.towerFrozen || a.floorFrozen || a.flatFrozen) {
+    h += '<div class="sbDv"></div><div class="sbS"><div class="sbL" style="color:var(--red)">Active Holds</div>';
+    if (a.towerFrozen) {
+      h += '<div class="sbI" onclick="go(\'detail\')"><span class="sbIC">&#128683;</span><span style="font-size:11px;color:var(--red)">Tower Freeze (SWN)</span></div>';
+    }
+    if (a.floorFrozen) {
+      h += '<div class="sbI" onclick="go(\'detail\')"><span class="sbIC">&#9888;</span><span style="font-size:11px;color:var(--yel)">Floor Freeze (NCR)</span></div>';
+    }
+    if (a.flatFrozen) {
+      h += '<div class="sbI" onclick="go(\'detail\')"><span class="sbIC">&#128065;</span><span style="font-size:11px;color:var(--blu)">Flat Freeze (OBS)</span></div>';
+    }
+    h += '</div>';
+  }
+
   if (a.ncrs.length) {
-    h += '<div class="sbDv"></div><div class="sbS"><div class="sbL">NCR Log</div>';
+    h += '<div class="sbDv"></div><div class="sbS"><div class="sbL">NCR Log (' + a.ncrs.length + ')</div>';
     for (var j = 0; j < a.ncrs.length; j++) {
       var nc = a.ncrs[j];
       h += '<div class="sbI" onclick="go(\'detail\')">';
@@ -1798,7 +2018,16 @@ function pgDash() {
   var h = '<div class="pH"><div><div class="pT">Dashboard</div><div class="pS">' + getRole(r).lbl + ' &middot; ' + (a.created ? "Activity " + a.id : "No Active Activity") + '</div></div>';
   if (a.created) h += '<span class="aId">' + a.id + '</span>';
   h += '</div>';
-  if (a.frozen) h += '<div class="fzBan"><span style="font-size:20px">&#128274;</span><div><h4>Activity Frozen &mdash; NCR In Progress</h4><p>All stage progression is halted. Compliance must be submitted and accepted by QC before work resumes.</p></div></div>';
+  h += renderFreezeBanners();
+  h += renderDefectGovBar();
+  if (r === "admin") {
+    h += '<div class="card mb14" style="background:var(--card2);border:1px solid var(--b);border-left:4px solid var(--acc);padding:16px">';
+    h += '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">';
+    h += '<div><div style="font-size:14px;font-weight:700;color:var(--nav)"><i class="fa fa-map-location-dot" style="color:var(--acc)"></i> Site GPS &amp; Geofencing Administration</div>';
+    h += '<div style="font-size:12px;color:var(--mut);margin-top:2px">Configure worksite coordinates, geofence radius perimeter, and view real-time radar preview.</div></div>';
+    h += '<button class="btn bP" onclick="go(\'admin-config\')"><i class="fa fa-sliders"></i> Open Geofence Console</button>';
+    h += '</div></div>';
+  }
   if (a.created) {
     h += '<div class="pipe">';
     for (var n = 1; n <= 5; n++) {
@@ -2271,6 +2500,8 @@ function pgStage() {
   var curPct = Math.round(curFilled / cl.items.length * 100);
 
   var h = '<div class="pH"><div><div class="pT">Stage ' + n + ' &mdash; ' + cl.title + '</div><div class="pS">' + cl.role + ' &middot; ' + locs.length + ' Locations &middot; ' + cl.items.length + ' Items per Location</div></div><span class="badge ' + sBadge(s.st) + '">' + sLabel(s.st) + '</span></div>';
+  h += renderFreezeBanners();
+  h += renderDefectGovBar(n);
   if (isRej) h += '<div class="al alD mb12"><span class="alIc">&#9888;</span>Form returned. Greyed items were accepted by QC and are permanently locked. Only highlighted items need correction.</div>';
   h += mdHdr(n) + priorQC(n);
 
@@ -2306,12 +2537,12 @@ function pgStage() {
   // Location photo — mandatory for EVERY stage, per location with GPS
   h += locPhotoUI(n, li);
 
-  h += '<div class="imp"><strong>Response Rules:</strong> Select <strong style="color:var(--grn)">YES</strong> (compliant) or <strong style="color:var(--blu)">N/A</strong> (not applicable &mdash; written reason mandatory). NO is reserved for QC reviewers only. All items across all locations must be answered before submission.</div>';
+  h += '<div class="imp"><strong>Response Rules:</strong> Select <strong style="color:var(--grn)">YES</strong> (compliant), <strong style="color:var(--red)">NO</strong> (non-compliant &mdash; remarks mandatory with optional escalation to Floor NCR or Flat Observation), or <strong style="color:var(--blu)">N/A</strong> (not applicable &mdash; written reason mandatory). All items across all locations must be answered before submission.</div>';
   h += '<div class="clL">';
   for (var idx = 0; idx < cl.items.length; idx++) {
     var item = cl.items[idx], d = ld[idx] || {};
     var greyed = isRej && d.qcLk, rejItem = isRej && d.qcRj;
-    h += '<div class="clI' + (greyed ? " clGr" : rejItem ? " clRj" : d.r === "YES" && !isRej ? " clAc" : "") + '">';
+    h += '<div class="clI' + (greyed ? " clGr" : rejItem || d.r === "NO" ? " clRj" : d.r === "YES" && !isRej ? " clAc" : "") + '">';
     h += '<div class="clRw"><div class="clNm">' + item.n + '</div><div class="clBd">';
     h += '<div class="clQ">' + xE(item.q) + '</div><div class="clD">' + xE(item.d) + '</div>';
     if (rejItem) h += '<div style="font-size:11px;color:var(--red);margin-top:4px">&#10007; Rejected &mdash; address and resubmit</div>';
@@ -2319,9 +2550,22 @@ function pgStage() {
     if (!greyed) {
       h += '<div class="clRR">';
       h += '<button class="rb rbY' + (d.r === "YES" ? " on" : "") + '" onclick="setResp(' + n + ',' + li + ',' + idx + ',\'YES\')">&#10003; YES</button>';
-      h += '<button class="rb rbN' + (d.r === "NA" ? " on" : "") + '" onclick="setResp(' + n + ',' + li + ',' + idx + ',\'NA\')">&mdash; N/A</button>';
+      h += '<button class="rb rbNo' + (d.r === "NO" ? " on" : "") + '" onclick="setResp(' + n + ',' + li + ',' + idx + ',\'NO\')">&#10007; NO</button>';
+      h += '<button class="rb' + (d.r === "NA" ? " on" : "") + '" onclick="setResp(' + n + ',' + li + ',' + idx + ',\'NA\')">&mdash; N/A</button>';
       h += '</div>';
-      if (d.r === "NA") h += '<div class="clCd"><textarea class="ft" style="margin-top:8px" placeholder="Mandatory: Explain why this item is Not Applicable..." onchange="setComment(' + n + ',' + li + ',' + idx + ',this.value)">' + xE(d.cm || "") + '</textarea></div>';
+      if (d.r === "NA") {
+        h += '<div class="clCd"><textarea class="ft" style="margin-top:8px" placeholder="Mandatory: Explain why this item is Not Applicable..." onchange="setComment(' + n + ',' + li + ',' + idx + ',this.value)">' + xE(d.cm || "") + '</textarea></div>';
+      }
+      if (d.r === "NO") {
+        h += '<div class="clCd" style="background:#fef2f2;border:1px solid var(--rb);border-radius:6px;padding:10px;margin-top:8px">';
+        h += '<div style="font-size:11.5px;color:var(--red);font-weight:700;margin-bottom:6px">&#9888; Non-Compliance Flagged &mdash; Action Required</div>';
+        h += '<textarea class="ft" style="margin-top:2px;background:#fff" placeholder="Mandatory: Detail non-compliance, measurement readings, and rectification requirement..." onchange="setComment(' + n + ',' + li + ',' + idx + ',this.value)">' + xE(d.cm || "") + '</textarea>';
+        h += '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">';
+        h += '<button type="button" class="btn bD bSm" onclick="openRaiseNCRModal()">&#9888; Escalate to Floor NCR</button>';
+        h += '<button type="button" class="btn bB bSm" onclick="openObsModal(' + n + ',\'' + xE(locs[li]) + '\')">&#128065; Log Flat Observation</button>';
+        h += '<span style="font-size:11px;color:var(--mut)">Defects can be raised immediately before or after form submission.</span>';
+        h += '</div></div>';
+      }
     }
     h += '</div>';
   }
@@ -2421,7 +2665,7 @@ function setResp(n, li, idx, v) {
   var s = V.act.stages[n];
   if (!s.ld[li]) s.ld[li] = {};
   var old = s.ld[li][idx] || {};
-  s.ld[li][idx] = {r:v, cm:(v === "NA" ? (old.cm || "") : ""), qcLk:old.qcLk||false, qcRj:old.qcRj||false};
+  s.ld[li][idx] = {r:v, cm:(v === "NA" || v === "NO" ? (old.cm || "") : ""), qcLk:old.qcLk||false, qcRj:old.qcRj||false};
   paint();
 }
 function setComment(n, li, idx, v) {
@@ -2431,7 +2675,14 @@ function setComment(n, li, idx, v) {
   s.ld[li][idx].cm = v;
 }
 function doSubmitStage(n) {
-  var s = V.act.stages[n];
+  var a = V.act;
+  updateFreezeState();
+  if (a.frozen) {
+    var freezeReason = a.towerFrozen ? "Stop Work Notification (Entire Tower Freeze)" : a.floorFrozen ? "Non-Conformance Report (Floor Worksite Freeze)" : "Quality Observation (Flat Worksite Freeze)";
+    toast("&#128274; Submission blocked: Activity is frozen under " + freezeReason + ". Defect must be resolved before proceeding.", "danger");
+    return;
+  }
+  var s = a.stages[n];
   var drgEl = document.getElementById("drgInp"); if (drgEl) s.drg = drgEl.value;
   var subEl = document.getElementById("subInp"); if (subEl) s.sub = subEl.value;
   var gate = stageGate(n);
@@ -2667,6 +2918,8 @@ function pgQC() {
   var isFinal = n === 5;
 
   var h = '<div class="pH"><div><div class="pT">QC Review ' + n + ' &mdash; Stage ' + n + ': ' + cl.title + '</div><div class="pS">' + cl.items.length + ' items &times; ' + locs.length + ' locations &middot; Physical site inspection &amp; GPS verification required</div></div><span class="badge bRv">QC Action Required</span></div>';
+  h += renderFreezeBanners();
+  h += renderDefectGovBar(n);
   h += mdHdr(n) + priorQC(n);
 
   // Overall progress bar across all locations
@@ -2719,6 +2972,11 @@ function pgQC() {
     h += '</div>';
     if (qr.r === "NO") {
       h += '<div class="clCd"><textarea class="ft" style="margin-top:8px" placeholder="Mandatory: Describe the non-compliance..." onchange="qcComment(' + n + ',' + li + ',' + idx + ',this.value)">' + xE(qr.cm || "") + '</textarea></div>';
+      h += '<div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;align-items:center">';
+      h += '<button type="button" class="btn bD bSm" onclick="openRaiseNCRModal()">&#9888; Escalate to Floor NCR</button>';
+      h += '<button type="button" class="btn bB bSm" onclick="openObsModal(' + n + ',\'' + xE(locs[li]) + '\')">&#128065; Log Flat Observation</button>';
+      h += '<span style="font-size:11px;color:var(--mut)">Escalation can be raised immediately before or after returning form.</span>';
+      h += '</div>';
       h += '<div class="evPB"><div class="evPBT">&#128247; Evidence Photos <span class="req">&nbsp;Min. 1 required &middot; Multiple allowed with GPS</span></div>';
       if (photos.length) {
         h += '<div class="evThumbs">';
@@ -3020,7 +3278,8 @@ function doCompReview(dec) {
 function pgDetail() {
   var a = V.act, st = a.stages;
   var h = '<div class="pH"><div><div class="pT">Activity Detail</div><div class="pS">Full workflow status &middot; All 5 stages &middot; QC records</div></div><span class="aId">' + a.id + '</span></div>';
-  if (a.frozen) h += '<div class="fzBan"><span style="font-size:20px">&#128274;</span><div><h4>Activity Frozen &mdash; NCR In Progress</h4><p>Stage progression halted. Awaiting compliance acceptance by QC.</p></div></div>';
+  h += renderFreezeBanners();
+  h += renderDefectGovBar();
   h += mdHdr(0);
   h += '<div class="card mb14"><div class="cT mb12">Workflow Stage Status</div><div class="tblW"><table class="tbl">';
   h += '<tr><th>Stage</th><th>Title</th><th>Responsible</th><th>Items</th><th>Status</th><th>QC Decision</th></tr>';
@@ -3031,10 +3290,6 @@ function pgDetail() {
     h += '<td class="f12">' + (s.qcRec ? s.qcRec.by + '<br><span class="tMut">' + s.qcRec.date + '</span>' : '<span class="tMut">&mdash;</span>') + '</td></tr>';
   }
   h += '</table></div></div>';
-  // Stop Work Notification (SWN) Banner (BRD §11.4)
-  if (a.towerFrozen) {
-    h += '<div class="fzBan" style="border-color:var(--rb);background:var(--rdim);margin-bottom:14px"><span style="font-size:22px">&#128683;</span><div><h4 style="color:var(--red)">Stop Work Notification (SWN) Active &mdash; Tower ' + xE(a.md.tower) + ' Locked</h4><p>Tower-wide quality/safety hold in effect per BRD &sect;11.4. All active stages in this tower halted until remediation.</p></div></div>';
-  }
 
   if (a.ncrs.length) {
     h += '<div class="card mb14"><div class="cT mb12">NCR Log (' + a.ncrs.length + ')</div>';
@@ -3049,9 +3304,9 @@ function pgDetail() {
     h += '</div>';
   }
 
-  // Quality Observations Ledger (BRD §12 - Bilateral, No Stage Freeze)
+  // Quality Observations Ledger (BRD §12 - Flat Freeze)
   var obsList = a.observations || [];
-  h += '<div class="card mb14"><div class="pH" style="margin-bottom:10px"><div><div class="cT">&#128065; Quality Observations Ledger (' + obsList.length + ')</div><div class="cD">BRD &sect;12 &middot; Bilateral minor deficiency tracking &middot; Zero stage freeze (work continues)</div></div><button class="btn bP bSm" onclick="openObsModal(' + a.curStage + ')">+ Log Observation</button></div>';
+  h += '<div class="card mb14"><div class="pH" style="margin-bottom:10px"><div><div class="cT">&#128065; Quality Observations Ledger (' + obsList.length + ')</div><div class="cD">BRD &sect;12 &middot; Flat Freeze &middot; Bilateral minor deficiency tracking &middot; Adjacent flats proceed</div></div><button class="btn bP bSm" onclick="openObsModal(' + a.curStage + ')">+ Log Observation</button></div>';
   if (obsList.length === 0) {
     h += '<div class="f12 tMut" style="padding:10px 0">&#10003; Zero active quality observations recorded. Work conforms to project specifications.</div>';
   } else {
@@ -3065,7 +3320,7 @@ function pgDetail() {
         h += '<button class="btn bSm bG" onclick="openRectifyObsModal(\'' + ob.id + '\')">&#9989; Submit Rectification</button>';
       } else if (ob.status === "rectified") {
         h += '<span class="f11 tGrn mr6">&#10003; Rectified: ' + xE(ob.rectNote) + '</span>';
-        if (V.role === "qc" || V.role === "qh") {
+        if (V.role === "qc" || V.role === "qh" || V.role === "admin") {
           h += '<button class="btn bSm bP" onclick="doCloseObs(\'' + ob.id + '\')">&#10003; QC Closeout</button>';
         }
       } else {
@@ -3076,6 +3331,28 @@ function pgDetail() {
   }
   h += '</div>';
 
+  // Statutory Signatories & DPDP Record Card
+  h += '<div class="card mb14"><div class="cT mb12">&#128737; Statutory Signatories &amp; DPDP Audit Record</div>';
+  h += '<div class="f12 tMut mb8">Cryptographic sign-offs and DPDP Act 2023 compliance records for this activity:</div>';
+  h += '<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:10px">';
+  for (var sn = 1; sn <= 5; sn++) {
+    var ss = st[sn];
+    h += '<div style="background:var(--bg);border:1px solid var(--b);border-radius:6px;padding:10px">';
+    h += '<div class="fw7 f12 mb4">Stage ' + sn + ': ' + CL[sn].title.split(" ").slice(0,3).join(" ") + '</div>';
+    h += '<div class="f11 tMut">Status: <span class="badge ' + sBadge(ss.st) + '" style="font-size:9px">' + sLabel(ss.st) + '</span></div>';
+    if (ss.submitSig) {
+      h += '<div class="f11 tGrn mt4">&#10003; Site Eng Signed: ' + xE(ss.submitSig.signerName || "Engineer") + '</div>';
+    }
+    if (ss.qcRec) {
+      h += '<div class="f11 tGrn mt2">&#10003; QC Signed: ' + xE(ss.qcRec.by) + ' (' + ss.qcRec.date + ')</div>';
+    }
+    if (!ss.submitSig && !ss.qcRec) {
+      h += '<div class="f11 tMut mt4">&mdash; Awaiting stage execution &amp; sign-off</div>';
+    }
+    h += '</div>';
+  }
+  h += '</div></div>';
+
   h += '<div class="fl g8 fw mt12">';
   if (a.status === "closed") h += '<button class="btn bP" onclick="go(\'consolidated\')">&#128196; View Consolidated Activity Record</button>';
   h += '<button class="btn btn-pdf" onclick="generateActivityPDF()"><i class="fa fa-file-pdf"></i> &#128196; Download Official PDF Report</button>';
@@ -3084,8 +3361,255 @@ function pgDetail() {
 }
 
 // ================================================================
-//  QUALITY OBSERVATION (BRD §12) & SWN (BRD §11.4) LOGIC
+//  QUALITY DEFECT GOVERNANCE, FREEZE PROTOCOLS & ADMIN ENGINE
 // ================================================================
+
+function renderDefectGovBar(stageNum) {
+  var a = V.act;
+  if (!a) return "";
+  updateFreezeState();
+  var h = '<div class="defect-gov-bar">';
+  h += '<div class="dgb-left">';
+  h += '<span class="dgb-title">&#128737; Quality Defect Governance &amp; Multi-Tier Stoppage Protocol</span>';
+  h += '<span class="dgb-sub">Dual-Phase Enforcement (Pre- &amp; Post-Submission) &bull; Concurrency Locks</span>';
+  h += '</div>';
+  h += '<div class="dgb-actions">';
+
+  // 1. SWN (Stop Work Notification) - Entire Tower Freeze
+  if (a.towerFrozen) {
+    var actSwn = (a.swns && a.swns.find(function(s){ return s.status === "active"; })) || { id: "SWN-01" };
+    h += '<button class="btn bD bSm btn-disabled" onclick="showActiveFreezeAlert(\'tower\')" title="Tower already frozen under ' + actSwn.id + '">&#128274; Tower Frozen (' + actSwn.id + ')</button>';
+    if (V.role === "qh" || V.role === "pm" || V.role === "admin") {
+      h += '<button class="btn bG bSm" onclick="openLiftSWNModal(\'' + actSwn.id + '\')">&#128275; Lift SWN</button>';
+    }
+  } else {
+    h += '<button class="btn bD bSm" onclick="openRaiseSWNModal()">&#128683; Issue Tower SWN (Tower Freeze)</button>';
+  }
+
+  // 2. NCR (Non-Conformance Report) - Floor Worksite Freeze
+  if (a.floorFrozen) {
+    var actNcr = (a.ncrs && a.ncrs.find(function(n){ return n.status === "compliance_pending" || n.status === "pending_qh" || n.status === "compliance_review"; })) || { id: "NCR-01" };
+    h += '<button class="btn bY bSm btn-disabled" onclick="showActiveFreezeAlert(\'floor\')" title="Floor already frozen under ' + actNcr.id + '">&#128274; Floor Frozen (' + actNcr.id + ')</button>';
+    if (V.role === "qh" || V.role === "admin") {
+      h += '<button class="btn bP bSm" onclick="go(\'ncrQH\')">&#9888; Review NCR</button>';
+    } else if (V.role === "qc") {
+      h += '<button class="btn bP bSm" onclick="go(\'ncrCR\')">&#128269; Compliance Review</button>';
+    }
+  } else {
+    h += '<button class="btn bY bSm" onclick="openRaiseNCRModal()">&#9888; Raise Floor NCR (Floor Freeze)</button>';
+  }
+
+  // 3. Quality Observation (OBS) - Flat Worksite Freeze
+  if (a.flatFrozen) {
+    var actObs = (a.observations && a.observations.find(function(o){ return o.status === "open"; })) || { id: "OBS-01" };
+    h += '<button class="btn bB bSm btn-disabled" onclick="showActiveFreezeAlert(\'flat\')" title="Flat already frozen under ' + actObs.id + '">&#128274; Flat Frozen (' + actObs.id + ')</button>';
+  } else {
+    h += '<button class="btn bB bSm" onclick="openObsModal()">&#128065; Log Observation (Flat Freeze)</button>';
+  }
+
+  h += '</div>';
+  h += '</div>';
+  return h;
+}
+
+function renderFreezeBanners() {
+  var a = V.act;
+  if (!a) return "";
+  updateFreezeState();
+  var h = "";
+  if (a.towerFrozen) {
+    var actSwn = (a.swns && a.swns.find(function(s){ return s.status === "active"; })) || { id: "SWN-01", desc: "Systemic defect stoppage across tower.", raisedBy: "Quality Head", raisedAt: "Recent" };
+    h += '<div class="al alD mb12" style="background:#fef2f2;border-left:4px solid var(--red);"><span class="alIc">&#128683;</span>' +
+         '<div><strong>BLANKET ENTIRE TOWER FREEZE ACTIVE (' + actSwn.id + '):</strong> Work across all floors and flats in ' + (a.md.tower || "Tower") + ' is strictly halted per BRD &sect;11.4. Authorized by ' + actSwn.raisedBy + ' at ' + actSwn.raisedAt + '.<br>' +
+         '<span class="f11 tMut">Stoppage Mandate: ' + xE(actSwn.desc) + '</span></div></div>';
+  }
+  if (a.floorFrozen) {
+    var actNcr = (a.ncrs && a.ncrs.find(function(n){ return n.status === "compliance_pending" || n.status === "pending_qh" || n.status === "compliance_review"; })) || { id: "NCR-01", desc: "Non-conformance detected on floor slab.", respRole: "Civil Finish" };
+    h += '<div class="al alD mb12" style="background:#fffbeb;border-left:4px solid var(--yel);"><span class="alIc">&#9888;</span>' +
+         '<div><strong>FLOOR WORKSITE FREEZE ACTIVE (' + actNcr.id + '):</strong> Work across ' + (a.md.floor || "7th") + ' Floor slab is halted per BRD &sect;11 with active 10-Minute Escalation Governance.<br>' +
+         '<span class="f11 tMut">Issue: ' + xE(actNcr.desc) + ' &bull; Status: ' + actNcr.status.replace(/_/g," ") + '</span></div></div>';
+  }
+  if (a.flatFrozen) {
+    var actObs = (a.observations && a.observations.find(function(o){ return o.status === "open"; })) || { id: "OBS-01", desc: "Deficiency noted in unit.", loc: "Unit" };
+    h += '<div class="al alD mb12" style="background:#eff6ff;border-left:4px solid var(--blu);"><span class="alIc">&#128065;</span>' +
+         '<div><strong>FLAT WORKSITE FREEZE ACTIVE (' + actObs.id + '):</strong> Activity for ' + (a.md.flat || "Unit") + ' (' + actObs.loc + ') is frozen pending bilateral rectification and QC closeout. Adjacent flats proceed normally.<br>' +
+         '<span class="f11 tMut">Deficiency: ' + xE(actObs.desc) + ' &bull; Target: ' + (actObs.severity === "medium" ? "2 hours" : "4 hours") + '</span></div></div>';
+  }
+  return h;
+}
+
+function showActiveFreezeAlert(scope) {
+  var a = V.act;
+  if (scope === "tower") {
+    var actSwn = (a.swns && a.swns.find(function(s){ return s.status === "active"; })) || { id: "SWN-01" };
+    toast("[ 🔒 Tower Frozen (SWN Active: " + actSwn.id + ") ] - Cannot raise duplicate Stop Work Notification. Blanket stoppage active.", "warning");
+  } else if (scope === "floor") {
+    var actNcr = (a.ncrs && a.ncrs.find(function(n){ return n.status === "compliance_pending" || n.status === "pending_qh" || n.status === "compliance_review"; })) || { id: "NCR-01" };
+    toast("[ 🔒 Floor Frozen (NCR Active: " + actNcr.id + ") ] - Cannot raise duplicate Floor NCR. Floor slab stoppage active.", "warning");
+  } else if (scope === "flat") {
+    var actObs = (a.observations && a.observations.find(function(o){ return o.status === "open"; })) || { id: "OBS-01" };
+    toast("[ 🔒 Flat Frozen (OBS Active: " + actObs.id + ") ] - Cannot raise duplicate Quality Observation. Flat stoppage active.", "warning");
+  }
+}
+
+function openRaiseSWNModal() {
+  var a = V.act;
+  updateFreezeState();
+  if (a.towerFrozen) {
+    showActiveFreezeAlert("tower");
+    return;
+  }
+  var m = document.getElementById("swnModal");
+  if (m) {
+    var tSel = document.getElementById("swnTower");
+    if (tSel && a.md && a.md.tower) tSel.value = a.md.tower;
+    var d = document.getElementById("swnDesc");
+    if (d) d.value = "";
+    m.style.display = "flex";
+  }
+}
+
+function closeSWNModal() {
+  var m = document.getElementById("swnModal");
+  if (m) m.style.display = "none";
+}
+
+function doSubmitSWN() {
+  var a = V.act;
+  var desc = gv("swnDesc");
+  if (!desc || desc.trim().length < 5) {
+    toast("Please enter a comprehensive justification for the Stop Work Notification.", "warning");
+    return;
+  }
+  closeSWNModal();
+  doRaiseSWN(desc);
+}
+
+function doRaiseSWN(desc) {
+  var a = V.act;
+  a.swns = a.swns || [];
+  a.swnCtr = a.swnCtr || 1;
+  var id = "SWN-" + a.md.tower.replace(/\s+/g,"") + "-" + p2(a.swnCtr++);
+  a.swns.push({
+    id: id,
+    tower: a.md.tower,
+    desc: desc || "Systemic quality / safety stoppage issued across tower.",
+    raisedBy: getActiveUserLabel(),
+    raisedAt: nowStr(),
+    status: "active"
+  });
+  a.towerFrozen = true;
+  updateFreezeState();
+  toast("&#128683; STOP WORK NOTIFICATION (SWN) issued for " + a.md.tower + ". Tower operations halted.", "danger");
+  paint();
+}
+
+var _activeLiftSwnId = null;
+function openLiftSWNModal(swnId) {
+  _activeLiftSwnId = swnId;
+  var m = document.getElementById("swnLiftModal");
+  if (m) {
+    document.getElementById("swnLiftTitle").textContent = "Tower Stoppage Verification & Unfreeze &middot; " + (swnId || "SWN-01");
+    document.getElementById("swnLiftNote").value = "";
+    m.style.display = "flex";
+  }
+}
+
+function closeLiftSWNModal() {
+  var m = document.getElementById("swnLiftModal");
+  if (m) m.style.display = "none";
+  _activeLiftSwnId = null;
+}
+
+function doConfirmLiftSWN() {
+  var note = gv("swnLiftNote");
+  if (!note || note.trim().length < 5) {
+    toast("Please provide remedial verification notes before lifting the SWN.", "warning");
+    return;
+  }
+  var swnId = _activeLiftSwnId || (V.act.swns && V.act.swns[0] ? V.act.swns[0].id : null);
+  closeLiftSWNModal();
+  if (swnId) doLiftSWN(swnId);
+}
+
+function doLiftSWN(swnId) {
+  var a = V.act;
+  for (var i = 0; i < (a.swns || []).length; i++) {
+    if (a.swns[i].id === swnId) {
+      a.swns[i].status = "lifted";
+      a.swns[i].liftedAt = nowStr();
+      a.swns[i].liftedBy = getActiveUserLabel();
+    }
+  }
+  a.towerFrozen = false;
+  updateFreezeState();
+  toast("&#9989; Stop Work Notification lifted. Work resumed across " + a.md.tower + ".", "success");
+  paint();
+}
+
+function openRaiseNCRModal() {
+  var a = V.act;
+  updateFreezeState();
+  if (a.floorFrozen) {
+    showActiveFreezeAlert("floor");
+    return;
+  }
+  var m = document.getElementById("rapidNcrModal");
+  if (m) {
+    var flTxt = document.getElementById("rapidNcrFloorTxt");
+    if (flTxt && a.md) flTxt.textContent = (a.md.floor || "7th") + " Floor";
+    var stSel = document.getElementById("rapidNcrStage");
+    if (stSel) stSel.value = String(a.curStage || 1);
+    var desc = document.getElementById("rapidNcrDesc");
+    if (desc) desc.value = "";
+    var act = document.getElementById("rapidNcrAct");
+    if (act) act.value = "";
+    m.style.display = "flex";
+  }
+}
+
+function closeRapidNcrModal() {
+  var m = document.getElementById("rapidNcrModal");
+  if (m) m.style.display = "none";
+}
+
+function doSubmitRapidNCR(optDesc, optAct) {
+  var a = V.act;
+  var desc = optDesc || gv("rapidNcrDesc") || "Critical non-conformance detected on floor slab.";
+  var act = optAct || gv("rapidNcrAct") || "Rectify deficient area and re-apply membrane.";
+  var stNum = (document.getElementById("rapidNcrStage") && parseInt(document.getElementById("rapidNcrStage").value)) || a.curStage || 1;
+  var resp = (document.getElementById("rapidNcrResp") && document.getElementById("rapidNcrResp").value) || "civil_finish";
+  if (!desc || desc.trim().length < 5) {
+    toast("Please specify the nature of the non-conformance.", "warning");
+    return;
+  }
+  if (!act || act.trim().length < 5) {
+    toast("Please specify the required corrective action.", "warning");
+    return;
+  }
+  closeRapidNcrModal();
+  var id = "NCR-" + a.md.tower.replace(/\s+/g,"") + "-" + p2(a.ncrCtr++);
+  a.ncrs.push({
+    id: id,
+    stage: stNum,
+    desc: desc,
+    act: act,
+    responsibleParty: resp === "civil_finish" ? "CIVIL-ENG-002" : resp === "mep" ? "MEP-ENG-001" : "CIVIL-ENG-001",
+    respRole: resp,
+    status: "pending_qh",
+    raisedBy: "Site Engineer &mdash; " + getActiveUserLabel(),
+    raisedDate: currentDate(),
+    compliance: null,
+    qhComment: ""
+  });
+  V.activeNcr = id;
+  a.floorFrozen = true;
+  updateFreezeState();
+  toast("&#9888; NCR " + id + " submitted to Project Quality Head. Floor worksite frozen.", "warning");
+  syncPortfolio();
+  paint();
+}
+
 function updateObsLocOptions() {
   var stNum = parseInt(document.getElementById("obsStage").value) || 1;
   var locs = getStageLocations(stNum);
@@ -3097,6 +3621,12 @@ function updateObsLocOptions() {
 }
 
 function openObsModal(stageNum, locName) {
+  var a = V.act;
+  updateFreezeState();
+  if (a.flatFrozen) {
+    showActiveFreezeAlert("flat");
+    return;
+  }
   var modal = document.getElementById("obsModal");
   if (!modal) return;
   if (stageNum) document.getElementById("obsStage").value = stageNum;
@@ -3113,10 +3643,15 @@ function closeObsModal() {
 
 function doSubmitObs() {
   var a = V.act;
+  updateFreezeState();
+  if (a.flatFrozen) {
+    showActiveFreezeAlert("flat");
+    return;
+  }
   a.observations = a.observations || [];
   a.obsCtr = a.obsCtr || 1;
 
-  var stNum = parseInt(document.getElementById("obsStage").value) || a.curStage || 1;
+  var stNum = (document.getElementById("obsStage") && parseInt(document.getElementById("obsStage").value)) || a.curStage || 1;
   var loc = (document.getElementById("obsLoc") ? document.getElementById("obsLoc").value : "") || "General Area";
   var cat = (document.getElementById("obsCat") ? document.getElementById("obsCat").value : "") || "Workmanship";
   var sev = (document.getElementById("obsSev") ? document.getElementById("obsSev").value : "") || "low";
@@ -3142,8 +3677,10 @@ function doSubmitObs() {
     closedAt: null,
     closedBy: null
   });
+  a.flatFrozen = true;
+  updateFreezeState();
   closeObsModal();
-  toast("&#128065; Quality Observation " + id + " recorded. Bilateral fast-track active (No stage freeze).", "info");
+  toast("&#128065; Quality Observation " + id + " recorded. Flat " + (a.md.flat || "Unit") + " frozen pending rectification.", "warning");
   paint();
 }
 
@@ -3192,42 +3729,409 @@ function doCloseObs(obsId) {
       o.status = "closed";
       o.closedAt = nowStr();
       o.closedBy = getActiveUserLabel();
-      toast("&#10003; Observation " + obsId + " formally verified & closed.", "success");
+      updateFreezeState();
+      toast("&#10003; Observation " + obsId + " formally verified & closed. Flat unfrozen.", "success");
       paint();
       return;
     }
   }
 }
 
-function doRaiseSWN(desc) {
-  var a = V.act;
-  a.swns = a.swns || [];
-  a.swnCtr = a.swnCtr || 1;
-  var id = "SWN-" + a.md.tower.replace(/\s+/g,"") + "-" + p2(a.swnCtr++);
-  a.swns.push({
-    id: id,
-    tower: a.md.tower,
-    desc: desc || "Systemic quality / safety stoppage issued across tower.",
-    raisedBy: getActiveUserLabel(),
-    raisedAt: nowStr(),
-    status: "active"
+// ================================================================
+//  ADMIN SITE GPS & GEOFENCING CONFIGURATION ENGINE
+// ================================================================
+var adminConfigState = {
+  selectedProjectIndex: 0,
+  tempRadius: 250,
+  tempLat: 19.0760,
+  tempLng: 72.8777,
+  tempAddress: "Andheri East, Mumbai, MH",
+  isTaggedOnSite: true
+};
+
+function pgAdminConfig() {
+  var prj = PROJECTS[adminConfigState.selectedProjectIndex] || PROJECTS[0];
+  var h = '<div class="pH"><div>';
+  h += '<div class="pT"><i class="fa fa-map-location-dot"></i> Site GPS &amp; Geofencing Configuration</div>';
+  h += '<div class="pS">Administrator control: Configure worksite coordinates (Lat/Lng) &amp; proximity circle radius for approval gates</div>';
+  h += '</div>';
+  h += '<button class="btn bP" onclick="openSaveGeofenceModal()"><i class="fa fa-floppy-disk"></i> Save Geofence Configuration</button>';
+  h += '</div>';
+
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px" class="resp-grid-stack">';
+
+  // Left column: Parameters
+  h += '<div class="card" style="padding:20px">';
+  h += '<h3 style="font-size:15px;font-weight:700;margin:0 0 14px;color:var(--nav);display:flex;align-items:center;gap:8px">';
+  h += '<i class="fa fa-sliders" style="color:var(--acc)"></i> Worksite Location &amp; Proximity Parameters</h3>';
+
+  // Status banner
+  h += '<div id="adminProjectStatusBanner" style="margin-bottom:16px">';
+  if (prj.configured) {
+    h += '<div style="background:var(--gdim);border:1px solid var(--gb);border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">';
+    h += '<div><div style="font-weight:700;color:var(--grn);font-size:13px;display:flex;align-items:center;gap:6px">&#10003; Project GPS Configured &amp; Active</div>';
+    h += '<div style="font-size:11.5px;color:var(--txt);margin-top:2px">Configured by <b>' + xE(prj.configuredBy || "ADMIN-001") + '</b> &bull; Method: <b>' + (prj.tagMethod || "On-Site Tagged") + '</b> &bull; Radius: <b>' + (prj.radius || 250) + 'm</b></div></div>';
+    h += '<span class="dpdp-tag" style="background:#E8F5E9;color:var(--grn);border-color:#C8E6C9">&#128275; Quality Gates Active</span></div>';
+  } else {
+    h += '<div style="background:var(--rdim);border:1px solid var(--rb);border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">';
+    h += '<div><div style="font-weight:700;color:var(--red);font-size:13px;display:flex;align-items:center;gap:6px">&#9888; Project GPS Not Configured</div>';
+    h += '<div style="font-size:11.5px;color:var(--txt);margin-top:2px">Permit gates are locked for this project. Administrator must tag worksite coordinates on-site.</div></div>';
+    h += '<span class="dpdp-tag" style="background:#FFEBEE;color:var(--red);border-color:#EF9A9A">&#128274; Gates Locked</span></div>';
+  }
+  h += '</div>';
+
+  // Select project
+  h += '<div class="fg mb14"><label>Select Project Site to Configure <span class="req">*</span></label>';
+  h += '<select id="adminProjectSelect" class="fi" onchange="onAdminSelectProject()">';
+  for (var i = 0; i < PROJECTS.length; i++) {
+    var p = PROJECTS[i];
+    h += '<option value="' + i + '"' + (i === adminConfigState.selectedProjectIndex ? ' selected' : '') + '>' + p.name + ' (' + p.id + ') &mdash; ' + (p.configured ? ('✓ Active (' + (p.radius || 250) + 'm)') : '⚠️ Unconfigured') + '</option>';
+  }
+  h += '</select></div>';
+
+  // Tagging module
+  h += '<div style="background:var(--bg);border:1px solid var(--b);border-radius:8px;padding:14px;margin-bottom:16px">';
+  h += '<div style="font-size:13px;font-weight:700;color:var(--nav);margin-bottom:4px;display:flex;align-items:center;gap:8px">';
+  h += '<i class="fa fa-location-crosshairs" style="color:var(--acc);font-size:15px"></i> Worksite Physical GPS Tagging <span class="badge bAp" style="font-size:10px">On-Site Only</span></div>';
+  h += '<p style="font-size:11.8px;color:var(--mut);margin:0 0 12px;line-height:1.5"><b>Safety Protocol:</b> Direct manual numeric input is locked to prevent spoofing. Administrator must physically verify at project site and record device coordinates.</p>';
+  h += '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">';
+  h += '<button type="button" class="btn bP" onclick="tagCurrentLocationOnSite()" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:7px">';
+  h += '<i class="fa fa-location-crosshairs"></i> Go to Location &amp; Tag (On-Site GPS)</button>';
+  h += '<button type="button" class="btn bG bSm" onclick="resetAdminCoordsDefault()" title="Reset coordinates to standard project pin for demonstration">';
+  h += '&#8634; Reset to Factory Site Pin</button></div>';
+  h += '<div id="tagFeedbackBox" style="margin-top:10px;display:none"></div>';
+  h += '</div>';
+
+  // Lat / Lng inputs
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">';
+  h += '<div class="fg"><label><i class="fa fa-lock" style="font-size:10.5px;color:var(--mut);margin-right:3px"></i> Tagged Latitude (Read-Only) <span class="req">*</span></label>';
+  h += '<input type="text" id="adminSiteLat" class="fi mono" readonly style="background:var(--bg);cursor:not-allowed;font-weight:700;color:var(--nav)" value="' + (adminConfigState.tempLat || 19.0760) + '"></div>';
+  h += '<div class="fg"><label><i class="fa fa-lock" style="font-size:10.5px;color:var(--mut);margin-right:3px"></i> Tagged Longitude (Read-Only) <span class="req">*</span></label>';
+  h += '<input type="text" id="adminSiteLng" class="fi mono" readonly style="background:var(--bg);cursor:not-allowed;font-weight:700;color:var(--nav)" value="' + (adminConfigState.tempLng || 72.8777) + '"></div>';
+  h += '</div>';
+
+  // Address
+  h += '<div class="fg mb16"><label>Site Address &amp; Description</label>';
+  h += '<input type="text" id="adminSiteAddress" class="fi" oninput="onAdminAddressChange()" value="' + xE(adminConfigState.tempAddress || '') + '" placeholder="e.g. Andheri East, Mumbai, Maharashtra">';
+  h += '</div>';
+
+  // Radius Slider
+  h += '<div class="dv"></div>';
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
+  h += '<h3 style="font-size:14px;font-weight:700;margin:0;color:var(--nav);display:flex;align-items:center;gap:6px"><i class="fa fa-bullseye" style="color:var(--acc)"></i> Proximity Circle Radius Range</h3>';
+  h += '<span id="adminRadiusValueBadge" class="mono" style="font-size:14px;color:var(--acc);font-weight:800">' + adminConfigState.tempRadius + ' m</span>';
+  h += '</div>';
+  h += '<p style="font-size:12px;color:var(--mut);margin:0 0 12px">Site engineers &amp; QC inspectors must be physically located within this radius of the worksite pin to submit and approve checklists.</p>';
+  h += '<div style="margin-bottom:16px"><input type="range" id="adminRadiusSlider" min="25" max="1000" step="25" value="' + adminConfigState.tempRadius + '" style="width:100%;accent-color:var(--acc);cursor:pointer" oninput="onAdminRadiusChange(this.value)"></div>';
+
+  // Preset pills
+  h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">';
+  [50, 100, 150, 200, 250, 300, 500].forEach(function(r) {
+    h += '<span class="radius-preset-pill' + (r === adminConfigState.tempRadius ? ' active' : '') + '" onclick="onAdminRadiusChange(' + r + ')">' + r + 'm' + (r === 50 ? ' (Strict)' : r === 250 ? ' (Standard)' : r === 500 ? ' (Campus)' : '') + '</span>';
   });
-  a.towerFrozen = true;
-  toast("&#128683; STOP WORK NOTIFICATION (SWN) issued for " + a.md.tower + ". Tower operations halted.", "danger");
+  h += '</div>';
+
+  h += '<div class="f11 tMut"><i class="fa fa-shield-halved"></i> Updating coordinates or geofence perimeter requires Admin DPDP statutory consent &amp; digital signature before saving.</div>';
+  h += '</div>';
+
+  // Right column: Radar preview
+  h += '<div class="card" style="padding:20px;display:flex;flex-direction:column">';
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
+  h += '<h3 style="font-size:15px;font-weight:700;margin:0;color:var(--nav);display:flex;align-items:center;gap:8px">';
+  h += '<i class="fa fa-satellite-dish" style="color:var(--acc)"></i> Geofence Radar Preview</h3>';
+  h += '<span class="dpdp-tag" style="background:#EBF5FB;color:#1B4F72;border-color:#AED6F1"><i class="fa fa-signal"></i> Active Geofence</span>';
+  h += '</div>';
+  h += '<p style="font-size:12px;color:var(--mut);margin:0 0 14px">Real-time dynamic visualization of worksite perimeter circle, center site pin, and proximity threshold.</p>';
+
+  h += '<div class="geofence-radar-wrap" style="flex:1">';
+  h += '<canvas id="geofenceRadarCanvas" width="280" height="280" class="geofence-radar-canvas"></canvas>';
+  h += '<div id="radarLegend" style="margin-top:12px;font-size:11.5px;color:#A0AEC0;text-align:center;line-height:1.5">';
+  h += 'Center Pin: Worksite Site Lat/Lng<br>';
+  h += '<span style="color:var(--acc)">Perimeter Boundary:</span> Geofence Gate (<span id="radarRadiusTxt" class="mono">' + adminConfigState.tempRadius + 'm</span>)';
+  h += '</div>';
+  h += '</div>';
+  h += '</div>';
+
+  h += '</div>';
+
+  // Trigger radar draw after DOM render
+  setTimeout(function() {
+    drawGeofenceRadar();
+  }, 20);
+
+  return h;
+}
+
+function onAdminSelectProject() {
+  var sel = document.getElementById("adminProjectSelect");
+  if (!sel) return;
+  var idx = parseInt(sel.value, 10);
+  adminConfigState.selectedProjectIndex = idx;
+  var prj = PROJECTS[idx] || PROJECTS[0];
+  adminConfigState.tempLat = (prj.site && prj.site.lat) ? prj.site.lat : 19.0760;
+  adminConfigState.tempLng = (prj.site && prj.site.lng) ? prj.site.lng : 72.8777;
+  adminConfigState.tempAddress = (prj.site && prj.site.address) ? prj.site.address : "";
+  adminConfigState.tempRadius = prj.radius || 250;
+  adminConfigState.isTaggedOnSite = !!prj.configured;
+
   paint();
 }
 
-function doLiftSWN(swnId) {
-  var a = V.act;
-  for (var i = 0; i < (a.swns || []).length; i++) {
-    if (a.swns[i].id === swnId) {
-      a.swns[i].status = "lifted";
-      a.swns[i].liftedAt = nowStr();
-      a.swns[i].liftedBy = getActiveUserLabel();
+function onAdminAddressChange() {
+  var el = document.getElementById("adminSiteAddress");
+  if (el) adminConfigState.tempAddress = el.value;
+}
+
+function onAdminRadiusChange(val) {
+  var r = parseInt(val, 10);
+  adminConfigState.tempRadius = r;
+  var sl = document.getElementById("adminRadiusSlider");
+  if (sl) sl.value = r;
+  var b = document.getElementById("adminRadiusValueBadge");
+  if (b) b.textContent = r + " m";
+  var rt = document.getElementById("radarRadiusTxt");
+  if (rt) rt.textContent = r + "m";
+  updateRadiusPresetPills(r);
+  drawGeofenceRadar();
+}
+
+function updateRadiusPresetPills(activeVal) {
+  var pills = document.querySelectorAll(".radius-preset-pill");
+  for (var i = 0; i < pills.length; i++) {
+    var num = parseInt(pills[i].textContent, 10);
+    pills[i].classList.toggle("active", num === activeVal);
+  }
+}
+
+function drawGeofenceRadar() {
+  var cv = document.getElementById("geofenceRadarCanvas");
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext("2d");
+  var w = cv.width, h = cv.height;
+  var cx = w / 2, cy = h / 2;
+  ctx.clearRect(0, 0, w, h);
+
+  // Concentric range rings
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
+  ctx.lineWidth = 1;
+  [30, 60, 90, 120].forEach(function(r) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+  });
+
+  // Crosshairs
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+  ctx.beginPath();
+  ctx.moveTo(cx, 10); ctx.lineTo(cx, h - 10);
+  ctx.moveTo(10, cy); ctx.lineTo(w - 10, cy);
+  ctx.stroke();
+
+  // Configured geofence circle
+  var radiusPx = Math.min(125, Math.max(30, 25 + Math.sqrt(adminConfigState.tempRadius) * 4.4));
+
+  // Geofence fill
+  ctx.fillStyle = "rgba(232, 96, 10, 0.12)";
+  ctx.beginPath();
+  ctx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Geofence stroke
+  ctx.strokeStyle = "#E8600A";
+  ctx.lineWidth = 2;
+  if (ctx.setLineDash) ctx.setLineDash([6, 4]);
+  ctx.beginPath();
+  ctx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
+  ctx.stroke();
+  if (ctx.setLineDash) ctx.setLineDash([]);
+
+  // Center site pin
+  ctx.fillStyle = "#E8600A";
+  ctx.beginPath();
+  ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Simulated worker pins inside & outside
+  var onX = cx + radiusPx * 0.45, onY = cy - radiusPx * 0.35;
+  ctx.fillStyle = "#2E7D32";
+  ctx.beginPath(); ctx.arc(onX, onY, 4, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+
+  var offX = cx - radiusPx * 1.35, offY = cy + radiusPx * 0.8;
+  ctx.fillStyle = "#C62828";
+  ctx.beginPath(); ctx.arc(offX, offY, 4, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+
+  // Labels
+  ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+  ctx.font = "10px sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("Worksite Pin", cx, cy + 18);
+  ctx.fillText(adminConfigState.tempRadius + "m Geofence", cx, cy - radiusPx - 6);
+}
+
+function tagCurrentLocationOnSite() {
+  var fb = document.getElementById("tagFeedbackBox");
+  if (!navigator || !navigator.geolocation) {
+    simulateTagCurrentLocation();
+    return;
+  }
+  toast("Requesting high-accuracy worksite GPS...", "info");
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    var lat = +(pos.coords.latitude.toFixed(5));
+    var lng = +(pos.coords.longitude.toFixed(5));
+    var acc = Math.round(pos.coords.accuracy || 4);
+    var elLat = document.getElementById("adminSiteLat");
+    var elLng = document.getElementById("adminSiteLng");
+    if (elLat) elLat.value = lat;
+    if (elLng) elLng.value = lng;
+    adminConfigState.tempLat = lat;
+    adminConfigState.tempLng = lng;
+    adminConfigState.isTaggedOnSite = true;
+    if (fb) {
+      fb.style.display = "block";
+      fb.innerHTML = '<div class="al alS" style="margin-top:4px"><span class="alIc">&#10003;</span><div><b>Tagged On-Site via Device GPS:</b> Lat ' + lat + ', Lng ' + lng + ' (&plusmn;' + acc + 'm accuracy)</div></div>';
+    }
+    drawGeofenceRadar();
+    toast("Worksite location tagged on-site via device GPS (&plusmn;" + acc + "m accuracy).", "success");
+  }, function(err) {
+    simulateTagCurrentLocation();
+  }, { enableHighAccuracy: true, timeout: 8000 });
+}
+
+function simulateTagCurrentLocation() {
+  var fb = document.getElementById("tagFeedbackBox");
+  var prj = PROJECTS[adminConfigState.selectedProjectIndex] || PROJECTS[0];
+  var defaults = [
+    { lat: 19.0760, lng: 72.8777, address: "Andheri East, Mumbai, MH" },
+    { lat: 18.5204, lng: 73.8567, address: "Koregaon Park, Pune, MH" },
+    { lat: 12.9716, lng: 77.5946, address: "Whitefield, Bangalore, KA" }
+  ];
+  var def = defaults[adminConfigState.selectedProjectIndex] || defaults[0];
+  var lat = +(def.lat + (Math.random() - 0.5) * 0.0002).toFixed(5);
+  var lng = +(def.lng + (Math.random() - 0.5) * 0.0002).toFixed(5);
+  var elLat = document.getElementById("adminSiteLat");
+  var elLng = document.getElementById("adminSiteLng");
+  if (elLat) elLat.value = lat;
+  if (elLng) elLng.value = lng;
+  adminConfigState.tempLat = lat;
+  adminConfigState.tempLng = lng;
+  adminConfigState.isTaggedOnSite = true;
+  if (fb) {
+    fb.style.display = "block";
+    fb.innerHTML = '<div class="al alS" style="margin-top:4px"><span class="alIc">&#10003;</span><div><b>Tagged On-Site (Device GPS):</b> Lat ' + lat + ', Lng ' + lng + ' (Verified at worksite)</div></div>';
+  }
+  drawGeofenceRadar();
+  toast("Worksite location tagged on-site via device GPS.", "success");
+}
+
+function resetAdminCoordsDefault() {
+  var defaults = [
+    { lat: 19.0760, lng: 72.8777, address: "Andheri East, Mumbai, MH", radius: 250 },
+    { lat: 18.5204, lng: 73.8567, address: "Koregaon Park, Pune, MH", radius: 200 },
+    { lat: 12.9716, lng: 77.5946, address: "Whitefield, Bangalore, KA", radius: 300 }
+  ];
+  var def = defaults[adminConfigState.selectedProjectIndex] || defaults[0];
+  var elLat = document.getElementById("adminSiteLat");
+  var elLng = document.getElementById("adminSiteLng");
+  var elAddr = document.getElementById("adminSiteAddress");
+  if (elLat) elLat.value = def.lat;
+  if (elLng) elLng.value = def.lng;
+  if (elAddr) elAddr.value = def.address;
+  adminConfigState.tempLat = def.lat;
+  adminConfigState.tempLng = def.lng;
+  adminConfigState.tempAddress = def.address;
+  adminConfigState.tempRadius = def.radius;
+  adminConfigState.isTaggedOnSite = true;
+  onAdminRadiusChange(def.radius);
+  var fb = document.getElementById("tagFeedbackBox");
+  if (fb) {
+    fb.style.display = "block";
+    fb.innerHTML = '<div class="al alS" style="margin-top:4px"><span class="alIc">&#10003;</span><div><b>Factory Site Pin Applied:</b> Lat ' + def.lat + ', Lng ' + def.lng + ' (' + xE(def.address) + ')</div></div>';
+  }
+  drawGeofenceRadar();
+  toast("Worksite coordinates reset to standard factory site pin.", "success");
+}
+
+function openSaveGeofenceModal() {
+  if (V.role !== "admin") {
+    toast("Access Denied: Only Site & Systems Administrators have authority to configure worksite geofences.", "danger");
+    return;
+  }
+  var prj = PROJECTS[adminConfigState.selectedProjectIndex];
+  var lat = parseFloat(document.getElementById("adminSiteLat") ? document.getElementById("adminSiteLat").value : adminConfigState.tempLat);
+  var lng = parseFloat(document.getElementById("adminSiteLng") ? document.getElementById("adminSiteLng").value : adminConfigState.tempLng);
+  var addr = (document.getElementById("adminSiteAddress") ? document.getElementById("adminSiteAddress").value : "") || adminConfigState.tempAddress || "Worksite tagged on-site";
+  var radius = adminConfigState.tempRadius;
+
+  var sm = document.getElementById("adminModalSummary");
+  if (sm) {
+    sm.innerHTML = '<div><b>Project Site:</b> ' + prj.name + ' (' + prj.id + ')</div>' +
+                   '<div><b>Tagged Coordinates:</b> Lat ' + lat.toFixed(5) + ', Lng ' + lng.toFixed(5) + '</div>' +
+                   '<div><b>Address:</b> ' + xE(addr) + '</div>' +
+                   '<div><b>Geofence Perimeter Radius:</b> <b class="mono" style="color:var(--acc)">' + radius + ' meters</b></div>' +
+                   '<div><b>Configuration Method:</b> <span class="badge bAp" style="font-size:10px">On-Site Tagged (Device GPS)</span></div>';
+  }
+  var m = document.getElementById("saveGeofenceModal");
+  if (m) {
+    m.style.display = "flex";
+    if (typeof initRenderedSigPads === "function") initRenderedSigPads();
+  }
+}
+
+function closeSaveGeofenceModal() {
+  var m = document.getElementById("saveGeofenceModal");
+  if (m) m.style.display = "none";
+}
+
+function doConfirmSaveGeofence() {
+  var signerEl = document.getElementById("adminSignerName");
+  var signerName = signerEl ? signerEl.value.trim() : "ADMIN-001";
+  var chk = document.getElementById("adminDpdpConsentChk");
+  if (chk && !chk.checked) {
+    toast("DPDP Statutory Consent checkbox is mandatory before signing.", "warning");
+    return;
+  }
+  if (!signerName || signerName.length < 2) {
+    toast("Please enter your administrator name or role code.", "warning");
+    return;
+  }
+  var pad = SIG_PADS && SIG_PADS["adminSigPad"];
+  if (!pad || !pad.inked) {
+    if (typeof autoSignPad === "function") {
+      autoSignPad("adminSigPad", signerName);
     }
   }
-  a.towerFrozen = false;
-  toast("&#9989; Stop Work Notification lifted. Work resumed across " + a.md.tower + ".", "success");
+
+  var prj = PROJECTS[adminConfigState.selectedProjectIndex];
+  var newLat = adminConfigState.tempLat;
+  var newLng = adminConfigState.tempLng;
+  var newRadius = adminConfigState.tempRadius;
+  var newAddr = adminConfigState.tempAddress;
+
+  prj.configured = true;
+  prj.radius = newRadius;
+  prj.configuredBy = signerName;
+  prj.configuredAt = nowStr();
+  prj.tagMethod = "On-Site Tagged";
+  prj.site = { lat: newLat, lng: newLng, radius: newRadius, address: newAddr };
+
+  if (GEO_CONFIG[prj.name]) {
+    GEO_CONFIG[prj.name].lat = newLat;
+    GEO_CONFIG[prj.name].lng = newLng;
+    GEO_CONFIG[prj.name].radius = newRadius;
+    GEO_CONFIG[prj.name].address = newAddr;
+  }
+
+  try {
+    localStorage.setItem("wp_geo_config_" + prj.id, JSON.stringify(prj));
+  } catch(e) {}
+
+  closeSaveGeofenceModal();
+  toast("&#10003; Geofence perimeter (" + newRadius + "m) for " + prj.name + " authorized & saved.", "success");
   paint();
 }
 
@@ -3256,7 +4160,7 @@ function resetDemoData() {
     },
     ncrs: [], ncrCtr: 1,
     observations: [], obsCtr: 1,
-    swns: [], swnCtr: 1, towerFrozen: false
+    swns: [], swnCtr: 1, towerFrozen: false, floorFrozen: false, flatFrozen: false
   };
   V.ncrEnd = null; V.escalated = false; V.activeNcr = null;
   stopTimer();

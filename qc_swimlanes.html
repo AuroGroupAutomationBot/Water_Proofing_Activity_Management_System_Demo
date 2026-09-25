@@ -242,6 +242,7 @@
   .legend-dot.ncr { background: #b91c1c; }
   .legend-dot.obs { background: #0284c7; }
   .legend-dot.swn { background: #7f1d1d; }
+  .legend-dot.admin { background: #059669; }
 
   /* Navigation Index */
   .flow-nav {
@@ -394,6 +395,11 @@
     color: #0369a1;
     border-color: #bae6fd;
   }
+  .flow-code-badge.badge-admin {
+    background: #ecfdf5;
+    color: #047857;
+    border-color: #a7f3d0;
+  }
   .flow-card-head h2 {
     font-size: 20px;
     margin: 0;
@@ -497,6 +503,7 @@
   .lane-actor-col.actor-qc::after { background: #4338ca; }
   .lane-actor-col.actor-head::after { background: #b91c1c; }
   .lane-actor-col.actor-system::after { background: #334155; }
+  .lane-actor-col.actor-admin::after { background: #059669; }
 
   .actor-title {
     font-family: 'Barlow Semi Condensed', sans-serif;
@@ -597,6 +604,11 @@
   }
   .step-node.node-swn .node-seq { color: #fca5a5; }
   .step-node.node-swn .node-detail { color: #e2e8f0; }
+  .step-node.node-admin {
+    border-color: #059669;
+    background: #ecfdf5;
+  }
+  .step-node.node-admin .node-seq { color: #047857; }
 
   .step-node.node-end {
     border-color: #16a34a;
@@ -822,7 +834,7 @@
     </div>
     <h1>Waterproofing Activity Management System (WP-AMS)</h1>
     <div class="masthead-subtitle">
-      End-to-End Operational Process Swimlanes across 5 Quality Stages, Hierarchical Defect Governance (Quality Observations, Non-Conformance Reports, Stop Work Notifications), WGS84 Geofencing, DPDP Act 2023 Compliant Role Signatures, and ISO 9001:2015 Clause 8.6 A4 QMS Compliance.
+      End-to-End Operational Process Swimlanes across 5 Quality Stages, 8-Role RBAC Taxonomy (including Site Administrator), 3-Tier Freezing Defect Governance (Tower SWN, Floor NCR, Flat Observation), Dual-Phase Raising (Pre- &amp; Post-Submission), Interactive WGS84 Geofence Radar, DPDP Act 2023 Digital Signatures, and ISO 9001:2015 Clause 8.6 A4 QMS Compliance.
     </div>
   </header>
 
@@ -833,8 +845,9 @@
       <div class="clock-pill"><i class="fa-solid fa-hourglass-half"></i> Pre-Ponding Soak: <b>48 Hours</b></div>
       <div class="clock-pill"><i class="fa-solid fa-water"></i> Post-Ponding Soak: <b>72 Hours</b></div>
       <div class="clock-pill"><i class="fa-solid fa-clock-rotate-left"></i> NCR Escalation: <b>10 Minutes</b></div>
-      <div class="clock-pill"><i class="fa-solid fa-location-crosshairs"></i> Geofence Radius: <b>500 m (WGS84)</b></div>
+      <div class="clock-pill"><i class="fa-solid fa-location-crosshairs"></i> Geofence Radius: <b>25m - 1000m (Dynamic Radar)</b></div>
       <div class="clock-pill"><i class="fa-solid fa-user-shield"></i> Privacy: <b>DPDP Act 2023 (Role-Coded)</b></div>
+      <div class="clock-pill"><i class="fa-solid fa-users-gear"></i> Governance: <b>8 Operational Roles</b></div>
     </div>
     <button id="btnGlobalToggle" class="btn-global-drawer" onclick="toggleAllDrawers()">
       <i class="fa-solid fa-folder-open"></i> Expand All Technical Specifications
@@ -849,9 +862,10 @@
     <span class="legend-badge"><span class="legend-dot decide"></span> Decision Gateway</span>
     <span class="legend-badge"><span class="legend-dot approve"></span> Stage Approved</span>
     <span class="legend-badge"><span class="legend-dot reject"></span> Partial Rejection Loop</span>
-    <span class="legend-badge"><span class="legend-dot obs"></span> Quality Observation (Zero Freeze)</span>
-    <span class="legend-badge"><span class="legend-dot ncr"></span> NCR (Flat/Floor Frozen)</span>
-    <span class="legend-badge"><span class="legend-dot swn"></span> SWN (Tower Blanket Stop)</span>
+    <span class="legend-badge"><span class="legend-dot obs"></span> Quality Observation (Flat Freeze)</span>
+    <span class="legend-badge"><span class="legend-dot ncr"></span> NCR (Floor Worksite Freeze)</span>
+    <span class="legend-badge"><span class="legend-dot swn"></span> SWN (Entire Tower Blanket Freeze)</span>
+    <span class="legend-badge"><span class="legend-dot admin"></span> Admin Geofence Radar</span>
   </div>
 
   <!-- Quick Jump Navigation Index -->
@@ -859,15 +873,16 @@
     <a href="#flow-1" class="flow-nav-item"><span>Stage 1: RCC Readiness</span><span class="nav-code">QC-01</span></a>
     <a href="#flow-2" class="flow-nav-item"><span>Stage 2: MEP Sleeves</span><span class="nav-code">QC-02</span></a>
     <a href="#flow-3" class="flow-nav-item"><span>Stage 3: 48h Pre-Ponding</span><span class="nav-code">QC-03</span></a>
-    <a href="#flow-4" class="flow-nav-item"><span>Stage 4: Coating & DFT</span><span class="nav-code">QC-04</span></a>
+    <a href="#flow-4" class="flow-nav-item"><span>Stage 4: Coating &amp; DFT</span><span class="nav-code">QC-04</span></a>
     <a href="#flow-5" class="flow-nav-item"><span>Stage 5: 72h Post-Ponding</span><span class="nav-code">QC-05</span></a>
-    <a href="#flow-6" class="flow-nav-item"><span>Stage Approval & Partial Rej.</span><span class="nav-code">QC-06</span></a>
-    <a href="#flow-7" class="flow-nav-item"><span>NCR & 10-Min Escalation</span><span class="nav-code">QC-07</span></a>
-    <a href="#flow-8" class="flow-nav-item"><span>Observation Fast-Track</span><span class="nav-code">QC-08</span></a>
-    <a href="#flow-9" class="flow-nav-item"><span>SWN Tower Governance</span><span class="nav-code">QC-09</span></a>
+    <a href="#flow-6" class="flow-nav-item"><span>Stage Approval &amp; Partial Rej.</span><span class="nav-code">QC-06</span></a>
+    <a href="#flow-7" class="flow-nav-item"><span>NCR Floor Freeze</span><span class="nav-code">QC-07</span></a>
+    <a href="#flow-8" class="flow-nav-item"><span>Observation Flat Freeze</span><span class="nav-code">QC-08</span></a>
+    <a href="#flow-9" class="flow-nav-item"><span>SWN Tower Freeze</span><span class="nav-code">QC-09</span></a>
     <a href="#flow-10" class="flow-nav-item"><span>WGS84 GPS Geofencing</span><span class="nav-code">QC-10</span></a>
     <a href="#flow-11" class="flow-nav-item"><span>DPDP Digital Signatures</span><span class="nav-code">QC-11</span></a>
     <a href="#flow-12" class="flow-nav-item"><span>ISO 9001 A4 PDF Export</span><span class="nav-code">QC-12</span></a>
+    <a href="#flow-13" class="flow-nav-item"><span>Site Admin Geofence Radar</span><span class="nav-code">QC-13</span></a>
   </nav>
 
   <!-- Search & Category Filters -->
@@ -877,10 +892,10 @@
       <input type="text" id="swimlaneSearch" class="search-input" placeholder="Search flows by keyword, standard, actor role, IS code, checklist item, or tolerance..." oninput="handleSearch()">
     </div>
     <div class="filter-pills">
-      <button class="filter-btn active" onclick="filterFlows('all')">All 12 Processes</button>
+      <button class="filter-btn active" onclick="filterFlows('all')">All 13 Processes</button>
       <button class="filter-btn" onclick="filterFlows('stages')">5 Quality Stages</button>
-      <button class="filter-btn" onclick="filterFlows('governance')">NCR, OBS & SWN Governance</button>
-      <button class="filter-btn" onclick="filterFlows('compliance')">GPS, DPDP & ISO Compliance</button>
+      <button class="filter-btn" onclick="filterFlows('governance')">Defect Hierarchy (SWN, NCR, OBS)</button>
+      <button class="filter-btn" onclick="filterFlows('compliance')">GPS, DPDP, ISO &amp; Admin Radar</button>
     </div>
   </div>
 
@@ -1623,8 +1638,8 @@
     <div class="flow-card-head">
       <div class="flow-title-group">
         <span class="flow-code-badge badge-ncr">QC-FLOW-07</span>
-        <h2>Non-Conformance Report (NCR) & 10-Minute Escalation Freeze</h2>
-        <span class="flow-scope-tag"><i class="fa-solid fa-triangle-exclamation"></i> Scope: Flat / Floor-Slab Level • STAGE FROZEN</span>
+        <h2>Non-Conformance Report (NCR) Floor-Slab Worksite Freeze</h2>
+        <span class="flow-scope-tag"><i class="fa-solid fa-triangle-exclamation"></i> Scope: Floor-Slab Level (floorFrozen = true) • Dual-Phase (Pre &amp; Post Submission)</span>
       </div>
       <div class="sig-pills">
         <span class="sig-pill"><i class="fa-solid fa-triangle-exclamation"></i> QC-INSP-001</span>
@@ -1633,12 +1648,13 @@
     </div>
     <div class="flow-overview">
       <div class="flow-desc">
-        Protocol triggered upon discovery of critical defects (active flood leaks, coating delamination > 10%, hollow core concrete). Immediately freezes the stage, initiates a 10-minute escalation countdown, mandates Root Cause Analysis (RCA) and CAPA, requiring Quality Head digital authorization to unfreeze.
+        Protocol triggered upon discovery of critical floor-level defects (active soffit leaks, debonding > 10%, hollow core concrete). Freezes the entire floor worksite (<code>floorFrozen = true</code>) while other floors proceed normally. Operates in <b>Dual Phases</b> (can be raised both BEFORE checklist submission in draft state and AFTER checklist submission in review/approved states). Features <b>Mutual Exclusivity Locking</b> (<code>[ 🔒 Floor Frozen ]</code>) to prevent duplicate concurrent NCRs.
       </div>
       <div class="safeguards-bar">
-        <span class="safeguard-pill"><i class="fa-solid fa-circle-exclamation" style="color:var(--halt)"></i> Impact: <b>STAGE FROZEN IMMEDIATELY</b></span>
-        <span class="safeguard-pill"><i class="fa-solid fa-stopwatch" style="color:var(--halt)"></i> Timer: <b>10-Minute Escalation Countdown</b></span>
-        <span class="safeguard-pill"><i class="fa-solid fa-user-lock" style="color:var(--halt)"></i> Gatekeeper: <b>Quality Head (QC-HEAD-001) Mandatory</b></span>
+        <span class="safeguard-pill"><i class="fa-solid fa-circle-exclamation" style="color:var(--halt)"></i> Scope: <b>FLOOR-SLAB WORKSTREAM FROZEN</b></span>
+        <span class="safeguard-pill"><i class="fa-solid fa-stopwatch" style="color:var(--halt)"></i> Escalation: <b>10-Minute Countdown Timer</b></span>
+        <span class="safeguard-pill"><i class="fa-solid fa-lock" style="color:var(--halt)"></i> Concurrency: <b>Duplicate NCR Lock Active</b></span>
+        <span class="safeguard-pill"><i class="fa-solid fa-user-lock" style="color:var(--halt)"></i> Gatekeeper: <b>Quality Head (QC-HEAD-001) Only</b></span>
       </div>
     </div>
 
@@ -1647,14 +1663,14 @@
       <div class="swimlane-row">
         <div class="lane-actor-col actor-qc">
           <div class="actor-title">QC Inspection Engineer</div>
-          <div class="actor-role-desc">NCR Issuance & Photographic Evidence</div>
+          <div class="actor-role-desc">Dual-Phase NCR Issuance &amp; Lock</div>
           <span class="actor-badge">QC-INSP-001</span>
         </div>
         <div class="lane-track-col">
           <div class="step-node node-freeze">
             <span class="node-seq">Step 7.1</span>
-            <span class="node-action">Issue NCR & Lock Stage</span>
-            <span class="node-detail">Classify defect severity; stage is locked in RED FROZEN state.</span>
+            <span class="node-action">Issue Floor NCR (Pre/Post Sub)</span>
+            <span class="node-detail">Raise from Defect Governance Bar or checklist 'NO' escalation. Locks floor (floorFrozen = true).</span>
           </div>
           <span class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></span>
           <div class="step-node node-freeze">
@@ -1770,8 +1786,8 @@
     <div class="flow-card-head">
       <div class="flow-title-group">
         <span class="flow-code-badge badge-obs">QC-FLOW-08</span>
-        <h2>Quality Observation (OBS) Bilateral Fast-Track Lifecycle</h2>
-        <span class="flow-scope-tag"><i class="fa-solid fa-comment-dots"></i> Scope: Location/Room Level • ZERO FREEZE</span>
+        <h2>Quality Observation (OBS) Flat Worksite Freeze Lifecycle</h2>
+        <span class="flow-scope-tag"><i class="fa-solid fa-comment-dots"></i> Scope: Flat Level (flatFrozen = true) • Dual-Phase (Pre &amp; Post Submission)</span>
       </div>
       <div class="sig-pills">
         <span class="sig-pill"><i class="fa-solid fa-pen-nib"></i> QC-INSP-001</span>
@@ -1780,11 +1796,12 @@
     </div>
     <div class="flow-overview">
       <div class="flow-desc">
-        Bilateral quality mechanism per BRD §12 for minor workmanship deficiencies (pinhole in cove, mortar splash on membrane, minor debonding at drain perimeter). <b>WORK CONTINUES UNINTERRUPTED (NO FREEZE, NO WORK STOPPAGE)</b>. Resolved directly between Engineer and QC.
+        Targeted quality governance mechanism for localized workmanship deficiencies (pinhole in cove, mortar splash on membrane, minor debonding at drain perimeter). Enforces a <b>Flat Freeze</b> (<code>flatFrozen = true</code>) halting the specific flat while adjacent flats proceed unhindered. Operates in <b>Dual Phases</b> (can be raised both BEFORE checklist submission in draft state and AFTER checklist submission). Features <b>Mutual Exclusivity Locking</b> (<code>[ 🔒 Flat Frozen ]</code>) to prevent duplicate concurrent observations.
       </div>
       <div class="safeguards-bar">
-        <span class="safeguard-pill"><i class="fa-solid fa-circle-check" style="color:var(--approve)"></i> Impact: <b>NO FREEZE • NO WORK STOPPAGE</b></span>
+        <span class="safeguard-pill"><i class="fa-solid fa-circle-exclamation" style="color:var(--obs-color)"></i> Scope: <b>FLAT WORKSTREAM FROZEN (Targeted Isolation)</b></span>
         <span class="safeguard-pill"><i class="fa-solid fa-users"></i> Protocol: <b>Bilateral Engineer-QC Resolution</b></span>
+        <span class="safeguard-pill"><i class="fa-solid fa-lock"></i> Concurrency: <b>Duplicate OBS Lock Active</b></span>
         <span class="safeguard-pill"><i class="fa-solid fa-bolt"></i> Target SLA: <b>24-Hour Fast-Track Rectification</b></span>
       </div>
     </div>
@@ -1794,17 +1811,17 @@
       <div class="swimlane-row">
         <div class="lane-actor-col actor-qc">
           <div class="actor-title">QC Inspection Engineer</div>
-          <div class="actor-role-desc">Raise Observation (Location-Specific)</div>
+          <div class="actor-role-desc">Dual-Phase Observation Issuance</div>
           <span class="actor-badge">QC-INSP-001</span>
         </div>
         <div class="lane-track-col">
           <div class="step-node node-obs">
             <span class="node-seq">Step 8.1</span>
-            <span class="node-action">Log Observation (e.g. Master Bath)</span>
-            <span class="node-detail">Record location, issue description, and upload reference photo. NO FREEZE.</span>
+            <span class="node-action">Log Observation (Pre/Post Sub)</span>
+            <span class="node-detail">Raise from Defect Governance Bar or checklist 'NO' escalation. Freezes flat (flatFrozen = true).</span>
           </div>
           <span class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></span>
-          <span class="lane-handoff-tag"><i class="fa-solid fa-share"></i> Sent to Civil Engineer (Work continues)</span>
+          <span class="lane-handoff-tag"><i class="fa-solid fa-share"></i> Sent to Civil Engineer for Rectification</span>
         </div>
       </div>
 
@@ -1812,7 +1829,7 @@
       <div class="swimlane-row">
         <div class="lane-actor-col actor-civil">
           <div class="actor-title">Civil Site Engineer</div>
-          <div class="actor-role-desc">Field Fix & Rectification Note</div>
+          <div class="actor-role-desc">Field Fix &amp; Rectification Note</div>
           <span class="actor-badge">CIVIL-ENG-001</span>
         </div>
         <div class="lane-track-col">
@@ -1825,7 +1842,7 @@
           <div class="step-node">
             <span class="node-seq">Step 8.3</span>
             <span class="node-action">Submit Rectification Note</span>
-            <span class="node-detail">Log repair details; change status to "Rectified (Pending QC Verification)".</span>
+            <span class="node-detail">Submit repair details and photo; status updates to "Rectified (Pending Verification)".</span>
           </div>
           <span class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></span>
           <span class="lane-handoff-tag"><i class="fa-solid fa-share"></i> Hand back to QC for verification</span>
@@ -1836,20 +1853,20 @@
       <div class="swimlane-row">
         <div class="lane-actor-col actor-qc">
           <div class="actor-title">QC Inspection Engineer</div>
-          <div class="actor-role-desc">Observation Closure Signoff</div>
+          <div class="actor-role-desc">Verification &amp; Flat Unfreeze</div>
           <span class="actor-badge">QC-INSP-001</span>
         </div>
         <div class="lane-track-col">
           <div class="step-node node-active">
             <span class="node-seq">Step 8.4</span>
-            <span class="node-action">Spot Check & Verify</span>
-            <span class="node-detail">Inspect the room; confirm touch-up meets quality specification.</span>
+            <span class="node-action">Spot Check &amp; Verify</span>
+            <span class="node-detail">Inspect the room; confirm touch-up meets Auro Realty QA specifications.</span>
           </div>
           <span class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></span>
           <div class="step-node node-end">
             <span class="node-seq">Step 8.5</span>
-            <span class="node-action">Observation Closed</span>
-            <span class="node-detail">Observation marked CLOSED. Archived in flat digital quality log.</span>
+            <span class="node-action">Close OBS &amp; Unfreeze Flat</span>
+            <span class="node-detail">Observation marked CLOSED. flatFrozen cleared to false. Flat activity restored.</span>
           </div>
         </div>
       </div>
@@ -1858,43 +1875,61 @@
     <!-- Tech Drawer -->
     <div class="tech-drawer">
       <button class="drawer-toggle-btn" onclick="toggleDrawer('drawer-8')">
-        <span><i class="fa-solid fa-microscope"></i> Distinct Operational Rules: Observation (OBS) vs NCR (Stage 8)</span>
+        <span><i class="fa-solid fa-microscope"></i> Distinct Operational Rules: Observation (OBS) vs NCR vs SWN (Stage 8)</span>
         <span class="drawer-badge" id="badge-drawer-8">View Full Details <i class="fa-solid fa-chevron-down"></i></span>
       </button>
       <div id="drawer-8" class="drawer-content">
-        <div class="drawer-subheading"><i class="fa-solid fa-scale-balanced"></i> Architectural Comparison: Observation vs NCR vs SWN</div>
+        <div class="drawer-subheading"><i class="fa-solid fa-scale-balanced"></i> Architectural Comparison: 3-Tier Freezing Defect Governance</div>
         <div class="table-responsive">
           <table class="tech-table">
             <thead>
               <tr>
                 <th>Attribute</th>
-                <th>Quality Observation (OBS - BRD §12)</th>
-                <th>Non-Conformance Report (NCR - BRD §11)</th>
-                <th>Stop Work Notification (SWN - BRD §11.4)</th>
+                <th>Quality Observation (OBS)</th>
+                <th>Non-Conformance Report (NCR)</th>
+                <th>Stop Work Notification (SWN)</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td><b>Scope Level</b></td>
-                <td>Location / Room (e.g. Master Bath)</td>
-                <td>Flat / Floor-Slab Level</td>
-                <td>Tower / Block Level</td>
+                <td>Flat Worksite (Specific Unit)</td>
+                <td>Floor-Slab Worksite (Whole Floor)</td>
+                <td>Tower / Block Level (Entire Tower)</td>
               </tr>
               <tr>
-                <td><b>Stage Freeze?</b></td>
-                <td><span class="badge-nofreeze">NO FREEZE (Work continues)</span></td>
-                <td><span class="badge-freeze">YES (Stage Frozen)</span></td>
-                <td><span class="badge-freeze">YES (Blanket Stoppage)</span></td>
+                <td><b>Freeze Scope Flag</b></td>
+                <td><span class="badge-freeze">flatFrozen = true (Flat Freeze)</span></td>
+                <td><span class="badge-freeze">floorFrozen = true (Floor Freeze)</span></td>
+                <td><span class="badge-freeze">towerFrozen = true (Tower Blanket Freeze)</span></td>
+              </tr>
+              <tr>
+                <td><b>Worksite Blast Radius</b></td>
+                <td>Halts current flat; adjacent flats proceed unhindered</td>
+                <td>Halts current floor slab; other floors proceed</td>
+                <td>Blanket stoppage; halts all floors, units &amp; trades in tower</td>
+              </tr>
+              <tr>
+                <td><b>Dual-Phase Raising</b></td>
+                <td>Available Pre-Submission (Draft) &amp; Post-Submission</td>
+                <td>Available Pre-Submission (Draft) &amp; Post-Submission</td>
+                <td>Available Pre-Submission (Draft) &amp; Post-Submission</td>
+              </tr>
+              <tr>
+                <td><b>Mutual Exclusivity Lock</b></td>
+                <td>[ 🔒 Flat Frozen ] (Prevents duplicate OBS)</td>
+                <td>[ 🔒 Floor Frozen ] (Prevents duplicate NCR)</td>
+                <td>[ 🔒 Tower Frozen ] (Prevents duplicate SWN)</td>
               </tr>
               <tr>
                 <td><b>Approval Gate</b></td>
-                <td>Bilateral: QC Inspector & Civil Eng</td>
+                <td>Bilateral: Civil Rectifies + QC Closes</td>
                 <td>Quality Head (QC-HEAD-001)</td>
                 <td>Quality Head + Project Manager</td>
               </tr>
               <tr>
                 <td><b>Escalation Timer</b></td>
-                <td>None (24-hour target SLA)</td>
+                <td>24-Hour target SLA</td>
                 <td>10-Minute Escalation Countdown</td>
                 <td>Immediate Corporate Executive Alert</td>
               </tr>
@@ -1912,8 +1947,8 @@
     <div class="flow-card-head">
       <div class="flow-title-group">
         <span class="flow-code-badge badge-swn">QC-FLOW-09</span>
-        <h2>Stop Work Notification (SWN) Tower-Level Governance</h2>
-        <span class="flow-scope-tag"><i class="fa-solid fa-ban"></i> Scope: Tower / Block Level • BLANKET STOPPAGE</span>
+        <h2>Stop Work Notification (SWN) Entire Tower Blanket Freeze</h2>
+        <span class="flow-scope-tag"><i class="fa-solid fa-ban"></i> Scope: Tower Level (towerFrozen = true) • Dual-Phase (Pre &amp; Post Submission)</span>
       </div>
       <div class="sig-pills">
         <span class="sig-pill"><i class="fa-solid fa-gavel"></i> QC-HEAD-001</span>
@@ -1922,11 +1957,12 @@
     </div>
     <div class="flow-overview">
       <div class="flow-desc">
-        Highest corporate quality escalation per BRD §11.4. Triggered when systemic defects occur (failed chemical batch across entire tower, structural shear cracking, gross safety violation). Enforces an immediate tower-wide halt of all waterproofing works.
+        Highest corporate quality escalation per BRD §11.4. Triggered when systemic defects occur (failed chemical batch across entire tower, structural shear cracking, gross safety violation). Enforces an immediate tower-wide halt of all floors, units, and contractor workstreams (<code>towerFrozen = true</code>). Operates in <b>Dual Phases</b> (can be raised both BEFORE checklist submission in draft state and AFTER checklist submission). Features <b>Mutual Exclusivity Locking</b> (<code>[ 🔒 Tower Frozen ]</code>) to prevent duplicate concurrent SWNs.
       </div>
       <div class="safeguards-bar">
-        <span class="safeguard-pill"><i class="fa-solid fa-ban" style="color:var(--halt)"></i> Impact: <b>TOWER-WIDE COMPLETE HALT</b></span>
+        <span class="safeguard-pill"><i class="fa-solid fa-ban" style="color:var(--halt)"></i> Scope: <b>TOWER-WIDE COMPLETE BLANKET FREEZE</b></span>
         <span class="safeguard-pill"><i class="fa-solid fa-shield-halved"></i> Authority: <b>Quality Head / Project Manager Only</b></span>
+        <span class="safeguard-pill"><i class="fa-solid fa-lock" style="color:var(--halt)"></i> Concurrency: <b>Duplicate SWN Lock Active</b></span>
         <span class="safeguard-pill"><i class="fa-solid fa-file-contract"></i> Clearance: <b>Multi-Party Root Cause Clearance Certificate</b></span>
       </div>
     </div>
@@ -1936,14 +1972,14 @@
       <div class="swimlane-row">
         <div class="lane-actor-col actor-head">
           <div class="actor-title">Quality Head</div>
-          <div class="actor-role-desc">SWN Issuance & Tower Freeze</div>
+          <div class="actor-role-desc">Dual-Phase SWN Issuance &amp; Tower Freeze</div>
           <span class="actor-badge">QC-HEAD-001</span>
         </div>
         <div class="lane-track-col">
           <div class="step-node node-swn">
             <span class="node-seq">Step 9.1</span>
-            <span class="node-action">Issue Stop Work Notification</span>
-            <span class="node-detail">Execute SWN broadcast. All activities in Tower A or B frozen instantly.</span>
+            <span class="node-action">Issue Tower SWN (Pre/Post Sub)</span>
+            <span class="node-detail">Broadcast stoppage across entire tower. Freezes all units (towerFrozen = true).</span>
           </div>
           <span class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></span>
           <div class="step-node node-freeze">
@@ -2296,6 +2332,133 @@ function haversineDist(lat1, lon1, lat2, lon2) {
           <li><b>Document Title:</b> Form QA-WP-8.6 — Official Waterproofing Quality Clearance Certificate.</li>
           <li><b>Evidence of Conformity:</b> All 37 inspection parameters verified with zero pending unrectified items.</li>
           <li><b>Traceability to Authorized Person:</b> Role signatures for Civil Engineer, QC Inspector, and Project Manager embedded with cryptographic timestamp.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- FLOW 13: Site & Systems Administrator Geolocation Radar Configuration & Governance -->
+  <!-- ========================================================================= -->
+  <section id="flow-13" class="flow-card" data-cat="compliance">
+    <div class="flow-card-head">
+      <div class="flow-title-group">
+        <span class="flow-code-badge badge-admin">QC-FLOW-13</span>
+        <h2>Site &amp; Systems Administrator Geolocation Radar Configuration</h2>
+        <span class="flow-scope-tag"><i class="fa-solid fa-radar"></i> Scope: Multi-Project Registry • Dynamic Radar Canvas • On-Site GPS Tagging • ADMIN-001 Authorization</span>
+      </div>
+      <div class="sig-pills">
+        <span class="sig-pill"><i class="fa-solid fa-user-gear"></i> ADMIN-001</span>
+        <span class="sig-pill"><i class="fa-solid fa-satellite-dish"></i> RADAR-CANVAS</span>
+        <span class="sig-pill"><i class="fa-solid fa-user-shield"></i> DPDP SECTION 4-8</span>
+      </div>
+    </div>
+    <div class="flow-overview">
+      <div class="flow-desc">
+        Dedicated governance channel for Site &amp; Systems Administrators (<code>ADMIN-001</code>) to configure spatial boundaries and geofencing parameters across construction projects. Features an interactive 280x280 HTML5 Geofence Radar with live pulse animations, dynamic radius range configuration (25m to 1000m), real-time on-site GPS coordinate calibration, factory site pin reset, and statutory administrative authorization with digital signature capture and DPDP consent.
+      </div>
+      <div class="safeguards-bar">
+        <span class="safeguard-pill"><i class="fa-solid fa-circle-check" style="color:var(--approve)"></i> Multi-Project: <b>3 Projects Synced (PRJ-SRP-02, PRJ-MHP-01, PRJ-GVA-03)</b></span>
+        <span class="safeguard-pill"><i class="fa-solid fa-circle-nodes" style="color:var(--approve)"></i> Dynamic Radar: <b>280x280 Canvas (25m - 1000m Range)</b></span>
+        <span class="safeguard-pill"><i class="fa-solid fa-location-crosshairs" style="color:var(--approve)"></i> Field Calibration: <b>On-Site Physical GPS Tagging</b></span>
+        <span class="safeguard-pill"><i class="fa-solid fa-signature" style="color:var(--approve)"></i> Statutory Audit: <b>ADMIN-001 Vector Signature + DPDP Consent</b></span>
+      </div>
+    </div>
+
+    <div class="swimlane-container">
+      <!-- Lane 1: Site & Systems Administrator -->
+      <div class="swimlane-row">
+        <div class="lane-actor-col actor-admin">
+          <div class="actor-title">Site Administrator</div>
+          <div class="actor-role-desc">Role Authentication &amp; Baseline Selection</div>
+          <span class="actor-badge">ADMIN-001</span>
+        </div>
+        <div class="lane-track-col">
+          <div class="step-node node-start">
+            <span class="node-seq">Step 13.1</span>
+            <span class="node-action">Switch Role &amp; Open Radar</span>
+            <span class="node-detail">Select Site Administrator role; navigate to Site Admin Geofence Config console.</span>
+          </div>
+          <span class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <div class="step-node node-active">
+            <span class="node-seq">Step 13.2</span>
+            <span class="node-action">Select Project &amp; Fetch Datum</span>
+            <span class="node-detail">Choose target project; load WGS84 base coordinates and active radius settings.</span>
+          </div>
+          <span class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <span class="lane-handoff-tag"><i class="fa-solid fa-share"></i> Transmit Datum to Canvas Engine</span>
+        </div>
+      </div>
+
+      <!-- Lane 2: Interactive Geofence Radar Canvas Engine -->
+      <div class="swimlane-row">
+        <div class="lane-actor-col actor-system">
+          <div class="actor-title">Radar Canvas Engine</div>
+          <div class="actor-role-desc">Real-Time Coordinate Visualization</div>
+          <span class="actor-badge">RADAR-CORE</span>
+        </div>
+        <div class="lane-track-col">
+          <div class="step-node node-active">
+            <span class="node-seq">Step 13.3</span>
+            <span class="node-action">Render Concentric Rings &amp; Sweep</span>
+            <span class="node-detail">Draw cardinal markers (N, S, E, W), 25m–1000m range rings, and sweeping beam.</span>
+          </div>
+          <span class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <div class="step-node node-active">
+            <span class="node-seq">Step 13.4</span>
+            <span class="node-action">Plot Multi-Tower Nodes &amp; Pulse</span>
+            <span class="node-detail">Render glowing Tower A &amp; Tower B nodes with relative distance offset indicators.</span>
+          </div>
+          <span class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <span class="lane-handoff-tag"><i class="fa-solid fa-share"></i> Listen for Range / GPS Adjustments</span>
+        </div>
+      </div>
+
+      <!-- Lane 3: Field Calibration & Statutory Authorization -->
+      <div class="swimlane-row">
+        <div class="lane-actor-col actor-admin">
+          <div class="actor-title">Field Calibration &amp; Signoff</div>
+          <div class="actor-role-desc">GPS Calibration &amp; Audit Seal</div>
+          <span class="actor-badge">ADMIN-001</span>
+        </div>
+        <div class="lane-track-col">
+          <div class="step-node">
+            <span class="node-seq">Step 13.5</span>
+            <span class="node-action">On-Site Tagging or Range Slider</span>
+            <span class="node-detail">Tag current physical GPS position (HTML5 API) or adjust radius slider (25m - 1000m).</span>
+          </div>
+          <span class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <div class="decision-gateway">
+            <div class="decision-title"><i class="fa-solid fa-circle-question"></i> Configuration Verified?</div>
+            <div class="decision-paths">
+              <span class="path-approved"><i class="fa-solid fa-check"></i> Authorize &amp; Save: Open Sig Modal</span>
+              <span class="path-rejected"><i class="fa-solid fa-rotate-left"></i> Reset: Restore Factory Project Pin</span>
+            </div>
+          </div>
+          <span class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <div class="step-node node-end">
+            <span class="node-seq">Step 13.6</span>
+            <span class="node-action">Sign Canvas &amp; Commit GEO_CONFIG</span>
+            <span class="node-detail">Sign authorization canvas with DPDP consent. Update GEO_CONFIG permanently.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Drawer -->
+    <div class="tech-drawer">
+      <button class="drawer-toggle-btn" onclick="toggleDrawer('drawer-13')">
+        <span><i class="fa-solid fa-microscope"></i> Geofence Radar Specifications &amp; Statutory Administrative Audit Trail (Stage 13)</span>
+        <span class="drawer-badge" id="badge-drawer-13">View Full Details <i class="fa-solid fa-chevron-down"></i></span>
+      </button>
+      <div id="drawer-13" class="drawer-content">
+        <div class="drawer-subheading"><i class="fa-solid fa-satellite"></i> Administrator Geofence Architecture &amp; Calibration Rules</div>
+        <ul style="font-size:13px; color:var(--ink-secondary); line-height:1.7;">
+          <li><b>Multi-Project Synchronization:</b> Dynamic selection between PRJ-SRP-02 (Skyline Residency Phase II - 19.0760° N, 72.8777° E), PRJ-MHP-01 (Metro Heights - 18.5204° N, 73.8567° E), and PRJ-GVA-03 (Greenview - 12.9716° N, 77.5946° E).</li>
+          <li><b>Interactive 280x280 HTML5 Radar:</b> Real-time procedural rendering with dark radial gradient, 4 concentric distance scale rings, cardinal axes, rotating sweeping radar line (requestAnimationFrame), and pulsing target beacons.</li>
+          <li><b>Dual-Mode Position Calibration:</b> Supports on-site physical GPS device query (<code>navigator.geolocation.getCurrentPosition()</code> with 5m high-accuracy mode) or instant fallback simulation with calibrated accuracy jitter (&plusmn;3.2m).</li>
+          <li><b>Factory Reset Safeguard:</b> One-click restoration of factory baseline coordinates if field drift or erroneous calibration occurs.</li>
+          <li><b>Statutory DPDP Act 2023 Compliance:</b> Changes require digital canvas signature with mandatory statutory consent acknowledgment. No employee personal identity numbers or PII are retained; all modifications are cryptographically linked to the <code>ADMIN-001</code> organizational role code.</li>
         </ul>
       </div>
     </div>
