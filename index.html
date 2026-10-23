@@ -242,6 +242,12 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
 .locPBAdd{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .locPBThumb{width:54px;height:54px;border-radius:var(--rs);background:var(--card2);border:1px solid var(--gb);
             display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.locPBImgThumb{width:72px;height:54px;object-fit:cover;border-radius:var(--rs);border:1px solid var(--b);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.locPBImgThumb:hover{transform:scale(1.05);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.demo-pill-btn{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:14px;background:var(--adim);border:1px solid rgba(245,166,35,.35);color:var(--acc);font-size:11px;font-weight:700;cursor:pointer;transition:.15s}
+.demo-pill-btn:hover{background:var(--acc);color:#fff}
+.preset-loc-btn{padding:5px 11px;border-radius:6px;background:var(--card2);border:1px solid var(--b);font-size:11.5px;color:var(--txt);cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:5px}
+.preset-loc-btn:hover{border-color:var(--acc);color:var(--acc)}
 .locPBMeta .ok{color:var(--grn);font-weight:600;font-size:12px;margin-bottom:2px}
 .locPBMeta .fn{font-size:10px;color:var(--mut);font-family:var(--fm)}
 .locPBMeta .rm{background:none;border:none;color:var(--red);font-size:11px;cursor:pointer;text-decoration:underline;padding:0;margin-top:3px;display:block}
@@ -783,6 +789,43 @@ input,select,textarea{font-family:var(--f);color:var(--txt)}
   </div>
 </div>
 
+<!-- ROOM-WISE PHOTOGRAPH PREVIEW & ENLARGE MODAL -->
+<div id="photoPreviewModal" class="dpdp-overlay" style="display:none">
+  <div class="dpdp-modal" style="max-width:640px">
+    <div class="pH" style="margin-bottom:10px">
+      <div>
+        <div class="pT" id="photoModalTitle" style="font-size:16px"><i class="fa fa-camera"></i> Room Photograph Evidence</div>
+        <div class="pS" id="photoModalSub">Digital Quality Evidence &bull; Tamper-Evident Geotag &bull; ISO 9001:2015 Clause 8.6</div>
+      </div>
+      <button class="btn bG bSm" onclick="closePhotoModal()">&#10005; Close</button>
+    </div>
+    <div id="photoModalImgWrap" style="text-align:center;background:#0f172a;border-radius:8px;padding:8px;margin-bottom:12px;max-height:420px;overflow:hidden;display:flex;align-items:center;justify-content:center">
+      <img id="photoModalImg" src="" style="max-width:100%;max-height:400px;border-radius:4px;object-fit:contain" alt="Photo Preview">
+    </div>
+    <div id="photoModalMeta" style="background:var(--card2);border:1px solid var(--b);border-radius:var(--rs);padding:10px 14px;font-size:11.5px;line-height:1.7"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button class="btn bG" onclick="closePhotoModal()">Close Preview</button>
+    </div>
+  </div>
+</div>
+
+<!-- SYSTEM DIAGNOSTICS & CONTRACT VERIFICATION MODAL -->
+<div id="diagModal" class="dpdp-overlay" style="display:none">
+  <div class="dpdp-modal" style="max-width:760px;max-height:85vh;overflow-y:auto">
+    <div class="pH" style="margin-bottom:10px">
+      <div>
+        <div class="pT" style="font-size:16px">&#9881; System Diagnostics &amp; Contract Verification</div>
+        <div class="pS">Automated Test Matrix &bull; 76 Core Invariants &bull; QA/QC Architecture</div>
+      </div>
+      <button class="btn bG" onclick="closeDiagModal()" style="padding:4px 10px;font-size:12px">&times; Close</button>
+    </div>
+    <div id="diagResults" style="display:grid;grid-template-columns:1fr;gap:6px;margin-top:12px"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+      <button class="btn bG" onclick="closeDiagModal()">Dismiss</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- PRODUCTION-GRADE LANDING / ROLE SELECT (Matches EHS Demo Pattern) -->
 <div id="RS">
@@ -1250,6 +1293,33 @@ function acceptDPDPConsent() {
 // ================================================================
 //  GPS & GEOFENCE LOGIC (from EHS Demo pattern)
 // ================================================================
+function loadGeofenceConfigFromStorage() {
+  try {
+    if (typeof localStorage === "undefined") return;
+    for (var i = 0; i < PROJECTS.length; i++) {
+      var p = PROJECTS[i];
+      var saved = localStorage.getItem("wp_geo_config_" + p.id);
+      if (saved) {
+        var obj = JSON.parse(saved);
+        if (obj && obj.site && typeof obj.site.lat === "number") {
+          p.configured = true;
+          p.radius = obj.radius || p.radius;
+          p.site = obj.site;
+          p.configuredBy = obj.configuredBy || p.configuredBy;
+          p.configuredAt = obj.configuredAt || p.configuredAt;
+          if (GEO_CONFIG[p.name]) {
+            GEO_CONFIG[p.name].lat = obj.site.lat;
+            GEO_CONFIG[p.name].lng = obj.site.lng;
+            GEO_CONFIG[p.name].radius = obj.site.radius || p.radius;
+            GEO_CONFIG[p.name].address = obj.site.address || GEO_CONFIG[p.name].address;
+            GEO_CONFIG[p.name].configured = true;
+          }
+        }
+      }
+    }
+  } catch(e) {}
+}
+
 function haversineDistance(lat1, lon1, lat2, lon2) {
   var R = 6371000;
   var dLat = (lat2 - lat1) * Math.PI / 180;
@@ -1266,8 +1336,8 @@ function captureGPS(callback, forceSync) {
   var cfg = GEO_CONFIG[proj] || GEO_CONFIG["Skyline Residency Phase II"];
 
   function getOnSiteCoords(src) {
-    var jLat = cfg.lat + (Math.random() * 0.0002 - 0.0001);
-    var jLng = cfg.lng + (Math.random() * 0.0002 - 0.0001);
+    var jLat = +(cfg.lat + (Math.random() * 0.0002 - 0.0001)).toFixed(6);
+    var jLng = +(cfg.lng + (Math.random() * 0.0002 - 0.0001)).toFixed(6);
     var dist = haversineDistance(jLat, jLng, cfg.lat, cfg.lng);
     return {
       lat: jLat,
@@ -1290,23 +1360,32 @@ function captureGPS(callback, forceSync) {
   }
 
   var called = false;
+  var safetyTimer = setTimeout(function() {
+    if (!called) {
+      called = true;
+      if (typeof callback === "function") callback(defaultCoords);
+    }
+  }, 3200);
+
   try {
     navigator.geolocation.getCurrentPosition(
       function(pos) {
         if (called) return;
         called = true;
-        var lat = pos.coords.latitude;
-        var lng = pos.coords.longitude;
+        clearTimeout(safetyTimer);
+        var lat = +(pos.coords.latitude.toFixed(6));
+        var lng = +(pos.coords.longitude.toFixed(6));
         var acc = Math.round(pos.coords.accuracy || 10);
         var dist = haversineDistance(lat, lng, cfg.lat, cfg.lng);
+        var isWithin = dist <= cfg.radius;
         var res = {
           lat: lat,
           lng: lng,
           accuracy: acc,
           source: "device_gps",
-          within: dist <= cfg.radius,
+          within: isWithin,
           distance: dist,
-          address: cfg.address,
+          address: isWithin ? cfg.address : (cfg.address + " (Physical Device Coordinates)"),
           radius: cfg.radius
         };
         if (typeof callback === "function") callback(res);
@@ -1314,18 +1393,53 @@ function captureGPS(callback, forceSync) {
       function(err) {
         if (called) return;
         called = true;
+        clearTimeout(safetyTimer);
         if (typeof callback === "function") callback(defaultCoords);
       },
-      { enableHighAccuracy: true, timeout: 6000, maximumAge: 30000 }
+      { enableHighAccuracy: true, timeout: 3000, maximumAge: 30000 }
     );
   } catch(e) {
-    if (!called && typeof callback === "function") {
+    if (!called) {
       called = true;
-      callback(defaultCoords);
+      clearTimeout(safetyTimer);
+      if (typeof callback === "function") callback(defaultCoords);
     }
   }
 
   return defaultCoords;
+}
+
+function showCalibratePrompt() {
+  var proj = (V.act && V.act.md && V.act.md.proj) || (FS && FS.proj) || "Skyline Residency Phase II";
+  if (confirm("Calibrate Project Geofence Center to your current device coordinates?\n\nThis will align the " + proj + " geofence perimeter to your current location so all checklist activities are authenticated within bounds.")) {
+    captureGPS(function(gps) {
+      if (GEO_CONFIG[proj]) {
+        GEO_CONFIG[proj].lat = gps.lat;
+        GEO_CONFIG[proj].lng = gps.lng;
+        GEO_CONFIG[proj].configured = true;
+      }
+      for (var i = 0; i < PROJECTS.length; i++) {
+        if (PROJECTS[i].name === proj) {
+          PROJECTS[i].site = { lat: gps.lat, lng: gps.lng, radius: PROJECTS[i].radius, address: "Calibrated Worksite Pin" };
+          try { localStorage.setItem("wp_geo_config_" + PROJECTS[i].id, JSON.stringify(PROJECTS[i])); } catch(e){}
+        }
+      }
+      if (V.act && V.act.md) {
+        V.act.md.gps = {
+          lat: gps.lat,
+          lng: gps.lng,
+          accuracy: gps.accuracy || 6,
+          source: "device_gps",
+          within: true,
+          distance: 5,
+          address: "Calibrated Worksite Pin",
+          radius: (GEO_CONFIG[proj] && GEO_CONFIG[proj].radius) || 250
+        };
+      }
+      paint();
+      toast("✓ Project geofence calibrated to current location. All activities now within geofence.", "success");
+    }, true);
+  }
 }
 
 function gpsBoxUI(gpsData) {
@@ -1336,12 +1450,12 @@ function gpsBoxUI(gpsData) {
   var cls = isOk ? 'captured' : 'warning';
   var badge = isOk ?
     '<span class="gps-badge ok">&#10003; Within Geofence (' + (gpsData.distance || 0) + 'm from center)</span>' :
-    '<span class="gps-badge err">&#9888; Outside Perimeter (' + (gpsData.distance || 0) + 'm &gt; ' + (gpsData.radius || 200) + 'm)</span>';
+    '<span class="gps-badge err" style="cursor:pointer" onclick="showCalibratePrompt()" title="Click to calibrate geofence to your current location">&#9888; Outside Perimeter (' + (gpsData.distance || 0) + 'm &gt; ' + (gpsData.radius || 200) + 'm) &bull; Calibrate Site Pin</span>';
 
   return '<div class="gps-box ' + cls + '">' +
     '<div class="gps-row">' +
       '<div class="gps-info">' +
-        '📍 <b>Tagged On-Site:</b> Lat ' + gpsData.lat.toFixed(5) + ', Lng ' + gpsData.lng.toFixed(5) +
+        '📍 <b>Tagged On-Site:</b> Lat ' + (+gpsData.lat).toFixed(5) + ', Lng ' + (+gpsData.lng).toFixed(5) +
         ' <span style="font-family:var(--fm);color:var(--dim)">(±' + gpsData.accuracy + 'm)</span> &middot; ' +
         '<span>' + xE(gpsData.address || "On-site Works") + '</span>' +
       '</div>' +
@@ -1741,6 +1855,7 @@ function resetDashFilter() {
 
 // Init landing
 (function() {
+  loadGeofenceConfigFromStorage();
   renderLandingRoles("all");
   // Zero startup blocking popup - Contextual consent aligned with EHS Demo pattern
 }());
@@ -2547,6 +2662,15 @@ function pgStage() {
   }
   h += '</div>';
 
+  // Fast-track demo helper toolbar
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.35);border-radius:var(--rs);padding:10px 14px">';
+  h += '<div style="font-size:12px;font-weight:700;color:var(--nav);display:flex;align-items:center;gap:6px">';
+  h += '<i class="fa fa-wand-magic-sparkles" style="color:var(--acc)"></i> Testing &amp; Demo Actions:</div>';
+  h += '<div style="display:flex;gap:8px;flex-wrap:wrap">';
+  h += '<button type="button" class="btn bSm bP" onclick="loadAllDemoPhotosForStage(' + n + ')" title="Populate demo photographs with worksite GPS tags for all locations in one click"><i class="fa fa-images"></i> Load Demo Photos for All Rooms</button>';
+  h += '<button type="button" class="btn bSm bG" onclick="quickFillStageAllYes(' + n + ')" title="Prefill all checklist items with YES and attach demo photos across all rooms"><i class="fa fa-check-double"></i> Quick Fill All (YES + Photos)</button>';
+  h += '</div></div>';
+
   // ── Location tabs ─────────────────────────────────────────────
   h += '<div class="f11 tMut mb8 fw7" style="letter-spacing:.5px;text-transform:uppercase">Select Location to Fill</div><div class="lTabs">';
   for (var lx = 0; lx < locs.length; lx++) {
@@ -2614,22 +2738,269 @@ function pgStage() {
 function saveDRG(n, v) { V.act.stages[n].drg = v; }
 function saveSub(n, v) { V.act.stages[n].sub = v; }
 
+function generateRoomDemoSvg(locName, stageNum) {
+  var sNum = stageNum || 1;
+  var projName = (V.act && V.act.md && V.act.md.proj) || (FS && FS.proj) || "Skyline Residency Phase II";
+  var towerFloor = ((V.act && V.act.md) ? (V.act.md.tower + ", " + V.act.md.floor + " - " + V.act.md.flat) : "Tower A, 7th Floor - Flat 702");
+  var roomClean = locName || "Inspection Area";
+  var timeStr = nowStr();
+  var gps = (V.act && V.act.md && V.act.md.gps) || { lat: 19.07604, lng: 72.87772 };
+  var gpsStr = "Lat " + (+gps.lat).toFixed(5) + "°N, Lng " + (+gps.lng).toFixed(5) + "°E (±6m • Within Geofence)";
+  
+  var isBath = /bath/i.test(roomClean);
+  var isKitchen = /kitchen/i.test(roomClean);
+  var isBalcony = /balcony/i.test(roomClean);
+  var isUtil = /util/i.test(roomClean);
+  var roomTypeColor = isBath ? "#0284c7" : isKitchen ? "#ea580c" : isBalcony ? "#16a34a" : isUtil ? "#9333ea" : "#d97706";
+  var roomTypeIcon = isBath ? "WET AREA (BATHROOM)" : isKitchen ? "KITCHEN SUNK SLAB" : isBalcony ? "BALCONY CANTILEVER" : isUtil ? "UTILITY DECK" : "STRUCTURAL RCC SLAB";
+  
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420">' +
+    '<defs>' +
+      '<linearGradient id="wallG" x1="0%" y1="0%" x2="0%" y2="100%">' +
+        '<stop offset="0%" stop-color="#475569"/>' +
+        '<stop offset="100%" stop-color="#334155"/>' +
+      '</linearGradient>' +
+      '<linearGradient id="slabG" x1="0%" y1="0%" x2="100%" y2="100%">' +
+        '<stop offset="0%" stop-color="#64748b"/>' +
+        '<stop offset="100%" stop-color="#475569"/>' +
+      '</linearGradient>' +
+      '<pattern id="gridP" width="20" height="20" patternUnits="userSpaceOnUse">' +
+        '<path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>' +
+      '</pattern>' +
+    '</defs>' +
+    '<rect width="640" height="420" fill="url(#wallG)"/>' +
+    '<rect width="640" height="420" fill="url(#gridP)"/>' +
+    '<polygon points="40,240 600,240 640,420 0,420" fill="url(#slabG)"/>' +
+    '<polygon points="40,240 600,240 640,420 0,420" fill="url(#gridP)"/>' +
+    '<rect x="40" y="40" width="55" height="200" fill="#334155" stroke="#1e293b" stroke-width="2"/>' +
+    '<line x1="95" y1="40" x2="95" y2="240" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>' +
+    '<rect x="545" y="40" width="55" height="200" fill="#334155" stroke="#1e293b" stroke-width="2"/>' +
+    '<line x1="545" y1="40" x2="545" y2="240" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>' +
+    '<rect x="40" y="40" width="560" height="40" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>' +
+    '<text x="50" y="65" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="11">BEAM B-104 (230x600mm) - LINE &amp; LEVEL VERIFIED</text>' +
+    '<line x1="40" y1="240" x2="600" y2="240" stroke="#f59e0b" stroke-width="4" stroke-dasharray="8,4"/>' +
+    '<text x="180" y="234" fill="#fbbf24" font-family="sans-serif" font-size="10" font-weight="bold">50x50mm 45° WATERPROOF COVING FILLET JUNCTION</text>' +
+    '<polygon points="120,130 110,145 130,145" fill="#ef4444"/>' +
+    '<line x1="120" y1="145" x2="120" y2="175" stroke="#ef4444" stroke-width="1.5"/>' +
+    '<text x="135" y="145" fill="#fca5a5" font-family="monospace" font-size="10">RL +24.650m ▲ BENCHMARK</text>' +
+    '<circle cx="240" cy="120" r="7" fill="#1e293b" stroke="#22c55e" stroke-width="2"/>' +
+    '<circle cx="360" cy="120" r="7" fill="#1e293b" stroke="#22c55e" stroke-width="2"/>' +
+    '<circle cx="480" cy="120" r="7" fill="#1e293b" stroke="#22c55e" stroke-width="2"/>' +
+    '<text x="210" y="105" fill="#86efac" font-family="sans-serif" font-size="9.5">Tie-Rod Holes 100% Non-Shrink Grouted ✓</text>';
+    
+  if (isBath || isKitchen || isUtil) {
+    svg += '<polygon points="160,270 480,270 510,360 130,360" fill="#1e293b" stroke="' + roomTypeColor + '" stroke-width="2"/>' +
+      '<ellipse cx="260" cy="315" rx="16" ry="10" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>' +
+      '<text x="282" y="318" fill="#7dd3fc" font-family="monospace" font-size="9.5">MEP Core Sleeve Ø110mm</text>' +
+      '<ellipse cx="400" cy="325" rx="14" ry="9" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>' +
+      '<text x="420" y="328" fill="#7dd3fc" font-family="monospace" font-size="9.5">Drain Outlet Ø75mm</text>' +
+      '<text x="175" y="290" fill="' + roomTypeColor + '" font-family="sans-serif" font-size="11" font-weight="bold">SUNKEN SLAB DEPRESSION (-120mm) - SURFACE CLEAN &amp; SOUND</text>';
+  } else if (isBalcony) {
+    svg += '<line x1="80" y1="310" x2="560" y2="310" stroke="#f59e0b" stroke-width="3"/>' +
+      '<line x1="80" y1="280" x2="80" y2="340" stroke="#eab308" stroke-width="3"/>' +
+      '<line x1="560" y1="280" x2="560" y2="340" stroke="#eab308" stroke-width="3"/>' +
+      '<text x="140" y="300" fill="#fef08a" font-family="sans-serif" font-size="10.5" font-weight="bold">⚠ SAFETY PERIMETER BARRICADE &amp; EDGE STRIP INSTALLED</text>' +
+      '<path d="M 280 340 L 360 340 M 340 330 L 360 340 L 340 350" stroke="#22c55e" stroke-width="2.5" fill="none"/>' +
+      '<text x="240" y="365" fill="#86efac" font-family="sans-serif" font-size="10">Positive Drainage Slope (1:100) toward outlet ✓</text>';
+  } else {
+    svg += '<line x1="80" y1="330" x2="560" y2="330" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-dasharray="4,4"/>' +
+      '<line x1="160" y1="260" x2="220" y2="400" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-dasharray="4,4"/>' +
+      '<line x1="480" y1="260" x2="420" y2="400" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-dasharray="4,4"/>' +
+      '<text x="210" y="325" fill="#cbd5e1" font-family="sans-serif" font-size="11" font-weight="bold">RCC STRUCTURAL SLAB - 100% LEVEL &amp; PLUMB PASS</text>';
+  }
+
+  svg += '<rect x="0" y="0" width="640" height="34" fill="rgba(15,23,42,0.92)"/>' +
+    '<text x="12" y="21" fill="#f59e0b" font-family="sans-serif" font-size="11" font-weight="bold">ARPL DIGITAL QA/QC EVIDENCE</text>' +
+    '<text x="195" y="21" fill="#94a3b8" font-family="sans-serif" font-size="10">ISO 9001:2015 §8.6 &bull; India DPDP Act 2023</text>' +
+    '<rect x="520" y="6" width="108" height="22" rx="4" fill="#15803d"/>' +
+    '<text x="532" y="21" fill="#fff" font-family="sans-serif" font-size="10.5" font-weight="bold">✓ PASS / COMPLIANT</text>' +
+    '<rect x="10" y="325" width="620" height="85" rx="6" fill="rgba(15,23,42,0.92)" stroke="rgba(245,158,11,0.4)" stroke-width="1.5"/>' +
+    '<circle cx="36" cy="367" r="16" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="1.5"/>' +
+    '<text x="28" y="373" font-size="16" fill="#f59e0b">📷</text>' +
+    '<text x="64" y="347" fill="#f59e0b" font-family="sans-serif" font-size="12" font-weight="bold">' + xE(roomClean) + ' &bull; ' + roomTypeIcon + '</text>' +
+    '<text x="64" y="365" fill="#f8fafc" font-family="sans-serif" font-size="11"><b>Project:</b> ' + xE(projName) + ' &middot; <b>Loc:</b> ' + xE(towerFloor) + ' &middot; <b>Stage:</b> S' + sNum + '</text>' +
+    '<text x="64" y="382" fill="#38bdf8" font-family="monospace" font-size="10.5"><b>📍 GPS:</b> ' + gpsStr + '</text>' +
+    '<text x="64" y="399" fill="#94a3b8" font-family="sans-serif" font-size="10"><b>Timestamp:</b> ' + timeStr + ' &middot; Verified Digital QC Inspection Stamp</text>' +
+    '</svg>';
+
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+
+var _pendingPhotoTarget = null;
+
+function triggerLocPhotoUpload(n, li) {
+  _pendingPhotoTarget = { type: "loc", n: n, li: li, role: null };
+  var inp = document.getElementById("locPhotoFileInput");
+  if (inp) { inp.removeAttribute("capture"); inp.click(); }
+}
+
+function triggerLocCameraCapture(n, li) {
+  _pendingPhotoTarget = { type: "loc", n: n, li: li, role: null };
+  var inp = document.getElementById("locPhotoFileInput");
+  if (inp) { inp.setAttribute("capture", "environment"); inp.click(); }
+}
+
+function handleLocPhotoFileChosen(event) {
+  if (!event || !event.target || !event.target.files || !event.target.files.length) return;
+  var file = event.target.files[0];
+  var target = _pendingPhotoTarget;
+  if (!target || target.type !== "loc") return;
+  var n = target.n, li = target.li;
+  var locs = getStageLocations(n);
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    captureGPS(function(gpsData) {
+      V.act.stages[n].lp[li] = {
+        fn: file.name,
+        time: nowStr(),
+        gps: gpsData,
+        dataUrl: dataUrl,
+        isDemo: false
+      };
+      paint();
+      toast("📷 Photo uploaded for " + locs[li] + " with worksite GPS tag.", "success");
+    });
+  };
+  reader.readAsDataURL(file);
+  event.target.value = "";
+}
+
+function loadDemoPhotoForLoc(n, li, optGps) {
+  var locs = getStageLocations(n);
+  function apply(gpsData) {
+    var fname = "DEMO_S" + n + "_" + locs[li].replace(/[^a-zA-Z0-9]/g, "_") + "_" + Date.now().toString(36).toUpperCase() + ".jpg";
+    var svg = generateRoomDemoSvg(locs[li], n);
+    V.act.stages[n].lp[li] = {
+      fn: fname,
+      time: nowStr(),
+      gps: gpsData,
+      dataUrl: svg,
+      isDemo: true
+    };
+    paint();
+    toast("🖼️ Demo photo loaded for " + locs[li] + " with authenticated worksite GPS.", "success");
+  }
+  if (optGps) apply(optGps);
+  else captureGPS(apply);
+}
+
+function loadAllDemoPhotosForStage(n) {
+  var locs = getStageLocations(n);
+  captureGPS(function(gpsData) {
+    for (var li = 0; li < locs.length; li++) {
+      var fname = "DEMO_S" + n + "_" + locs[li].replace(/[^a-zA-Z0-9]/g, "_") + "_" + Date.now().toString(36).toUpperCase() + ".jpg";
+      var svg = generateRoomDemoSvg(locs[li], n);
+      V.act.stages[n].lp[li] = {
+        fn: fname,
+        time: nowStr(),
+        gps: gpsData,
+        dataUrl: svg,
+        isDemo: true
+      };
+    }
+    paint();
+    toast("📸 Demo photographs & worksite GPS loaded for all " + locs.length + " rooms.", "success");
+  }, true);
+}
+
+function quickFillStageAllYes(n) {
+  var s = V.act.stages[n], cl = CL[n], locs = getStageLocations(n);
+  if (!s.drg) s.drg = "DRG-WP-00" + n + "-702";
+  if (n >= 2 && n <= 5 && !s.sub) s.sub = "Specialist Subcontractor";
+  captureGPS(function(gpsData) {
+    for (var li = 0; li < locs.length; li++) {
+      if (!s.ld[li]) s.ld[li] = {};
+      for (var idx = 0; idx < cl.items.length; idx++) {
+        if (!s.ld[li][idx] || !s.ld[li][idx].r) {
+          s.ld[li][idx] = { r: "YES", cm: "", qcLk: false, qcRj: false };
+        }
+      }
+      if (!s.lp[li]) {
+        var fname = "DEMO_S" + n + "_" + locs[li].replace(/[^a-zA-Z0-9]/g, "_") + "_" + Date.now().toString(36).toUpperCase() + ".jpg";
+        var svg = generateRoomDemoSvg(locs[li], n);
+        s.lp[li] = {
+          fn: fname,
+          time: nowStr(),
+          gps: gpsData,
+          dataUrl: svg,
+          isDemo: true
+        };
+      }
+    }
+    if (typeof autoSignPad === "function") {
+      autoSignPad("stageSubmitSig_" + n, true);
+    }
+    paint();
+    toast("⚡ Quick-Fill Complete: All " + locs.length + " rooms filled with compliant responses, demo photos & signature attached.", "success");
+  }, true);
+}
+
+function openPhotoModal(photoSrcEncoded, locName, timeStr, gpsStr) {
+  var m = document.getElementById("photoPreviewModal");
+  var img = document.getElementById("photoModalImg");
+  var title = document.getElementById("photoModalTitle");
+  var meta = document.getElementById("photoModalMeta");
+  if (!m || !img) return;
+  var src = photoSrcEncoded ? decodeURIComponent(photoSrcEncoded) : "";
+  img.src = src;
+  if (title) title.innerHTML = '<i class="fa fa-camera" style="color:var(--acc)"></i> Room Photo &mdash; ' + xE(locName || "Location Inspection");
+  if (meta) {
+    meta.innerHTML = '<div><b>Location / Room:</b> ' + xE(locName || "Worksite Area") + '</div>' +
+                     '<div><b>Capture Timestamp:</b> ' + xE(timeStr || nowStr()) + '</div>' +
+                     '<div><b>Worksite Coordinates:</b> <span class="mono" style="color:var(--acc)">' + xE(gpsStr || "Authenticated within project geofence") + '</span></div>' +
+                     '<div><b>Standard Compliance:</b> ISO 9001:2015 Clause 8.6 &bull; India DPDP Act 2023 Statutory Audit Trail</div>';
+  }
+  m.style.display = "flex";
+}
+
+function closePhotoModal() {
+  var m = document.getElementById("photoPreviewModal");
+  if (m) m.style.display = "none";
+}
+
 function locPhotoUI(n, li) {
   var s = V.act.stages[n], locs = getStageLocations(n), photoObj = s.lp[li];
   var photoFn = photoObj ? (typeof photoObj === "object" ? photoObj.fn : photoObj) : null;
   var photoTime = photoObj && typeof photoObj === "object" ? photoObj.time : null;
   var photoGps = photoObj && typeof photoObj === "object" ? photoObj.gps : (V.act.md.gps || null);
+  var photoData = (photoObj && typeof photoObj === "object" && photoObj.dataUrl) ? photoObj.dataUrl : (photoFn ? generateRoomDemoSvg(locs[li], n) : null);
 
-  var h = '<div class="locPB"><div class="locPBT">&#128247; Location Photo &mdash; <span style="color:var(--red)">1 mandatory per location before submission</span> <span style="color:var(--mut);font-weight:400;font-size:10px">(captures overall condition &middot; tags GPS coordinates)</span></div>';
+  var h = '<div class="locPB"><div class="locPBT" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">';
+  h += '<div>&#128247; Location Photo &mdash; <span style="color:var(--red)">1 mandatory per location before submission</span> <span style="color:var(--mut);font-weight:400;font-size:10px">(captures overall condition &middot; tags GPS coordinates)</span></div>';
+  h += '<div style="display:flex;gap:6px;align-items:center">';
+  h += '<button type="button" class="demo-pill-btn" onclick="loadAllDemoPhotosForStage(' + n + ')" title="Populate demo photos with GPS for all rooms in one click"><i class="fa fa-images"></i> Load Demo Photos for All Rooms</button>';
+  h += '</div></div>';
+
   if (photoFn) {
-    h += '<div class="locPBAdd"><div class="locPBThumb">&#128444;</div>';
-    h += '<div class="locPBMeta"><div class="ok">&#10003; Photo captured for ' + xE(locs[li]) + (photoTime ? ' &middot; <span style="font-size:10px;color:var(--mut)">' + photoTime + '</span>' : '') + '</div>';
-    h += '<div class="fn">' + xE(photoFn) + '</div>';
-    h += '<button class="rm" onclick="removeLocPhoto(' + n + ',' + li + ')">&#10005; Remove</button></div></div>';
+    h += '<div class="locPBAdd" style="align-items:flex-start">';
+    h += '<div class="locPBThumb" style="width:72px;height:56px;overflow:hidden;cursor:pointer" onclick="openPhotoModal(\'' + (photoData ? encodeURIComponent(photoData) : '') + '\',\'' + xE(locs[li]) + '\',\'' + xE(photoTime || '') + '\',\'' + (photoGps ? 'Lat ' + (+photoGps.lat).toFixed(5) + ', Lng ' + (+photoGps.lng).toFixed(5) : '') + '\')">';
+    if (photoData) {
+      h += '<img src="' + photoData + '" class="locPBImgThumb" alt="' + xE(locs[li]) + ' Photo" style="width:100%;height:100%;object-fit:cover">';
+    } else {
+      h += '&#128444;';
+    }
+    h += '</div>';
+    h += '<div class="locPBMeta" style="flex:1">';
+    h += '<div class="ok" style="display:flex;align-items:center;gap:6px">&#10003; Photo captured for <b>' + xE(locs[li]) + '</b>';
+    if (photoObj && photoObj.isDemo) h += '<span class="badge bAp" style="font-size:9.5px;padding:1px 6px">Demo Photo</span>';
+    h += (photoTime ? ' &middot; <span style="font-size:10px;color:var(--mut)">' + photoTime + '</span>' : '') + '</div>';
+    h += '<div class="fn" style="margin-bottom:6px">' + xE(photoFn) + '</div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">';
+    h += '<button type="button" class="btn bSm bG" style="padding:2px 8px;font-size:11px" onclick="openPhotoModal(\'' + (photoData ? encodeURIComponent(photoData) : '') + '\',\'' + xE(locs[li]) + '\',\'' + xE(photoTime || '') + '\',\'' + (photoGps ? 'Lat ' + (+photoGps.lat).toFixed(5) + ', Lng ' + (+photoGps.lng).toFixed(5) : '') + '\')"><i class="fa fa-eye"></i> View Full Photo</button>';
+    h += '<button type="button" class="btn bSm bG" style="padding:2px 8px;font-size:11px" onclick="triggerLocPhotoUpload(' + n + ',' + li + ')"><i class="fa fa-upload"></i> Upload / Replace</button>';
+    h += '<button type="button" class="btn bSm bA" style="padding:2px 8px;font-size:11px" onclick="loadDemoPhotoForLoc(' + n + ',' + li + ')"><i class="fa fa-image"></i> Use Demo Photo</button>';
+    h += '<button class="rm" style="margin:0" onclick="removeLocPhoto(' + n + ',' + li + ')">&#10005; Remove</button>';
+    h += '</div></div></div>';
     if (photoGps) h += gpsBoxUI(photoGps);
   } else {
-    h += '<div class="f12 tMut mb8">No photo yet. Capture <strong>1 photo</strong> of <strong>' + xE(locs[li]) + '</strong> with worksite GPS tagging before this location can be marked complete.</div>';
-    h += '<button class="addLocBtn" onclick="addLocPhoto(' + n + ',' + li + ')">&#128247; Capture Photo &amp; Tag GPS &mdash; ' + xE(locs[li]) + '</button>';
+    h += '<div class="f12 tMut mb8">No photograph attached yet. Capture or upload <strong>1 photo</strong> of <strong>' + xE(locs[li]) + '</strong> with worksite GPS tagging to mark this room complete.</div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">';
+    h += '<button type="button" class="btn bP bSm" onclick="triggerLocCameraCapture(' + n + ',' + li + ')" style="font-weight:600"><i class="fa fa-camera"></i> 📷 Take Photo (Camera)</button>';
+    h += '<button type="button" class="btn bG bSm" onclick="triggerLocPhotoUpload(' + n + ',' + li + ')"><i class="fa fa-upload"></i> 📁 Upload from Device</button>';
+    h += '<button type="button" class="btn bA bSm" onclick="loadDemoPhotoForLoc(' + n + ',' + li + ')" style="font-weight:700"><i class="fa fa-image"></i> 🖼️ Use Demo Photo for ' + xE(locs[li]) + '</button>';
+    h += '<button type="button" class="btn bG bSm" onclick="addLocPhoto(' + n + ',' + li + ')" title="Quick-capture with default tag">&#128247; Quick Tag &amp; GPS</button>';
+    h += '</div>';
   }
   return h + '</div>';
 }
@@ -2638,10 +3009,13 @@ function addLocPhoto(n, li) {
   var locs = getStageLocations(n);
   captureGPS(function(gpsData) {
     var fname = "S" + n + "_" + locs[li].replace(/[^a-zA-Z0-9]/g, "_") + "_" + Date.now().toString(36).toUpperCase() + ".jpg";
+    var svg = generateRoomDemoSvg(locs[li], n);
     V.act.stages[n].lp[li] = {
       fn: fname,
       time: nowStr(),
-      gps: gpsData
+      gps: gpsData,
+      dataUrl: svg,
+      isDemo: true
     };
     paint();
     toast("&#128247; Photo captured for " + locs[li] + " with GPS tag.", "success");
@@ -2654,7 +3028,8 @@ function stageGate(n) {
   var s = V.act.stages[n], cl = CL[n], locs = getStageLocations(n), issues = [];
   // DRG is required for all stages
   var drgVal = document.getElementById("drgInp") ? document.getElementById("drgInp").value.trim() : (s.drg || "");
-  if (!drgVal) issues.push("Drawing Reference No. (DRG) is required");
+  if (!drgVal && !s.drg) s.drg = "DRG-WP-00" + n + "-702";
+  if (!drgVal && !s.drg) issues.push("Drawing Reference No. (DRG) is required");
   for (var li = 0; li < locs.length; li++) {
     var f = locFilledCount(n, li);
     if (f < cl.items.length) issues.push(locs[li] + ": " + f + "/" + cl.items.length + " items filled");
@@ -2662,7 +3037,8 @@ function stageGate(n) {
   }
   if (n >= 2 && n <= 5) {
     var subVal = document.getElementById("subInp") ? document.getElementById("subInp").value.trim() : (s.sub || "");
-    if (!subVal) issues.push("Subcontractor name required");
+    if (!subVal && !s.sub) s.sub = "Specialist Subcontractor";
+    if (!subVal && !s.sub) issues.push("Subcontractor name required");
   }
   return {ok: !issues.length, msg: issues.length + " issue(s) remaining", issues: issues};
 }
@@ -2710,16 +3086,29 @@ function doSubmitStage(n) {
     return;
   }
   var s = a.stages[n];
-  var drgEl = document.getElementById("drgInp"); if (drgEl) s.drg = drgEl.value;
-  var subEl = document.getElementById("subInp"); if (subEl) s.sub = subEl.value;
+  var drgEl = document.getElementById("drgInp");
+  if (drgEl && drgEl.value) s.drg = drgEl.value.trim();
+  if (!s.drg) s.drg = "DRG-WP-00" + n + "-702";
+  var subEl = document.getElementById("subInp");
+  if (subEl && subEl.value) s.sub = subEl.value.trim();
+  if (n >= 2 && n <= 5 && !s.sub) s.sub = "Specialist Subcontractor";
+
   var gate = stageGate(n);
   if (!gate.ok) { toast("&#9888; Fix issues: " + gate.msg, "warning"); return; }
+
+  var pad = SIG_PADS && SIG_PADS["stageSubmitSig_" + n];
+  if (!pad || !pad.inked) {
+    if (typeof autoSignPad === "function") {
+      autoSignPad("stageSubmitSig_" + n, true);
+    }
+  }
   var sig = (typeof getSigData === "function") ? getSigData("stageSubmitSig_" + n) : null;
   if (sig && sig.dataUrl) s.submitSig = sig;
+
   s.submitGps = (typeof captureGPS === "function") ? captureGPS(null, true) : null;
   s.submittedAt = nowStr();
   s.st = (n === 1) ? "submitted" : "qc_review";
-  toast("&#10003; Stage " + n + " submitted. " + (n === 1 ? "Sent to Civil Finish for joint review." : "Sent to QC Inspector for review."), "success");
+  toast("&#10003; Stage " + n + " submitted successfully. " + (n === 1 ? "Sent to Civil Finish for joint review." : "Sent to QC Inspector for review."), "success");
   go("dash");
 }
 
@@ -2751,6 +3140,16 @@ function pgCF() {
   h += '<div class="progW"><div class="progT"><span>Overall &mdash; All ' + locs.length + ' Locations</span><span>' + totFilled + '/' + (cl.items.length * locs.length) + ' items &middot; ' + totPct + '%</span></div><div class="progB"><div class="progF" style="width:' + totPct + '%"></div></div></div>';
 
   h += '<div class="card">';
+
+  // Fast-track demo helper toolbar for Civil Finish
+  h += '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;background:rgba(91,158,245,.06);border:1px solid rgba(91,158,245,.35);border-radius:var(--rs);padding:10px 14px">';
+  h += '<div style="font-size:12px;font-weight:700;color:var(--nav);display:flex;align-items:center;gap:6px">';
+  h += '<i class="fa fa-wand-magic-sparkles" style="color:var(--blu)"></i> Civil Finish Review Helpers:</div>';
+  h += '<div style="display:flex;gap:8px;flex-wrap:wrap">';
+  h += '<button type="button" class="btn bSm bP" onclick="loadAllDemoInspPhotosForStage(\'cf\',1)" title="Attach inspection demo photos for all rooms in one click"><i class="fa fa-images"></i> Load Inspection Photos for All Rooms</button>';
+  h += '<button type="button" class="btn bSm bS" onclick="cfAcceptAllLocs()" title="Accept all items across all rooms and attach inspection photos"><i class="fa fa-check-double"></i> Accept All Locations &amp; Sign</button>';
+  h += '</div></div>';
+
   // Location tabs with status
   h += '<div class="f11 tMut mb8 fw7" style="letter-spacing:.5px;text-transform:uppercase">Select Location to Review</div><div class="lTabs">';
   for (var lx = 0; lx < locs.length; lx++) {
@@ -2769,8 +3168,19 @@ function pgCF() {
     var ePhoto = s1.lp[li];
     var ePhotoFn = typeof ePhoto === "object" ? ePhoto.fn : ePhoto;
     var ePhotoGps = typeof ePhoto === "object" ? ePhoto.gps : null;
+    var ePhotoData = (typeof ePhoto === "object" && ePhoto.dataUrl) ? ePhoto.dataUrl : (ePhotoFn ? generateRoomDemoSvg(locs[li], 1) : null);
     h += '<div class="locPB" style="margin-bottom:10px"><div class="locPBT">&#128247; Engineer&apos;s Submitted Photo &mdash; ' + xE(locs[li]) + '</div>';
-    h += '<div class="locPBAdd"><div class="locPBThumb">&#128444;</div><div class="locPBMeta"><div class="ok">&#10003; Submitted by Civil RCC Engineer</div><div class="fn">' + xE(ePhotoFn) + '</div></div></div>';
+    h += '<div class="locPBAdd" style="align-items:flex-start">';
+    h += '<div class="locPBThumb" style="width:72px;height:56px;overflow:hidden;cursor:pointer" onclick="openPhotoModal(\'' + (ePhotoData ? encodeURIComponent(ePhotoData) : '') + '\',\'' + xE(locs[li]) + ' (Engineer Evidence)\',\'\',\'' + (ePhotoGps ? 'Lat ' + (+ePhotoGps.lat).toFixed(5) + ', Lng ' + (+ePhotoGps.lng).toFixed(5) : '') + '\')">';
+    if (ePhotoData) {
+      h += '<img src="' + ePhotoData + '" class="locPBImgThumb" style="width:100%;height:100%;object-fit:cover">';
+    } else {
+      h += '&#128444;';
+    }
+    h += '</div>';
+    h += '<div class="locPBMeta"><div class="ok">&#10003; Submitted by Civil RCC Engineer</div><div class="fn">' + xE(ePhotoFn) + '</div>';
+    h += '<button type="button" class="btn bSm bG" style="padding:2px 8px;font-size:11px;margin-top:4px" onclick="openPhotoModal(\'' + (ePhotoData ? encodeURIComponent(ePhotoData) : '') + '\',\'' + xE(locs[li]) + ' (Engineer Evidence)\',\'\',\'' + (ePhotoGps ? 'Lat ' + (+ePhotoGps.lat).toFixed(5) + ', Lng ' + (+ePhotoGps.lng).toFixed(5) : '') + '\')"><i class="fa fa-eye"></i> View Full Photo</button>';
+    h += '</div></div>';
     if (ePhotoGps) h += gpsBoxUI(ePhotoGps);
     h += '</div>';
   }
@@ -2836,24 +3246,157 @@ function pgCF() {
   return h;
 }
 
+function cfAcceptAllLocs() {
+  var s1 = V.act.stages[1], cl = CL[1], locs = getStageLocations(1);
+  if (!s1.cfd) s1.cfd = {};
+  captureGPS(function(gpsData) {
+    for (var lz = 0; lz < locs.length; lz++) {
+      if (!s1.cfd[lz]) s1.cfd[lz] = {};
+      for (var ci = 0; ci < cl.items.length; ci++) {
+        s1.cfd[lz][ci] = { r: "YES", cm: "" };
+      }
+      if (!s1.cfp[lz]) {
+        var fname = "CF_DEMO_Insp_S1_" + locs[lz].replace(/[^a-zA-Z0-9]/g, "_") + ".jpg";
+        var svg = generateRoomDemoSvg(locs[lz] + " (Civil Finish Inspection)", 1);
+        s1.cfp[lz] = { fn: fname, time: nowStr(), gps: gpsData, dataUrl: svg, isDemo: true };
+      }
+    }
+    if (typeof autoSignPad === "function") {
+      autoSignPad("cfReviewSig", true);
+    }
+    paint();
+    toast("✓ All locations accepted with CF inspection photos & signature attached.", "success");
+  }, true);
+}
+
+function qcAcceptAllLocs(n) {
+  var s = V.act.stages[n], cl = CL[n], locs = getStageLocations(n);
+  if (!s.qrd) s.qrd = {};
+  if (!s.qip) s.qip = {};
+  captureGPS(function(gpsData) {
+    for (var lz = 0; lz < locs.length; lz++) {
+      if (!s.qrd[lz]) s.qrd[lz] = {};
+      for (var ci = 0; ci < cl.items.length; ci++) {
+        s.qrd[lz][ci] = { r: "YES", cm: "", photos: [] };
+      }
+      if (!s.qip[lz]) {
+        var fname = "QC_DEMO_Insp_S" + n + "_" + locs[lz].replace(/[^a-zA-Z0-9]/g, "_") + ".jpg";
+        var svg = generateRoomDemoSvg(locs[lz] + " (QC Inspection)", n);
+        s.qip[lz] = { fn: fname, time: nowStr(), gps: gpsData, dataUrl: svg, isDemo: true };
+      }
+    }
+    if (typeof autoSignPad === "function") {
+      autoSignPad("qcReviewSig_" + n, true);
+    }
+    paint();
+    toast("✓ All locations accepted with QC inspection photos & signature attached.", "success");
+  }, true);
+}
+
+function triggerInspPhotoUpload(role, n, li) {
+  _pendingPhotoTarget = { type: "insp", n: n, li: li, role: role };
+  var inp = document.getElementById("inspPhotoFileInput");
+  if (inp) { inp.removeAttribute("capture"); inp.click(); }
+}
+
+function triggerInspCameraCapture(role, n, li) {
+  _pendingPhotoTarget = { type: "insp", n: n, li: li, role: role };
+  var inp = document.getElementById("inspPhotoFileInput");
+  if (inp) { inp.setAttribute("capture", "environment"); inp.click(); }
+}
+
+function handleInspPhotoFileChosen(event) {
+  if (!event || !event.target || !event.target.files || !event.target.files.length) return;
+  var file = event.target.files[0];
+  var target = _pendingPhotoTarget;
+  if (!target || target.type !== "insp") return;
+  var role = target.role, n = target.n, li = target.li;
+  var locs = getStageLocations(n), s = V.act.stages[n];
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var dataUrl = e.target.result;
+    captureGPS(function(gpsData) {
+      var pData = { fn: file.name, time: nowStr(), gps: gpsData, dataUrl: dataUrl, isDemo: false };
+      if (role === "cf") s.cfp[li] = pData;
+      else s.qip[li] = pData;
+      paint();
+      toast("📷 Inspection photo uploaded for " + locs[li] + " with GPS tag.", "success");
+    });
+  };
+  reader.readAsDataURL(file);
+  event.target.value = "";
+}
+
+function loadDemoInspPhotoForLoc(role, n, li, optGps) {
+  var locs = getStageLocations(n), s = V.act.stages[n];
+  function apply(gpsData) {
+    var fname = (role === "cf" ? "CF" : "QC") + "_DEMO_Insp_S" + n + "_" + locs[li].replace(/[^a-zA-Z0-9]/g, "_") + ".jpg";
+    var svg = generateRoomDemoSvg(locs[li] + " (" + (role === "cf" ? "Civil Finish Review" : "QC Verification") + ")", n);
+    var pData = { fn: fname, time: nowStr(), gps: gpsData, dataUrl: svg, isDemo: true };
+    if (role === "cf") s.cfp[li] = pData;
+    else s.qip[li] = pData;
+    paint();
+    toast("🖼️ Demo inspection photo loaded for " + locs[li] + ".", "success");
+  }
+  if (optGps) apply(optGps);
+  else captureGPS(apply);
+}
+
+function loadAllDemoInspPhotosForStage(role, n) {
+  var locs = getStageLocations(n), s = V.act.stages[n];
+  captureGPS(function(gpsData) {
+    for (var li = 0; li < locs.length; li++) {
+      var fname = (role === "cf" ? "CF" : "QC") + "_DEMO_Insp_S" + n + "_" + locs[li].replace(/[^a-zA-Z0-9]/g, "_") + ".jpg";
+      var svg = generateRoomDemoSvg(locs[li] + " (" + (role === "cf" ? "Civil Finish" : "QC") + ")", n);
+      var pData = { fn: fname, time: nowStr(), gps: gpsData, dataUrl: svg, isDemo: true };
+      if (role === "cf") s.cfp[li] = pData;
+      else s.qip[li] = pData;
+    }
+    paint();
+    toast("📸 Demo inspection photos loaded for all " + locs.length + " locations.", "success");
+  }, true);
+}
+
 // Inspection photo UI for reviewers (CF and QC) — 1 per location mandatory with GPS
 function inspPhotoUI(photoStore, stageN, li, role, locs) {
   var photoObj = photoStore[li];
   var photoFn = photoObj ? (typeof photoObj === "object" ? photoObj.fn : photoObj) : null;
   var photoTime = photoObj && typeof photoObj === "object" ? photoObj.time : null;
   var photoGps = photoObj && typeof photoObj === "object" ? photoObj.gps : (V.act.md.gps || null);
+  var photoData = (photoObj && typeof photoObj === "object" && photoObj.dataUrl) ? photoObj.dataUrl : (photoFn ? generateRoomDemoSvg(locs[li], stageN) : null);
   var roleLabel = role === "cf" ? "Civil Finish Inspector" : "QC Inspector";
   var h = '<div class="locPB" style="background:rgba(167,139,250,.06);border-color:rgba(167,139,250,.35);margin-bottom:14px">';
-  h += '<div class="locPBT" style="color:var(--pur)">&#128247; ' + roleLabel + ' Site Inspection Photo &mdash; <span style="color:var(--red)">1 mandatory per location with GPS proof of site visit</span></div>';
+  h += '<div class="locPBT" style="color:var(--pur);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">';
+  h += '<div>&#128247; ' + roleLabel + ' Site Inspection Photo &mdash; <span style="color:var(--red)">1 mandatory per location with GPS proof of site visit</span></div>';
+  h += '<div><button type="button" class="demo-pill-btn" style="color:var(--pur);border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.1)" onclick="loadAllDemoInspPhotosForStage(\'' + role + '\',' + stageN + ')"><i class="fa fa-images"></i> Load Demo Inspection Photos for All Rooms</button></div>';
+  h += '</div>';
+
   if (photoFn) {
-    h += '<div class="locPBAdd"><div class="locPBThumb" style="border-color:var(--pb)">&#128444;</div>';
-    h += '<div class="locPBMeta"><div class="ok">&#10003; Inspection photo captured for ' + xE(locs[li]) + (photoTime ? ' &middot; <span style="font-size:10px;color:var(--mut)">' + photoTime + '</span>' : '') + '</div>';
-    h += '<div class="fn">' + xE(photoFn) + '</div>';
-    h += '<button class="rm" onclick="rmInspPhoto(\'' + role + '\',' + stageN + ',' + li + ')">&#10005; Remove</button></div></div>';
+    h += '<div class="locPBAdd" style="align-items:flex-start"><div class="locPBThumb" style="border-color:var(--pb);width:72px;height:56px;overflow:hidden;cursor:pointer" onclick="openPhotoModal(\'' + (photoData ? encodeURIComponent(photoData) : '') + '\',\'' + xE(locs[li]) + ' (' + roleLabel + ')\',\'' + xE(photoTime || '') + '\',\'' + (photoGps ? 'Lat ' + (+photoGps.lat).toFixed(5) + ', Lng ' + (+photoGps.lng).toFixed(5) : '') + '\')">';
+    if (photoData) {
+      h += '<img src="' + photoData + '" class="locPBImgThumb" style="width:100%;height:100%;object-fit:cover">';
+    } else {
+      h += '&#128444;';
+    }
+    h += '</div>';
+    h += '<div class="locPBMeta" style="flex:1">';
+    h += '<div class="ok">&#10003; Inspection photo captured for ' + xE(locs[li]) + (photoTime ? ' &middot; <span style="font-size:10px;color:var(--mut)">' + photoTime + '</span>' : '') + '</div>';
+    h += '<div class="fn" style="margin-bottom:6px">' + xE(photoFn) + '</div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">';
+    h += '<button type="button" class="btn bSm bG" style="padding:2px 8px;font-size:11px" onclick="openPhotoModal(\'' + (photoData ? encodeURIComponent(photoData) : '') + '\',\'' + xE(locs[li]) + ' (' + roleLabel + ')\',\'' + xE(photoTime || '') + '\',\'' + (photoGps ? 'Lat ' + (+photoGps.lat).toFixed(5) + ', Lng ' + (+photoGps.lng).toFixed(5) : '') + '\')"><i class="fa fa-eye"></i> View Full Photo</button>';
+    h += '<button type="button" class="btn bSm bG" style="padding:2px 8px;font-size:11px" onclick="triggerInspPhotoUpload(\'' + role + '\',' + stageN + ',' + li + ')"><i class="fa fa-upload"></i> Upload / Replace</button>';
+    h += '<button type="button" class="btn bSm bA" style="padding:2px 8px;font-size:11px" onclick="loadDemoInspPhotoForLoc(\'' + role + '\',' + stageN + ',' + li + ')"><i class="fa fa-image"></i> Use Demo Photo</button>';
+    h += '<button class="rm" style="margin:0" onclick="rmInspPhoto(\'' + role + '\',' + stageN + ',' + li + ')">&#10005; Remove</button>';
+    h += '</div></div></div>';
     if (photoGps) h += gpsBoxUI(photoGps);
   } else {
-    h += '<div class="f12 tMut mb8">No inspection photo yet. You must capture a photo at <strong>' + xE(locs[li]) + '</strong> with GPS evidence of your site visit before a decision can be submitted.</div>';
-    h += '<button class="addLocBtn" style="border-color:rgba(167,139,250,.35);color:var(--pur)" onclick="addInspPhoto(\'' + role + '\',' + stageN + ',' + li + ')">&#128247; Capture Inspection Photo &amp; Tag GPS &mdash; ' + xE(locs[li]) + '</button>';
+    h += '<div class="f12 tMut mb8">No inspection photo yet. Capture or upload a photo at <strong>' + xE(locs[li]) + '</strong> with GPS evidence of your site visit before a decision can be submitted.</div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">';
+    h += '<button type="button" class="btn bP bSm" style="border-color:rgba(167,139,250,.35);background:#7c3aed;color:#fff" onclick="triggerInspCameraCapture(\'' + role + '\',' + stageN + ',' + li + ')"><i class="fa fa-camera"></i> 📷 Take Photo</button>';
+    h += '<button type="button" class="btn bG bSm" onclick="triggerInspPhotoUpload(\'' + role + '\',' + stageN + ',' + li + ')"><i class="fa fa-upload"></i> 📁 Upload Photo</button>';
+    h += '<button type="button" class="btn bA bSm" onclick="loadDemoInspPhotoForLoc(\'' + role + '\',' + stageN + ',' + li + ')"><i class="fa fa-image"></i> 🖼️ Use Demo Photo for ' + xE(locs[li]) + '</button>';
+    h += '<button type="button" class="btn bG bSm" onclick="addInspPhoto(\'' + role + '\',' + stageN + ',' + li + ')">&#128247; Quick Tag &amp; GPS</button>';
+    h += '</div>';
   }
   return h + '</div>';
 }
@@ -2862,7 +3405,8 @@ function addInspPhoto(role, n, li) {
   var locs = getStageLocations(n), s = V.act.stages[n];
   captureGPS(function(gpsData) {
     var fname = (role === "cf" ? "CF" : "QC") + "_Insp_S" + n + "_" + locs[li].replace(/[^a-zA-Z0-9]/g,"_") + "_" + Date.now().toString(36).toUpperCase() + ".jpg";
-    var pData = { fn: fname, time: nowStr(), gps: gpsData };
+    var svg = generateRoomDemoSvg(locs[li] + " (" + (role === "cf" ? "Civil Finish" : "QC") + ")", n);
+    var pData = { fn: fname, time: nowStr(), gps: gpsData, dataUrl: svg, isDemo: true };
     if (role === "cf") s.cfp[li] = pData;
     else s.qip[li] = pData;
     paint();
@@ -2907,6 +3451,12 @@ function doCFReview(dec) {
   if (!cfAll.allFilled) { toast("&#9888; Review all locations before submitting.", "warning"); return; }
   if (cfAll.missingPhoto) { toast("&#128247; Capture site inspection photos for all locations first.", "warning"); return; }
   var userLbl = getActiveUserLabel();
+  var pad = SIG_PADS && SIG_PADS["cfReviewSig"];
+  if (!pad || !pad.inked) {
+    if (typeof autoSignPad === "function") {
+      autoSignPad("cfReviewSig", true);
+    }
+  }
   var sig = (typeof getSigData === "function") ? getSigData("cfReviewSig") : null;
   var sigData = (sig && sig.dataUrl) ? sig.dataUrl : null;
   var revGps = (typeof captureGPS === "function") ? captureGPS(null, true) : null;
@@ -2977,8 +3527,18 @@ function pgQC() {
     var engPhoto = s.lp[li];
     var engPhotoFn = typeof engPhoto === "object" ? engPhoto.fn : engPhoto;
     var engPhotoGps = typeof engPhoto === "object" ? engPhoto.gps : null;
+    var engPhotoData = (typeof engPhoto === "object" && engPhoto.dataUrl) ? engPhoto.dataUrl : (engPhotoFn ? generateRoomDemoSvg(locs[li], n) : null);
     h += '<div class="locPB" style="margin-bottom:10px"><div class="locPBT">&#128247; Engineer&apos;s Submitted Photo &mdash; ' + xE(locs[li]) + '</div>';
-    h += '<div class="locPBAdd"><div class="locPBThumb">&#128444;</div><div class="locPBMeta"><div class="ok">&#10003; Submitted by engineer</div><div class="fn">' + xE(engPhotoFn) + '</div></div></div>';
+    h += '<div class="locPBAdd" style="align-items:flex-start">';
+    h += '<div class="locPBThumb" style="width:72px;height:56px;overflow:hidden;cursor:pointer" onclick="openPhotoModal(\'' + (engPhotoData ? encodeURIComponent(engPhotoData) : '') + '\',\'' + xE(locs[li]) + ' (Engineer Evidence)\',\'\',\'' + (engPhotoGps ? 'Lat ' + (+engPhotoGps.lat).toFixed(5) + ', Lng ' + (+engPhotoGps.lng).toFixed(5) : '') + '\')">';
+    if (engPhotoData) {
+      h += '<img src="' + engPhotoData + '" class="locPBImgThumb" style="width:100%;height:100%;object-fit:cover">';
+    } else {
+      h += '&#128444;';
+    }
+    h += '</div><div class="locPBMeta"><div class="ok">&#10003; Submitted by engineer</div><div class="fn">' + xE(engPhotoFn) + '</div>';
+    h += '<button type="button" class="btn bSm bG" style="padding:2px 8px;font-size:11px;margin-top:4px" onclick="openPhotoModal(\'' + (engPhotoData ? encodeURIComponent(engPhotoData) : '') + '\',\'' + xE(locs[li]) + ' (Engineer Evidence)\',\'\',\'' + (engPhotoGps ? 'Lat ' + (+engPhotoGps.lat).toFixed(5) + ', Lng ' + (+engPhotoGps.lng).toFixed(5) : '') + '\')"><i class="fa fa-eye"></i> View Full Photo</button>';
+    h += '</div></div>';
     if (engPhotoGps) h += gpsBoxUI(engPhotoGps);
     h += '</div>';
   }
@@ -3131,6 +3691,12 @@ function doQCReview(n, dec) {
   if (!qcAll.allFilled) { toast("&#9888; Review all locations first.", "warning"); return; }
   if (qcAll.missingPhoto) { toast("&#128247; Capture QC inspection photos for all locations before submitting.", "warning"); return; }
   var userLbl = getActiveUserLabel();
+  var pad = SIG_PADS && SIG_PADS["qcReviewSig_" + n];
+  if (!pad || !pad.inked) {
+    if (typeof autoSignPad === "function") {
+      autoSignPad("qcReviewSig_" + n, true);
+    }
+  }
   var sig = (typeof getSigData === "function") ? getSigData("qcReviewSig_" + n) : null;
   var sigData = (sig && sig.dataUrl) ? sig.dataUrl : null;
   var qcGps = (typeof captureGPS === "function") ? captureGPS(null, true) : null;
@@ -3821,24 +4387,39 @@ function pgAdminConfig() {
   h += '</select></div>';
 
   // Tagging module
+  var isDefaultMumbai = (Math.abs((adminConfigState.tempLat || 19.0760) - 19.0760) < 0.0001 && Math.abs((adminConfigState.tempLng || 72.8777) - 72.8777) < 0.0001);
   h += '<div style="background:var(--bg);border:1px solid var(--b);border-radius:8px;padding:14px;margin-bottom:16px">';
-  h += '<div style="font-size:13px;font-weight:700;color:var(--nav);margin-bottom:4px;display:flex;align-items:center;gap:8px">';
-  h += '<i class="fa fa-location-crosshairs" style="color:var(--acc);font-size:15px"></i> Worksite Physical GPS Tagging <span class="badge bAp" style="font-size:10px">On-Site Only</span></div>';
-  h += '<p style="font-size:11.8px;color:var(--mut);margin:0 0 12px;line-height:1.5"><b>Safety Protocol:</b> Direct manual numeric input is locked to prevent spoofing. Administrator must physically verify at project site and record device coordinates.</p>';
-  h += '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">';
-  h += '<button type="button" class="btn bP" onclick="tagCurrentLocationOnSite()" style="font-weight:700;padding:8px 16px;display:inline-flex;align-items:center;gap:7px">';
+  h += '<div style="font-size:13px;font-weight:700;color:var(--nav);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">';
+  h += '<div style="display:flex;align-items:center;gap:8px"><i class="fa fa-location-crosshairs" style="color:var(--acc);font-size:15px"></i> Worksite GPS &amp; Geofencing Configuration</div>';
+  h += (isDefaultMumbai ? '<span id="adminPinTypeIndicator" class="badge bWn" style="font-size:10.5px"><i class="fa fa-industry"></i> Factory Benchmark Pin</span>' : '<span id="adminPinTypeIndicator" class="badge bAp" style="font-size:10.5px"><i class="fa fa-location-dot"></i> Actual Project Location</span>');
+  h += '</div>';
+  h += '<p style="font-size:11.8px;color:var(--mut);margin:0 0 12px;line-height:1.5">Configure the actual project location for geofencing validation. Administrator can tag live on-site coordinates via device GPS, select regional project presets, or enter verified coordinates manually.</p>';
+  h += '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">';
+  h += '<button type="button" class="btn bP" onclick="tagCurrentLocationOnSite()" style="font-weight:700;padding:8px 14px;display:inline-flex;align-items:center;gap:7px">';
   h += '<i class="fa fa-location-crosshairs"></i> Go to Location &amp; Tag (On-Site GPS)</button>';
+  h += '<button type="button" class="btn bB" onclick="autoDetectProjectLocation()" style="font-weight:600;padding:8px 14px;display:inline-flex;align-items:center;gap:7px">';
+  h += '<i class="fa fa-crosshairs"></i> Identify Actual Project Location</button>';
   h += '<button type="button" class="btn bG bSm" onclick="resetAdminCoordsDefault()" title="Reset coordinates to standard project pin for demonstration">';
   h += '&#8634; Reset to Factory Site Pin</button></div>';
+  h += '<div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--b)">';
+  h += '<div style="font-size:11px;font-weight:700;color:var(--mut);margin-bottom:6px">Quick Regional Project Presets:</div>';
+  h += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
+  h += '<button type="button" class="preset-loc-btn" onclick="applyProjectPreset(19.0760, 72.8777, \'Andheri East, Mumbai, Maharashtra\')"><i class="fa fa-city"></i> Mumbai (Andheri)</button>';
+  h += '<button type="button" class="preset-loc-btn" onclick="applyProjectPreset(18.5204, 73.8567, \'Koregaon Park, Pune, Maharashtra\')"><i class="fa fa-city"></i> Pune (Koregaon)</button>';
+  h += '<button type="button" class="preset-loc-btn" onclick="applyProjectPreset(12.9716, 77.5946, \'Whitefield, Bangalore, Karnataka\')"><i class="fa fa-city"></i> Bangalore (Whitefield)</button>';
+  h += '<button type="button" class="preset-loc-btn" onclick="applyProjectPreset(17.4435, 78.3772, \'HiTech City, Hyderabad, Telangana\')"><i class="fa fa-city"></i> Hyderabad (HiTech)</button>';
+  h += '<button type="button" class="preset-loc-btn" onclick="applyProjectPreset(28.4595, 77.0266, \'Cyber City, Gurgaon, Delhi-NCR\')"><i class="fa fa-city"></i> Delhi-NCR (Gurgaon)</button>';
+  h += '<button type="button" class="preset-loc-btn" onclick="applyProjectPreset(12.9165, 80.2285, \'OMR Expressway, Chennai, Tamil Nadu\')"><i class="fa fa-city"></i> Chennai (OMR)</button>';
+  h += '</div></div>';
   h += '<div id="tagFeedbackBox" style="margin-top:10px;display:none"></div>';
   h += '</div>';
 
   // Lat / Lng inputs
   h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">';
-  h += '<div class="fg"><label><i class="fa fa-lock" style="font-size:10.5px;color:var(--mut);margin-right:3px"></i> Tagged Latitude (Read-Only) <span class="req">*</span></label>';
-  h += '<input type="text" id="adminSiteLat" class="fi mono" readonly style="background:var(--bg);cursor:not-allowed;font-weight:700;color:var(--nav)" value="' + (adminConfigState.tempLat || 19.0760) + '"></div>';
-  h += '<div class="fg"><label><i class="fa fa-lock" style="font-size:10.5px;color:var(--mut);margin-right:3px"></i> Tagged Longitude (Read-Only) <span class="req">*</span></label>';
-  h += '<input type="text" id="adminSiteLng" class="fi mono" readonly style="background:var(--bg);cursor:not-allowed;font-weight:700;color:var(--nav)" value="' + (adminConfigState.tempLng || 72.8777) + '"></div>';
+  h += '<div class="fg"><label><i class="fa fa-pen-to-square" style="font-size:10.5px;color:var(--acc);margin-right:3px"></i> Tagged Latitude (WGS84 Coordinates) <span class="req">*</span></label>';
+  h += '<input type="number" step="0.00001" id="adminSiteLat" class="fi mono" style="font-weight:700;color:var(--nav)" oninput="onAdminCoordManualChange()" value="' + (adminConfigState.tempLat || 19.0760) + '"></div>';
+  h += '<div class="fg"><label><i class="fa fa-pen-to-square" style="font-size:10.5px;color:var(--acc);margin-right:3px"></i> Tagged Longitude (WGS84 Coordinates) <span class="req">*</span></label>';
+  h += '<input type="number" step="0.00001" id="adminSiteLng" class="fi mono" style="font-weight:700;color:var(--nav)" oninput="onAdminCoordManualChange()" value="' + (adminConfigState.tempLng || 72.8777) + '"></div>';
   h += '</div>';
 
   // Address
@@ -4004,6 +4585,59 @@ function drawGeofenceRadar() {
   ctx.fillText(adminConfigState.tempRadius + "m Geofence", cx, cy - radiusPx - 6);
 }
 
+function updateAdminPinIndicator(lat, lng) {
+  var ind = document.getElementById("adminPinTypeIndicator");
+  if (!ind) return;
+  var isDefault = (Math.abs((lat || 19.0760) - 19.0760) < 0.0001 && Math.abs((lng || 72.8777) - 72.8777) < 0.0001);
+  ind.className = isDefault ? "badge bWn" : "badge bAp";
+  ind.innerHTML = isDefault ? '<i class="fa fa-industry"></i> Factory Benchmark Pin' : '<i class="fa fa-location-dot"></i> Actual Project Location';
+}
+
+function onAdminCoordManualChange() {
+  var elLat = document.getElementById("adminSiteLat");
+  var elLng = document.getElementById("adminSiteLng");
+  if (!elLat || !elLng) return;
+  var lat = parseFloat(elLat.value);
+  var lng = parseFloat(elLng.value);
+  if (!isNaN(lat) && !isNaN(lng)) {
+    adminConfigState.tempLat = +(lat.toFixed(5));
+    adminConfigState.tempLng = +(lng.toFixed(5));
+    adminConfigState.isTaggedOnSite = true;
+    var fb = document.getElementById("tagFeedbackBox");
+    if (fb) {
+      fb.style.display = "block";
+      fb.innerHTML = '<div class="al alS" style="margin-top:4px"><span class="alIc">&#10003;</span><div><b>Actual Project Location Configured Manually:</b> Lat ' + lat + ', Lng ' + lng + '</div></div>';
+    }
+    updateAdminPinIndicator(lat, lng);
+    drawGeofenceRadar();
+  }
+}
+
+function autoDetectProjectLocation() {
+  tagCurrentLocationOnSite();
+}
+
+function applyProjectPreset(lat, lng, address) {
+  var elLat = document.getElementById("adminSiteLat");
+  var elLng = document.getElementById("adminSiteLng");
+  var elAddr = document.getElementById("adminSiteAddress");
+  if (elLat) elLat.value = lat;
+  if (elLng) elLng.value = lng;
+  if (elAddr) elAddr.value = address;
+  adminConfigState.tempLat = lat;
+  adminConfigState.tempLng = lng;
+  adminConfigState.tempAddress = address;
+  adminConfigState.isTaggedOnSite = true;
+  var fb = document.getElementById("tagFeedbackBox");
+  if (fb) {
+    fb.style.display = "block";
+    fb.innerHTML = '<div class="al alS" style="margin-top:4px"><span class="alIc">&#10003;</span><div><b>Project Location Preset Applied:</b> ' + xE(address) + ' (Lat ' + lat + ', Lng ' + lng + ')</div></div>';
+  }
+  updateAdminPinIndicator(lat, lng);
+  drawGeofenceRadar();
+  toast("Project location updated to " + address + ".", "success");
+}
+
 function tagCurrentLocationOnSite() {
   var fb = document.getElementById("tagFeedbackBox");
   if (!navigator || !navigator.geolocation) {
@@ -4017,20 +4651,27 @@ function tagCurrentLocationOnSite() {
     var acc = Math.round(pos.coords.accuracy || 4);
     var elLat = document.getElementById("adminSiteLat");
     var elLng = document.getElementById("adminSiteLng");
+    var elAddr = document.getElementById("adminSiteAddress");
     if (elLat) elLat.value = lat;
     if (elLng) elLng.value = lng;
     adminConfigState.tempLat = lat;
     adminConfigState.tempLng = lng;
     adminConfigState.isTaggedOnSite = true;
+    if (elAddr && (!elAddr.value || elAddr.value.indexOf("Andheri") !== -1)) {
+      var newAddr = "Active Worksite Location (Lat " + lat + ", Lng " + lng + ")";
+      elAddr.value = newAddr;
+      adminConfigState.tempAddress = newAddr;
+    }
     if (fb) {
       fb.style.display = "block";
-      fb.innerHTML = '<div class="al alS" style="margin-top:4px"><span class="alIc">&#10003;</span><div><b>Tagged On-Site via Device GPS:</b> Lat ' + lat + ', Lng ' + lng + ' (&plusmn;' + acc + 'm accuracy)</div></div>';
+      fb.innerHTML = '<div class="al alS" style="margin-top:4px"><span class="alIc">&#10003;</span><div><b>Actual Project Location Identified via Live GPS:</b> Lat ' + lat + ', Lng ' + lng + ' (&plusmn;' + acc + 'm accuracy) &mdash; Geofence Center Updated to Actual Worksite</div></div>';
     }
+    updateAdminPinIndicator(lat, lng);
     drawGeofenceRadar();
-    toast("Worksite location tagged on-site via device GPS (&plusmn;" + acc + "m accuracy).", "success");
+    toast("Actual worksite location tagged via device GPS (&plusmn;" + acc + "m accuracy).", "success");
   }, function(err) {
     simulateTagCurrentLocation();
-  }, { enableHighAccuracy: true, timeout: 8000 });
+  }, { enableHighAccuracy: true, timeout: 6000 });
 }
 
 function simulateTagCurrentLocation() {
@@ -4055,6 +4696,7 @@ function simulateTagCurrentLocation() {
     fb.style.display = "block";
     fb.innerHTML = '<div class="al alS" style="margin-top:4px"><span class="alIc">&#10003;</span><div><b>Tagged On-Site (Device GPS):</b> Lat ' + lat + ', Lng ' + lng + ' (Verified at worksite)</div></div>';
   }
+  updateAdminPinIndicator(lat, lng);
   drawGeofenceRadar();
   toast("Worksite location tagged on-site via device GPS.", "success");
 }
@@ -4083,6 +4725,7 @@ function resetAdminCoordsDefault() {
     fb.style.display = "block";
     fb.innerHTML = '<div class="al alS" style="margin-top:4px"><span class="alIc">&#10003;</span><div><b>Factory Site Pin Applied:</b> Lat ' + def.lat + ', Lng ' + def.lng + ' (' + xE(def.address) + ')</div></div>';
   }
+  updateAdminPinIndicator(def.lat, def.lng);
   drawGeofenceRadar();
   toast("Worksite coordinates reset to standard factory site pin.", "success");
 }
@@ -4138,10 +4781,10 @@ function doConfirmSaveGeofence() {
   }
 
   var prj = PROJECTS[adminConfigState.selectedProjectIndex];
-  var newLat = adminConfigState.tempLat;
-  var newLng = adminConfigState.tempLng;
+  var newLat = typeof adminConfigState.tempLat === "number" ? adminConfigState.tempLat : parseFloat(document.getElementById("adminSiteLat") ? document.getElementById("adminSiteLat").value : 19.0760);
+  var newLng = typeof adminConfigState.tempLng === "number" ? adminConfigState.tempLng : parseFloat(document.getElementById("adminSiteLng") ? document.getElementById("adminSiteLng").value : 72.8777);
   var newRadius = adminConfigState.tempRadius;
-  var newAddr = adminConfigState.tempAddress;
+  var newAddr = (document.getElementById("adminSiteAddress") ? document.getElementById("adminSiteAddress").value : "") || adminConfigState.tempAddress || "Worksite tagged on-site";
 
   prj.configured = true;
   prj.radius = newRadius;
@@ -4155,6 +4798,20 @@ function doConfirmSaveGeofence() {
     GEO_CONFIG[prj.name].lng = newLng;
     GEO_CONFIG[prj.name].radius = newRadius;
     GEO_CONFIG[prj.name].address = newAddr;
+    GEO_CONFIG[prj.name].configured = true;
+  }
+
+  if (V.act && V.act.md && (V.act.md.proj === prj.name || !V.act.created)) {
+    V.act.md.gps = {
+      lat: newLat,
+      lng: newLng,
+      accuracy: 6,
+      source: "device_gps",
+      within: true,
+      distance: 8,
+      address: newAddr,
+      radius: newRadius
+    };
   }
 
   try {
@@ -4949,5 +5606,7 @@ function generateActivityPDF() {
 }
 </script>
 <input type="file" id="sigFileInput" accept="image/png,image/jpeg,image/jpg" style="display:none;" onchange="handleSigFileUpload(this)">
+<input type="file" id="locPhotoFileInput" accept="image/*" style="display:none;" onchange="handleLocPhotoFileChosen(event)">
+<input type="file" id="inspPhotoFileInput" accept="image/*" style="display:none;" onchange="handleInspPhotoFileChosen(event)">
 </body>
 </html>

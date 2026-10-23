@@ -505,15 +505,24 @@ Administrators can select from authorized enterprise developments:
 - **PRJ-GVA-03 (Greenview Apartments):** Lat 12.9716°, Lng 77.5946°, Baseline Radius 300m.
 - **Dynamic Radius Range:** Adjustable from 25m to 1000m via interactive slider or instant preset pills (50m, 100m, 250m, 500m, 1000m).
 
-### 13.4 On-Site Physical GPS Calibration &amp; Factory Reset
-- **Tag Current Location (On-Site):** Queries `navigator.geolocation.getCurrentPosition()` with high accuracy, automatically updating project coordinates to the engineer's exact field position.
-- **Factory Site Pin Reset:** Instantly restores factory baseline coordinates if field drift or accidental misalignment occurs.
+### 13.4 On-Site Physical GPS Calibration, Manual Coordinates &amp; Presets
+- **Identify Actual Project Location:** Queries live device GPS via `navigator.geolocation.getCurrentPosition()`, automatically mapping project geofence coordinates to the field testing location with real-time accuracy telemetry.
+- **Manual Coordinate Entry & Regional Presets:** Administrators can directly edit latitude and longitude values or select regional city presets (Mumbai, Pune, Bangalore, Hyderabad, Delhi-NCR, Chennai).
+- **Active Pin Telemetry Indicator:** Dynamically flags whether coordinates reflect the factory benchmark pin (`Factory Benchmark Pin`) or verified on-site field coordinates (`Actual Project Location`).
+- **Persistent Local Storage:** All geofence customizations automatically persist to `localStorage` (`wp_geo_config_<id>`) and restore across reloads.
+- **Factory Site Pin Reset:** Instantly restores factory baseline coordinates if required for benchmark testing.
 
-### 13.5 Statutory Administrative Authorization &amp; Audit Commitment
+### 13.5 Room-Wise Photograph Evidence &amp; Fast-Track Demo Engine
+- **Per-Room Mandatory Capture:** Individual photographic evidence required for every room/flat location across all checklist stages (Hall, Sunken Bathrooms, Kitchen, Balconies, Utility).
+- **Native Mobile Integration:** Direct support for live field camera capture (`capture="environment"`) and local file gallery selection.
+- **Full-Resolution Watermarked Preview:** Modal inspection displaying tamper-evident metadata: project name, room type, ISO 9001:2015 stamp, WGS84 GPS geotag, and IST timestamp.
+- **Instant Demo Photo Generation:** 1-click loading of procedurally generated high-fidelity room inspection SVGs with ARPL QA/QC stamps for testing and rapid demonstration.
+
+### 13.6 Statutory Administrative Authorization &amp; Audit Commitment
 Modifications to geofencing parameters require formal administrative sign-off via `saveGeofenceModal`:
 - Captures `ADMIN-001` digital vector signature on HTML5 canvas.
 - Requires explicit DPDP Act 2023 statutory consent verification (`adminDpdpConsentChk`).
-- Persists changes immutably into `GEO_CONFIG` and active session state.
+- Synchronizes changes across `PROJECTS`, `GEO_CONFIG`, and active activity GPS telemetry (`V.act.md.gps`).
 
 ---
 
